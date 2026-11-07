@@ -260,6 +260,14 @@ MoneyPuck from public sources; on all 470 team-games and 940 goalie lines it
 shares with the audited tables, it matched exactly. One command then
 rebuilds features, reruns the leakage tests and models, and grades the rules.
 
+**4b. Rules version 2 (2026-11-07).** The puck-line rule now uses the
+probable-starter game model (6d), so no bet depends on knowing the starter
+in advance. It is graded on games after 2026-11-07; the shots-on-goal rule is
+unchanged. Version 1 is kept (decision 29). The weekly run was also checked
+end to end on a fresh machine: every committed results file came out
+identical, and the charts are now written with fixed ids so reruns do not
+change them.
+
 ### Phase 5: Portfolio write-up
 
 **5a. Case study page (2026-11-07).** [docs/portfolio/index.html](docs/portfolio/index.html):
@@ -291,3 +299,12 @@ trails the closing moneyline by about 0.01 log loss. As a game-model feature
 it changes log loss by 0.0002 to 0.0024 either way, within noise, so the
 default model stays without it. Current ratings serve as a power ranking.
 
+**6d. Probable starting goalie (2026-11-07).** Model card:
+[docs/models/probable-starter-model.md](docs/models/probable-starter-model.md).
+A conditional logit over each team's recent goalies, from earlier games only,
+picks the actual starter 71.0% of the time out of sample (most starts in the
+last 10 games: 58.9%; previous game's starter: 46.3%), and 76-91% on the
+second night of a back-to-back. The leakage test found and fixed one case: a
+traded goalie whose game for his new team began earlier the same evening.
+Weighting the game model's goalie features by these probabilities changes
+every log loss by at most 0.002, so the actual-starter look-ahead was small.

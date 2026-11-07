@@ -26,9 +26,16 @@ Variant: `python3 src/models/game_model.py elo` adds the team's pre-game
 Elo rating minus the opponent's (src/features/build_elo.py) as a feature and
 writes *_elo outputs; the default model and its files are unchanged.
 
+Variant: `python3 src/models/game_model.py probable` replaces the opposing
+starter's save % and experience (the goalie who actually started) with their
+expected values under the probable-starter model
+(src/features/build_probable_starter.py), in training and test rows alike,
+so every input is known before the starter is announced. Writes *_probable
+outputs.
+
 Outputs
-  data/models/game_predictions[_elo].parquet  one row per test game
-  docs/models/game_results[_elo].json         metrics on all games
+  data/models/game_predictions[_<variant>].parquet  one row per test game
+  docs/models/game_results[_<variant>].json         metrics on all games
 """
 
 from __future__ import annotations
@@ -63,6 +70,11 @@ if VARIANT == "elo":
 
 def load() -> pd.DataFrame:
     f = pd.read_parquet(os.path.join(ROOT, "data/features/game_team_features.parquet"))
+    if VARIANT == "probable":
+        ps = pd.read_parquet(os.path.join(ROOT, "data/features/probable_starter_team.parquet"))
+        f = f.merge(ps[["game_id", "team_id", "exp_sv_l40", "exp_prior_apps"]], on=["game_id", "team_id"],
+                    how="left", validate="one_to_one")
+        f["starter_sv_l40"], f["starter_prior_apps"] = f.exp_sv_l40, f.exp_prior_apps
     for c in [c for c in f.columns if c.startswith("ewm")]:
         f[c] = f[c].fillna(f[c].mean())
     f["starter_sv_l40"] = f.starter_sv_l40.fillna(0.905)

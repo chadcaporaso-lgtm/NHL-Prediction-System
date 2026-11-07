@@ -42,6 +42,7 @@ plt.rcParams.update({
     "axes.spines.top": False, "axes.spines.right": False, "axes.spines.left": False,
     "figure.facecolor": BG, "axes.facecolor": BG, "savefig.facecolor": BG,
     "legend.frameon": False, "legend.fontsize": 10, "lines.linewidth": 2, "lines.solid_capstyle": "round",
+    "svg.hashsalt": "nhl-prediction-system",  # fixed element ids, so unchanged charts give unchanged files
 })
 
 
@@ -51,7 +52,7 @@ def subtitle(ax, text):
 
 def save(fig, name, source):
     fig.text(0.01, -0.04, f"Source: {source}", color=INK3, fontsize=8.5)
-    fig.savefig(os.path.join(OUT, name), bbox_inches="tight", pad_inches=0.25)
+    fig.savefig(os.path.join(OUT, name), bbox_inches="tight", pad_inches=0.25, metadata={"Date": None})
     plt.close(fig)
     print("wrote", name)
 

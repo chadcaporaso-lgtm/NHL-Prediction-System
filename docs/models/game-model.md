@@ -99,11 +99,21 @@ between -1.8% and +0.8% with standard errors of 4-7%.
   level problem; it did not fix it, and is kept because it is harmless and
   tested. Treat games after 2026-11-02 as the clean test of v2.
 
+- **Probable-starter variant** (2026-11-07): the opposing goalie's save % and
+  experience are weighted by the probable-starter model instead of taken
+  from the goalie who actually started. Default files are unchanged; the
+  variant writes `*_probable` outputs. Puck-line ROI at the SGO close moves
+  from -0.1% to -1.2% (SE 4.2%), within noise.
+
 ## Limits
 
 - Market comparisons cover about 1.5 seasons. Differences of 0.002-0.003 in
   log loss over 1,400 games are within noise.
-- The starting goalie is the actual starter (gap G-E).
+- The default model uses the actual starter (gap G-E). The probable-starter
+  variant (`game_model.py probable`, see
+  [probable-starter-model.md](probable-starter-model.md)) uses only
+  pregame information; it changes every log loss by at most 0.002, and the
+  live puck-line rule uses it (decision 29).
 - The SGO price is a consensus close, not one book's quote.
 
 ## Possible improvements

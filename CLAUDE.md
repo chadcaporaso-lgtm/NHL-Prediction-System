@@ -33,27 +33,32 @@ against sportsbook closing lines, and documentation of every step.
 - API keys only as environment network secrets (request_credential), never in
   files, code, chat, Drive or the repo. SportsGameOdds and PuckAPI keys are
   stored that way.
-- `data/` is gitignored. Purchased odds in `data_snapshots/` must be removed
-  from the repo and its history before it is made public.
+- The repository is public. `data/` is gitignored; never commit purchased or
+  licensed data (PuckAPI prop history, SportsGameOdds responses, MoneyPuck
+  tables), keys, or personal details. Purchased PuckAPI data was removed from
+  the repository and its history before publication (decision 13).
 - The owner runs Colab cells when asked: give the full cell in a code block.
 - A second repo, `claude-sports-analytics`, is public and has its own
   CLAUDE.md rules (no AI attribution there).
 
 ## Frozen live test: do not change
 
-`docs/live/frozen_rules.json` (decisions 20, 23, 25) fixes the shots-on-goal
-and puck-line betting rules for games after 2026-11-06. `src/live/track.py`
-checks model fingerprints and stops if the default shots model
-(`prop_model.py shots`) or the default game model (`game_model.py`) changes.
-Add new features as variants or separate outputs, never by editing those
-defaults (see the `elo` variant). If the rules must change, write a new
-frozen file with a new start date and a decision-log entry.
+`docs/live/frozen_rules_v2.json` (decision 29; version 1 in
+`frozen_rules.json`, decisions 20, 23, 25, kept as the record) fixes the
+betting rules: shots on goal for games after 2026-11-06, puck line for games
+after 2026-11-07. `src/live/track.py` checks model fingerprints and stops if
+the default shots model (`prop_model.py shots`), the probable-starter model
+(`build_probable_starter.py`) or the probable-starter game model
+(`game_model.py probable`) changes. The default game model (`game_model.py`)
+is no longer graded live but stays the reference for backtests. Add new
+features as variants or separate outputs, never by editing those (see the
+`elo` and `probable` variants). If the rules must change, write a new frozen
+file with a new start date and a decision-log entry.
 
 ## Starting a new session (for the owner)
 
 1. Open Claude Code on the web and choose the `NHL-Prediction-System`
-   repository (branch `main` once the work branch is merged; until then,
-   `claude/peaceful-volta-mygk7c`).
+   repository (branch `main`, after the newest work branch is merged).
 2. Say: "Read CLAUDE.md, restore the data, then continue with the next step."
 3. Run the Colab cell Claude gives you (`colab_bundle_core_inputs.py`) and
    paste its output back.
@@ -73,14 +78,20 @@ A cloud session starts on a fresh machine with only this repository.
 3. Download the manifest and every part with the Google Drive connector
    (search by title `core__`), save the manifest locally, then run
    `python3 src/inventory/restore_core_inputs.py <manifest.json>`. It
-   verifies every SHA-256.
+   verifies every SHA-256. The MoneyPuck table appears twice in the manifest
+   with the same SHA-256 (core input and weekly refresh): download its 5 parts
+   once; the script reuses identical files. Parts of 3 MB come back as saved
+   tool results, smaller ones inline; the script searches both.
 4. Re-download SportsGameOdds history (uses the stored network secret):
    `python3 src/ingest/fetch_sgo_events.py 2026-01-16 <yesterday>`.
 5. Rebuild everything: run the steps in `src/live/weekly_update.py` (it also
    fetches new odds, rebuilds features and models, runs the leakage tests,
    grades the live test and redraws the charts).
 
-Purchased PuckAPI prop history is committed in `data_snapshots/`.
+Purchased PuckAPI prop history is not in the repository (decision 13). It is
+used only by the prop-price audit (`src/audit/prop_history_profile.py`), whose
+results are already in `docs/`; the weekly pipeline does not need it. Keep any
+copy in the owner's private Drive.
 
 ## Weekly routine (live test)
 
@@ -90,28 +101,33 @@ the manifest, then `python3 src/live/weekly_update.py <date>`. Commit
 `docs/live/tracking.json` and the redrawn `docs/figures/`, and add the week
 to the README. Treat the result as meaningful after about 500 bets.
 
-## Current state (2026-11-07)
+## Current state (2026-11-07, second session)
 
 - Data audit done (findings D-1, D-2, O-1 to O-7, goalie and live-feed checks).
 - Models: shots on goal (adds information to the closing price; blend +8.3%
   ROI on 907 held-out bets, SE 2.7%, not yet confirmed), puck line (level
   with the close, not significant), moneyline (close, behind), points v2
-  (no edge), totals (no skill), team Elo (power rating and optional feature).
-- Live test frozen on 2026-11-07; no games graded yet.
+  (no edge), totals (no skill), team Elo (power rating and optional feature),
+  probable starting goalie (71.0% top-pick accuracy out of sample; the
+  actual-starter look-ahead moves game-model log loss by at most 0.002).
+- Live test: rules version 2 frozen on 2026-11-07 (puck line on the
+  probable-starter model, games after 2026-11-07); no games graded yet. The
+  newest data (refresh 2026-11-07) ends on 2026-11-05 for team and goalie
+  lines and 2026-11-06 for skaters.
+- Restore and full weekly rebuild checked on a fresh machine: every committed
+  results file reproduced exactly; charts are now byte-stable.
 - Charts: `src/reporting/make_figures.py` -> `docs/figures/*.svg`.
 
 ## Next steps (agreed order)
 
-1. Starting goalie: the game models use the actual starter, a small
-   look-ahead for live bets. Build a probable-starter model (rest, recent
-   starts, back-to-backs), weight goalie features by it, and re-freeze the
-   puck-line rule before its first graded game.
-2. Closing-line value: test whether the shots model's picks at the opening
+1. Closing-line value: test whether the shots model's picks at the opening
    price beat the close (SportsGameOdds has opening prices from 2026-01-16).
-3. Reproducibility: tests in GitHub Actions with small fixtures, one command
+2. Reproducibility: tests in GitHub Actions with small fixtures, one command
    to run the pipeline, update the git remote to the repo's new location
    (`chadcaporaso-lgtm/NHL-Prediction-System`).
-4. Linemates from NHL shift charts (free; Colab) for the points model.
-5. Optional, costs credits: check PuckAPI archive odds (about 30 games a
+3. Linemates from NHL shift charts (free; Colab) for the points model.
+4. Optional, costs credits: check PuckAPI archive odds (about 30 games a
    season) before buying older seasons.
-6. Totals: in-season scoring level or a bivariate score model.
+5. Totals: in-season scoring level or a bivariate score model.
+6. Optional: improve the probable-starter model (team rotation habits, a
+   tree model) or add confirmed-starter data if a free source exists.

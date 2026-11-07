@@ -1,5 +1,9 @@
-"""Grade the frozen live-tracking rules (docs/live/frozen_rules.json) on
-games after the cutoff.
+"""Grade the frozen live-tracking rules (docs/live/frozen_rules_v2.json) on
+games after each rule's cutoff.
+
+Version 2 (decision 29) keeps the shots-on-goal rule of version 1 and moves
+the puck line to the probable-starter game model, graded on games after
+2026-11-07.
 
 Run after the weekly rebuild (see docs/live/README.md). Checks the model
 fingerprints first and stops if a retrained model differs from the frozen one.
@@ -18,8 +22,10 @@ import numpy as np
 import pandas as pd
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-RULES = json.load(open(os.path.join(ROOT, "docs/live/frozen_rules.json")))
-CUTOFF = RULES["window_starts_after"]
+RULES_FILE = "docs/live/frozen_rules_v2.json"
+RULES = json.load(open(os.path.join(ROOT, RULES_FILE)))
+SOG_CUTOFF = RULES["sog"]["window_starts_after"]
+PL_CUTOFF = RULES["puck_line"]["window_starts_after"]
 
 
 def logit(p):
@@ -40,17 +46,22 @@ def logloss(p, y):
 def check_fingerprints():
     sog = pd.read_parquet(os.path.join(ROOT, "data/models/sog_predictions.parquet"))
     sog["game_date"] = pd.to_datetime(sog.game_date).dt.strftime("%Y-%m-%d")
-    fp = sog[(sog.season == 20262027) & (sog.game_date <= CUTOFF)]
+    fp = sog[(sog.season == 20262027) & (sog.game_date <= SOG_CUTOFF)]
     alpha = json.load(open(os.path.join(ROOT, "docs/models/sog_results.json")))["alpha"]["20262027"]["gbm"]
     f = RULES["sog"]["fingerprint"]
     assert len(fp) == f["rows_to_cutoff"], ("sog rows changed", len(fp))
     assert np.isclose(fp.mu_gbm.mean(), f["mean_mu_gbm_to_cutoff"], atol=1e-7), ("sog model changed", fp.mu_gbm.mean())
     assert np.isclose(alpha, f["alpha_20262027_gbm"]), ("sog alpha changed", alpha)
-    g = pd.read_parquet(os.path.join(ROOT, "data/models/game_predictions.parquet"))
-    gp = g[(g.season == 20262027) & (g.game_date <= CUTOFF)]
     f = RULES["puck_line"]["fingerprint"]
-    assert len(gp) == f["games_to_cutoff"], ("game rows changed", len(gp))
-    assert np.isclose(gp.lh_glm.mean(), f["mean_lh_glm_to_cutoff"], atol=1e-7), ("game model changed", gp.lh_glm.mean())
+    g = pd.read_parquet(os.path.join(ROOT, "data/models/game_predictions_probable.parquet"))
+    gp = g[(g.season == 20262027) & (g.game_date <= f["through"])]
+    assert len(gp) == f["games"], ("game rows changed", len(gp))
+    assert np.isclose(gp.lh_glm.mean(), f["mean_lh_glm"], atol=1e-7), ("game model changed", gp.lh_glm.mean())
+    assert np.isclose(gp.theta_glm.iloc[0], f["theta_glm"], atol=1e-7), ("tie factor changed", gp.theta_glm.iloc[0])
+    ps = pd.read_parquet(os.path.join(ROOT, "data/features/probable_starter_team.parquet"))
+    pp = ps[(ps.season == 20262027) & (ps.game_date <= f["through"])]
+    assert len(pp) == f["starter_team_games"], ("starter rows changed", len(pp))
+    assert np.isclose(pp.exp_sv_l40.mean(), f["mean_exp_sv_l40"], atol=1e-7), ("starter model changed", pp.exp_sv_l40.mean())
 
 
 def summarize(b: pd.DataFrame) -> dict:
@@ -68,7 +79,7 @@ def sog_bets():
     r = RULES["sog"]
     d = pd.read_parquet(os.path.join(ROOT, "data/models/sog_market_graded.parquet"))
     d["game_date"] = pd.to_datetime(d.game_date).dt.strftime("%Y-%m-%d")
-    d = d[d.game_date > CUTOFF].copy()
+    d = d[d.game_date > SOG_CUTOFF].copy()
     c0, c1, c2 = r["blend_coef_const_market_model"]
     d["p_blend"] = 1 / (1 + np.exp(-(c0 + c1 * logit(d.p_market) + c2 * logit(d.p_gbm))))
     d["edge"] = d.p_blend - d.p_market
@@ -86,9 +97,9 @@ def sog_bets():
 
 def puck_line_bets():
     r = RULES["puck_line"]
-    d = pd.read_parquet(os.path.join(ROOT, "data/models/game_market_graded.parquet"))
+    d = pd.read_parquet(os.path.join(ROOT, "data/models/game_market_graded_probable.parquet"))
     d["game_date"] = pd.to_datetime(d.game_date).dt.strftime("%Y-%m-%d")
-    d = d[(d.source == "sgo") & (d.market == "pl") & (d.game_date > CUTOFF)].copy()
+    d = d[(d.source == "sgo") & (d.market == "pl") & (d.game_date > PL_CUTOFF)].copy()
     d["edge"] = d.p_cal - d.p_mkt
     lines = {"games": int(len(d)), "log_loss_market": logloss(d.p_mkt, d.y), "log_loss_model": logloss(d.p_cal, d.y)}
     a, b_ = d.edge > r["threshold"], d.edge < -r["threshold"]
@@ -103,7 +114,7 @@ def puck_line_bets():
 
 if __name__ == "__main__":
     check_fingerprints()
-    out = {"window_starts_after": CUTOFF, "rules": "docs/live/frozen_rules.json"}
+    out = {"rules": RULES_FILE, "window_starts_after": {"sog": SOG_CUTOFF, "puck_line": PL_CUTOFF}}
     for name, fn in [("sog", sog_bets), ("puck_line", puck_line_bets)]:
         b, lines = fn()
         b.to_parquet(os.path.join(ROOT, f"data/live/ledger_{name}.parquet"), index=False)
