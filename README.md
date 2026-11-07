@@ -224,3 +224,15 @@ market + model blend gains nothing on held-out 2026-27 lines. No betting edge;
 used as a projection only. The likely missing piece is lineup information
 (linemates, power-play unit) that the closing price already reflects.
 
+**3c. Game models: moneyline, puck line, totals (2026-11-07).** Model card:
+[docs/models/game-model.md](docs/models/game-model.md). Poisson model of each
+team's regulation goals from MoneyPuck team form, the opposing starter, rest
+and league scoring level, with a tie adjustment (independent scores predict
+16% regulation ties; 21-25% happen) and walk-forward calibration. On the full
+2025-26 season the moneyline log loss is 0.6830 against the closing line's
+0.6808, better than both earlier projects (best 0.6867) but still behind the
+market, and it adds nothing to the closing price in a blend. On the puck line
+it matches or slightly beats the close in three of four comparisons (blend
+weight 1.9 standard errors), which is suggestive but not significant. Totals
+show no skill. No game market shows a betting edge.
+
