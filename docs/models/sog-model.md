@@ -83,9 +83,9 @@ with those filled by league averages, gave +9.2% on 824 bets at 4 points):
 
 | Edge threshold | Bets | ROI | SE (game-clustered) |
 |---:|---:|---:|---:|
-| 2 points | 2,613 | +1.8% | 1.7% |
+| 2 points | 2,656 | +1.3% | 1.7% |
 | 4 points | 839 | +8.4% | 2.8% |
-| 6 points | 230 | +17.9% | 4.8% |
+| 6 points | 232 | +18.2% | 4.8% |
 
 ## Limits (read before quoting the ROI)
 

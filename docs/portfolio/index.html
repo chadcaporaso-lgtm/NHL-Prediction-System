@@ -1,0 +1,318 @@
+<title>NHL Prediction System</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column (about 68ch) with wide figures and tables; rink-board ink on cool ice white. */
+:root {
+  --bg: #f5f7f8;
+  --surface: #fcfdfd;
+  --ink: #12202b;
+  --ink-2: #4a5964;
+  --ink-3: #6f7d87;
+  --rule: #d9e0e4;
+  --grid: #e6ebee;
+  --accent: #b3262b;        /* goal-line red, used sparingly */
+  --model: #2a78d6;         /* series: model */
+  --market: #eb6834;        /* series: closing line */
+  --better: #2a78d6;        /* diverging: model better than market */
+  --worse: #e34948;         /* diverging: model behind market */
+  --mid: #f0efec;
+  --chip-good-bg: #e3f1e4; --chip-good-fg: #1d5e22;
+  --chip-mid-bg: #fbf0d9;  --chip-mid-fg: #6b4a00;
+  --chip-bad-bg: #f8e1e1;  --chip-bad-fg: #8a1f22;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11181d; --surface: #172026; --ink: #e8eef1; --ink-2: #b4c0c7; --ink-3: #8b99a2;
+    --rule: #2a363e; --grid: #233038; --accent: #ef6b6f;
+    --model: #3987e5; --market: #d95926; --better: #3987e5; --worse: #e66767; --mid: #383835;
+    --chip-good-bg: #1d3320; --chip-good-fg: #9fd8a4; --chip-mid-bg: #3a2f14; --chip-mid-fg: #f0cf85;
+    --chip-bad-bg: #3d1e20; --chip-bad-fg: #f3a9ab;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11181d; --surface: #172026; --ink: #e8eef1; --ink-2: #b4c0c7; --ink-3: #8b99a2;
+  --rule: #2a363e; --grid: #233038; --accent: #ef6b6f;
+  --model: #3987e5; --market: #d95926; --better: #3987e5; --worse: #e66767; --mid: #383835;
+  --chip-good-bg: #1d3320; --chip-good-fg: #9fd8a4; --chip-mid-bg: #3a2f14; --chip-mid-fg: #f0cf85;
+  --chip-bad-bg: #3d1e20; --chip-bad-fg: #f3a9ab;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--body); }
+.page { max-width: 980px; margin: 0 auto; padding-block: 48px 80px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 56px; }
+.col { max-width: 68ch; }
+header { display: grid; gap: 14px; border-bottom: 3px solid var(--accent); padding-bottom: 28px; }
+.kicker { font: 600 13px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+h1 { font: 700 clamp(44px, 8vw, 76px)/0.95 var(--display); letter-spacing: .005em; margin: 0; text-wrap: balance; }
+.dek { font-size: 19px; line-height: 1.5; color: var(--ink-2); margin: 0; max-width: 62ch; }
+h2 { font: 700 34px/1.05 var(--display); margin: 0 0 6px; text-wrap: balance; }
+h3 { font: 600 22px/1.15 var(--display); margin: 22px 0 4px; letter-spacing: .01em; }
+p { margin: 0 0 14px; }
+section { display: grid; gap: 14px; }
+.lede { color: var(--ink-2); }
+code, .mono { font-family: var(--mono); font-size: .88em; }
+a { color: var(--model); }
+:focus-visible { outline: 2px solid var(--model); outline-offset: 2px; }
+
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.fact { background: var(--surface); padding: 14px 16px; display: grid; gap: 4px; }
+.fact b { font: 700 30px/1 var(--display); font-variant-numeric: tabular-nums; }
+.fact span { font-size: 13px; color: var(--ink-2); line-height: 1.35; }
+
+.tablewrap { overflow-x: auto; border-top: 2px solid var(--ink); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font: 600 12px/1.3 var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 13.5px; white-space: nowrap; }
+.chip { display: inline-block; font: 600 12px/1 var(--mono); padding: 5px 8px; border-radius: 3px; white-space: nowrap; }
+.chip.good { background: var(--chip-good-bg); color: var(--chip-good-fg); }
+.chip.mid { background: var(--chip-mid-bg); color: var(--chip-mid-fg); }
+.chip.bad { background: var(--chip-bad-bg); color: var(--chip-bad-fg); }
+
+.finding { display: grid; grid-template-columns: 92px 1fr; gap: 6px 16px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.finding:first-of-type { border-top: 1px solid var(--rule); }
+.finding .sev { font: 600 12px/1.6 var(--mono); letter-spacing: .05em; text-transform: uppercase; }
+.sev.critical { color: var(--accent); } .sev.high { color: var(--chip-mid-fg); } .sev.pass { color: var(--chip-good-fg); }
+.finding p { margin: 0; min-width: 0; }
+.finding strong { display: block; margin-bottom: 2px; }
+@media (max-width: 520px) { .finding { grid-template-columns: 1fr; } }
+
+figure { margin: 0; display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); padding: 18px 18px 14px; }
+figcaption { display: grid; gap: 4px; }
+figcaption b { font: 600 20px/1.2 var(--display); }
+figcaption span { font-size: 14px; color: var(--ink-2); }
+.chart { position: relative; width: 100%; min-width: 0; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink-2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.legend i.bar { border-radius: 2px; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); font: 13px/1.4 var(--body); padding: 8px 10px; border-radius: 4px; max-width: 260px; transform: translate(-50%, calc(-100% - 12px)); }
+.note { font-size: 13px; color: var(--ink-3); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.two > * { min-width: 0; }
+ol.steps { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; color: var(--ink-3); }
+@media (prefers-reduced-motion: no-preference) { .bar-mark { transition: opacity .15s; } }
+</style>
+
+<div class="page">
+  <header>
+    <div class="kicker">Case study · NHL betting models · Nov 2026</div>
+    <h1>NHL Prediction System</h1>
+    <p class="dek">Machine-learning models for moneyline, puck line, totals and player props, rebuilt from an audit of two earlier versions and tested the only way that counts in betting: season by season, against sportsbook closing lines.</p>
+  </header>
+
+  <section>
+    <div class="facts" role="list">
+      <div class="fact" role="listitem"><b>9,418</b><span>NHL games, 2019-20 to Nov 2026, labels checked against two sources</span></div>
+      <div class="fact" role="listitem"><b>339,062</b><span>skater-games with pregame features, leakage-tested</span></div>
+      <div class="fact" role="listitem"><b>34,628</b><span>graded player-prop closing lines (shots and points)</span></div>
+      <div class="fact" role="listitem"><b>~1,560</b><span>games with clean moneyline, puck line and totals closes</span></div>
+    </div>
+  </section>
+
+  <section class="col">
+    <h2>The short version</h2>
+    <p>Two earlier versions of this project reported a moneyline model that beat the closing line and returned +4.4%. The audit found that 74% of those bets had been graded at prices captured during or after the game. On clean pregame prices the edge disappears, and the +4.4% cannot be reproduced from the saved ledger.</p>
+    <p>The rebuild starts from audited data, validates every model walk-forward by season, and compares each one with the closing line. One model shows evidence of an edge (shots on goal, combined with the market price), one is level with the market (puck line), and the rest are sound projections that the market already prices.</p>
+  </section>
+
+  <section>
+    <h2>Results by market</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Model</th><th>Method</th><th class="num">Model log loss</th><th class="num">Closing line</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td>Shots on goal</td><td>Gradient-boosted negative binomial, blended with the market price</td><td class="num">0.6767</td><td class="num">0.6797</td><td><span class="chip good">Adds information</span></td></tr>
+          <tr><td>Puck line</td><td>Poisson regulation-goal model, tie-adjusted, calibrated</td><td class="num">0.6246</td><td class="num">0.6272</td><td><span class="chip mid">Level, not significant</span></td></tr>
+          <tr><td>Moneyline</td><td>Same goal model</td><td class="num">0.6830</td><td class="num">0.6808</td><td><span class="chip mid">Close, behind</span></td></tr>
+          <tr><td>Points</td><td>Poisson GLM with goalie and team features</td><td class="num">0.6553</td><td class="num">0.6517</td><td><span class="chip bad">No edge</span></td></tr>
+          <tr><td>Total goals</td><td>Same goal model</td><td class="num">0.6948</td><td class="num">0.6893</td><td><span class="chip bad">No skill</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Lower log loss is better. Shots on goal: model + market blend on 5,814 held-out 2026-27 lines. Points: 18,851 lines. Game markets: the full 2025-26 season (1,338 to 1,394 games), external consensus close.</p>
+
+    <figure>
+      <figcaption>
+        <b>Distance from the closing line</b>
+        <span>Model log loss minus closing-line log loss. Bars left of zero beat the market.</span>
+      </figcaption>
+      <div class="legend"><span><i class="bar" style="background:var(--better)"></i>Better than the close</span><span><i class="bar" style="background:var(--worse)"></i>Behind the close</span></div>
+      <div class="chart" id="gap"></div>
+    </figure>
+  </section>
+
+  <section class="col">
+    <h2>What the data audit found</h2>
+    <p class="lede">Both earlier projects were inventoried file by file (143 files in one, 10,819 in the other), large files moved with SHA-256 checks, and every table checked before use.</p>
+    <div>
+      <div class="finding"><div class="sev critical">Critical</div><p><strong>Bets graded at in-game prices.</strong> About 74% of the first version's bets used prices stamped during or after the game. Those prices score a log loss of 0.29 to 0.46, where a real closing line scores about 0.67. Every result built on them was set aside.</p></div>
+      <div class="finding"><div class="sev high">High</div><p><strong>Truncated skater data.</strong> Three seasons held about 5 skaters per game instead of 36, which fed the prop models' training data. Re-fetched with a fixed sort order and paging; every game now has its full roster.</p></div>
+      <div class="finding"><div class="sev high">Trap</div><p><strong>A mislabeled prop market.</strong> The odds provider's <code>points</code> market is goals, and <code>goals+assists</code> is points. Caught by grading lines against NHL box scores.</p></div>
+      <div class="finding"><div class="sev pass">Clean</div><p><strong>Game results and labels.</strong> Both projects matched the NHL schedule and an independent source on every game, with overtime and shootout handled correctly.</p></div>
+      <div class="finding"><div class="sev pass">Clean</div><p><strong>Goalie logs and the live feed.</strong> One starter per team-game in 18,784 of 18,784; the new weekly feed matched the audited tables on all 470 team-games and 940 goalie lines it shares with them.</p></div>
+    </div>
+  </section>
+
+  <section class="col">
+    <h2>Method</h2>
+    <ol class="steps">
+      <li><b>Pregame features only.</b> Every feature is computed from games dated before the one being predicted. Tests recompute random rows from scratch and compare.</li>
+      <li><b>Walk-forward by season.</b> Each test season is predicted by a model trained only on earlier seasons. No k-fold.</li>
+      <li><b>Count distributions, not simulation.</b> Shots use a negative binomial; goals use Poisson. Over/under probabilities come straight from the fitted distribution.</li>
+      <li><b>Regulation scores with a tie adjustment.</b> Independent Poisson scores predict 16% of games tied after regulation; 21 to 25% are. A tie factor fitted on training seasons fixes it, and moneyline, puck line and totals all come from the same score distribution.</li>
+      <li><b>Judge against the close.</b> The market's de-vigged closing probability is the benchmark, and a blend test asks whether the model adds anything the price does not already contain.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Shots on goal, in detail</h2>
+    <div class="two">
+      <figure>
+        <figcaption>
+          <b>Calibration on 15,777 closing lines</b>
+          <span>Predicted chance of the over against how often it hit. The model alone is too extreme; the market is better calibrated.</span>
+        </figcaption>
+        <div class="legend"><span><i style="background:var(--model)"></i>Model alone</span><span><i style="background:var(--market)"></i>Closing line</span></div>
+        <div class="chart" id="cal"></div>
+      </figure>
+      <div class="col" style="display:grid;gap:12px;align-content:start">
+        <p>On its own the shots model is slightly worse than the closing price (0.6822 vs 0.6815 log loss). Its probabilities stray too far from 50%, and betting it alone loses 1.8%.</p>
+        <p>Combined with the price, it adds information. A blend fitted on 2025-26 lines gives the model a weight of 0.35 (standard error 0.09), and on 2026-27 lines it never saw, the blend beats the market: 0.6767 against 0.6797.</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Edge required</th><th class="num">Bets</th><th class="num">ROI</th><th class="num">Std. error</th></tr></thead>
+            <tbody>
+              <tr><td>2 points</td><td class="num">2,656</td><td class="num">+1.3%</td><td class="num">1.7%</td></tr>
+              <tr><td>4 points</td><td class="num">839</td><td class="num">+8.4%</td><td class="num">2.8%</td></tr>
+              <tr><td>6 points</td><td class="num">232</td><td class="num">+18.2%</td><td class="num">4.8%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">2026-27 held-out lines at the consensus closing price, standard errors clustered by game.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="col">
+    <h2>Why that ROI is a hypothesis</h2>
+    <p>The test covers about 260 games of one season, and the edge thresholds were chosen after seeing the results. The closing price is a consensus across sportsbooks, not a quote anyone could have taken. So the rule is now frozen: the same model, the same blend, a 4-point edge, graded only on games played after November 6, 2026. Each week the models are retrained from the same data and checked against stored fingerprints, so they cannot drift. The result will be reported after at least 500 bets, whatever it shows.</p>
+  </section>
+
+  <section class="col">
+    <h2>What did not work, and why</h2>
+    <p><b>Points.</b> The model beats a recent-form baseline every season but adds nothing to the closing price on held-out lines. Points depend on linemates and power-play units, which books know on game day and these features do not.</p>
+    <p><b>Totals.</b> Predicted totals correlate only 0.04 to 0.20 with actual totals, and the model's scoring level lags season-to-season shifts by up to 0.45 goals. Adding a league scoring-level feature did not fix it. Both versions are reported.</p>
+    <p><b>Moneyline.</b> 0.6830 against the close's 0.6808 on the full 2025-26 season, better than either earlier version (best 0.6867) but still behind the market, and a blend gives it no weight.</p>
+  </section>
+
+  <section class="col">
+    <h2>Stack</h2>
+    <p>Python, pandas, scikit-learn, statsmodels and SciPy; DuckDB on Parquet; Google Drive and Colab for storage and public-API pulls; NHL stats and web APIs, MoneyPuck, SportsGameOdds and PuckAPI as sources. Every number on this page traces to a script and a results file in the repository, with a decision log and model cards alongside.</p>
+  </section>
+
+  <footer>Data through November 6, 2026. MoneyPuck data is used under its non-commercial terms. Odds and prop prices are kept out of the public repository.</footer>
+</div>
+
+<script>
+(() => {
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (t, a = {}, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+  function tipFor(host) {
+    const t = document.createElement("div"); t.className = "tip"; t.hidden = true; host.appendChild(t);
+    return { show(html, x, y) { t.innerHTML = html; t.style.left = x + "px"; t.style.top = y + "px"; t.hidden = false; }, hide() { t.hidden = true; } };
+  }
+
+  // Chart 1: model minus closing-line log loss, diverging around zero.
+  const gapData = [
+    { name: "Shots on goal (blend)", v: 0.6767 - 0.6797, m: 0.6767, c: 0.6797, n: "5,814 lines, 2026-27" },
+    { name: "Puck line", v: 0.6246 - 0.6272, m: 0.6246, c: 0.6272, n: "1,385 games, 2025-26" },
+    { name: "Shots on goal (alone)", v: 0.6822 - 0.6815, m: 0.6822, c: 0.6815, n: "15,777 lines" },
+    { name: "Moneyline", v: 0.6830 - 0.6808, m: 0.6830, c: 0.6808, n: "1,394 games, 2025-26" },
+    { name: "Points", v: 0.6553 - 0.6517, m: 0.6553, c: 0.6517, n: "18,851 lines" },
+    { name: "Total goals", v: 0.6948 - 0.6893, m: 0.6948, c: 0.6893, n: "1,338 games, 2025-26" },
+  ];
+  function drawGap() {
+    const host = document.getElementById("gap"); host.innerHTML = "";
+    const W = Math.max(320, host.clientWidth), narrow = W < 560;
+    const L = narrow ? 128 : 170, R = 56, T = 8, rowH = 34, H = T + rowH * gapData.length + 34;
+    const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Model minus closing-line log loss by market" }, host);
+    const min = -0.004, max = 0.006, x = v => L + (v - min) / (max - min) * (W - L - R);
+    for (let t = -0.004; t <= 0.0061; t += 0.002) {
+      const xv = x(t);
+      el("line", { x1: xv, x2: xv, y1: T, y2: H - 26, stroke: Math.abs(t) < 1e-9 ? css("--ink-3") : css("--grid"), "stroke-width": 1 }, svg);
+      const lab = el("text", { x: xv, y: H - 8, "text-anchor": "middle", fill: css("--ink-3"), "font-size": 12, "font-family": css("--mono") }, svg);
+      lab.textContent = (t > 0 ? "+" : t < 0 ? "−" : "") + Math.abs(t).toFixed(3);
+    }
+    const tip = tipFor(host);
+    gapData.forEach((d, i) => {
+      const cy = T + i * rowH + rowH / 2, x0 = x(0), x1 = x(d.v), h = 18;
+      const name = el("text", { x: L - 12, y: cy + 4, "text-anchor": "end", fill: css("--ink"), "font-size": narrow ? 12 : 13.5, "font-family": css("--body") }, svg);
+      name.textContent = d.name;
+      const w = Math.abs(x1 - x0), left = Math.min(x0, x1), r = Math.min(4, w / 2);
+      // Rounded at the data end, square at the zero baseline.
+      const path = d.v < 0
+        ? `M${x0},${cy - h / 2} H${left + r} Q${left},${cy - h / 2} ${left},${cy - h / 2 + r} V${cy + h / 2 - r} Q${left},${cy + h / 2} ${left + r},${cy + h / 2} H${x0} Z`
+        : `M${x0},${cy - h / 2} H${x1 - r} Q${x1},${cy - h / 2} ${x1},${cy - h / 2 + r} V${cy + h / 2 - r} Q${x1},${cy + h / 2} ${x1 - r},${cy + h / 2} H${x0} Z`;
+      el("path", { d: path, fill: d.v < 0 ? css("--better") : css("--worse"), class: "bar-mark" }, svg);
+      const val = el("text", { x: d.v < 0 ? left - 6 : x1 + 6, y: cy + 4, "text-anchor": d.v < 0 ? "end" : "start", fill: css("--ink-2"), "font-size": 12, "font-family": css("--mono") }, svg);
+      val.textContent = (d.v > 0 ? "+" : "−") + Math.abs(d.v).toFixed(4);
+      const hit = el("rect", { x: L, y: cy - rowH / 2, width: W - L - R, height: rowH, fill: "transparent", tabindex: 0 }, svg);
+      const show = () => tip.show(`<b>${d.name}</b><br>Model ${d.m.toFixed(4)} · Close ${d.c.toFixed(4)}<br>${d.n}`, (x0 + x1) / 2 / W * host.clientWidth, cy / H * host.clientHeight);
+      hit.addEventListener("mouseenter", show); hit.addEventListener("focus", show);
+      hit.addEventListener("mouseleave", tip.hide); hit.addEventListener("blur", tip.hide);
+    });
+  }
+
+  // Chart 2: calibration, model vs closing line.
+  const calData = {
+    model: [[0.259,0.318,707],[0.328,0.349,1369],[0.377,0.411,2490],[0.425,0.457,2993],[0.475,0.496,2893],[0.524,0.513,2756],[0.572,0.564,1695],[0.62,0.604,750],[0.673,0.54,124]],
+    market: [[0.331,0.322,261],[0.385,0.355,1481],[0.427,0.409,3397],[0.476,0.463,3807],[0.525,0.491,3109],[0.574,0.555,2683],[0.613,0.619,1015]],
+  };
+  function drawCal() {
+    const host = document.getElementById("cal"); host.innerHTML = "";
+    const W = Math.max(300, host.clientWidth), H = Math.min(360, W * 0.9), L = 44, R = 12, T = 10, B = 40;
+    const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Calibration of the shots model and the closing line" }, host);
+    const lo = 0.2, hi = 0.7, x = v => L + (v - lo) / (hi - lo) * (W - L - R), y = v => T + (hi - v) / (hi - lo) * (H - T - B);
+    for (let t = 0.2; t <= 0.701; t += 0.1) {
+      el("line", { x1: L, x2: W - R, y1: y(t), y2: y(t), stroke: css("--grid") }, svg);
+      el("line", { x1: x(t), x2: x(t), y1: T, y2: H - B, stroke: css("--grid") }, svg);
+      const a = el("text", { x: L - 6, y: y(t) + 4, "text-anchor": "end", fill: css("--ink-3"), "font-size": 11, "font-family": css("--mono") }, svg); a.textContent = Math.round(t * 100) + "%";
+      const b = el("text", { x: x(t), y: H - B + 16, "text-anchor": "middle", fill: css("--ink-3"), "font-size": 11, "font-family": css("--mono") }, svg); b.textContent = Math.round(t * 100) + "%";
+    }
+    el("line", { x1: x(lo), y1: y(lo), x2: x(hi), y2: y(hi), stroke: css("--ink-3"), "stroke-width": 1 }, svg);
+    const xl = el("text", { x: (L + W - R) / 2, y: H - 6, "text-anchor": "middle", fill: css("--ink-2"), "font-size": 12 }, svg); xl.textContent = "Predicted chance of the over";
+    const pr = el("text", { x: x(0.66), y: y(0.68) - 4, "text-anchor": "end", fill: css("--ink-3"), "font-size": 11 }, svg); pr.textContent = "perfect calibration";
+    const tip = tipFor(host);
+    [["market", "--market", "Closing line"], ["model", "--model", "Model alone"]].forEach(([k, c, label]) => {
+      const pts = calData[k];
+      el("polyline", { points: pts.map(p => `${x(p[0])},${y(p[1])}`).join(" "), fill: "none", stroke: css(c), "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+      pts.forEach(p => {
+        const cx = x(p[0]), cy = y(p[1]);
+        el("circle", { cx, cy, r: 4.5, fill: css(c), stroke: css("--surface"), "stroke-width": 2 }, svg);
+        const hit = el("circle", { cx, cy, r: 11, fill: "transparent", tabindex: 0 }, svg);
+        const show = () => tip.show(`<b>${label}</b><br>Predicted ${(p[0] * 100).toFixed(1)}% · Hit ${(p[1] * 100).toFixed(1)}%<br>${p[2].toLocaleString()} lines`, cx / W * host.clientWidth, cy / H * host.clientHeight);
+        hit.addEventListener("mouseenter", show); hit.addEventListener("focus", show);
+        hit.addEventListener("mouseleave", tip.hide); hit.addEventListener("blur", tip.hide);
+      });
+    });
+  }
+
+  const draw = () => { drawGap(); drawCal(); };
+  draw();
+  let raf; new ResizeObserver(() => { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); }).observe(document.querySelector(".page"));
+  const mq = matchMedia("(prefers-color-scheme: dark)"); mq.addEventListener?.("change", draw);
+  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>

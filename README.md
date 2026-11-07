@@ -247,3 +247,9 @@ MoneyPuck from public sources; on all 470 team-games and 940 goalie lines it
 shares with the audited tables, it matched exactly. One command then
 rebuilds features, reruns the leakage tests and models, and grades the rules.
 
+### Phase 5: Portfolio write-up
+
+**5a. Case study page (2026-11-07).** [docs/portfolio/index.html](docs/portfolio/index.html):
+the audit findings, methods and results against the closing line in one page,
+with every figure taken from the results files in `docs/models/`.
+
