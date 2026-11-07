@@ -1,0 +1,40 @@
+{
+  "frozen_on": "2026-11-07",
+  "window_starts_after": "2026-11-06",
+  "sog": {
+    "model": "gbm",
+    "threshold": 0.04,
+    "price": "SportsGameOdds consensus close",
+    "blend_fit_lines": 15777,
+    "blend_fit_dates": [
+      "2026-01-16",
+      "2026-11-06"
+    ],
+    "blend_coef_const_market_model": [
+      -0.019204636138427687,
+      0.5846086807985877,
+      0.41979252949356327
+    ],
+    "blend_se_game_clustered": [
+      0.019344442817506045,
+      0.09329142786361568,
+      0.06773578424025693
+    ],
+    "fingerprint": {
+      "alpha_20262027_gbm": 0.04900834003868042,
+      "rows_to_cutoff": 9323,
+      "mean_mu_gbm_to_cutoff": 1.51570959
+    }
+  },
+  "puck_line": {
+    "model": "glm calibrated",
+    "threshold": 0.02,
+    "price": "SportsGameOdds consensus close",
+    "fingerprint": {
+      "games_to_cutoff": 261,
+      "mean_lh_glm_to_cutoff": 3.07991146,
+      "theta_glm": 0.49205444,
+      "q_ot_home": 0.5077821
+    }
+  }
+}

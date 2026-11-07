@@ -1,0 +1,22 @@
+# Data and model artifacts live in Google Drive / Cloud Storage, not git
+data/
+*.parquet
+*.pkl
+*.joblib
+*.duckdb
+*.duckdb.wal
+*.zip
+*.csv.gz
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Secrets
+.env
+*.key
+*credentials*.json
+service-account*.json

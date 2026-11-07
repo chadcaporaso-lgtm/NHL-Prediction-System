@@ -1,0 +1,240 @@
+{
+  "target": "shots",
+  "features": [
+    "ewm_shots",
+    "l10_shots",
+    "std_shots",
+    "car_shots",
+    "prev_season_shots_pg",
+    "ewm_toi",
+    "l10_toi",
+    "std_toi",
+    "ewm_toi_pp",
+    "l10_toi_pp",
+    "prev_season_toi",
+    "shots_per60_ewm",
+    "ewm_points",
+    "n_prior_season",
+    "is_defense",
+    "is_home",
+    "back_to_back",
+    "is_playoff",
+    "team_sog_for_l20",
+    "opp_sog_against_l20"
+  ],
+  "min_prior_games": 5,
+  "alpha": {
+    "20212022": {
+      "baseline": 0.06761469926977921,
+      "glm": 0.05572987742695399,
+      "gbm": 0.03451275539653531
+    },
+    "20222023": {
+      "baseline": 0.06660654013242708,
+      "glm": 0.05707197278808609,
+      "gbm": 0.04208765217127239
+    },
+    "20232024": {
+      "baseline": 0.06581847214750647,
+      "glm": 0.05578542849449219,
+      "gbm": 0.04142460177227129
+    },
+    "20242025": {
+      "baseline": 0.06546031453966934,
+      "glm": 0.05579206973275075,
+      "gbm": 0.044890222368655405
+    },
+    "20252026": {
+      "baseline": 0.06734741046509729,
+      "glm": 0.05772252496152961,
+      "gbm": 0.04721316581018406
+    },
+    "20262027": {
+      "baseline": 0.06875255734990685,
+      "glm": 0.05920979106183548,
+      "gbm": 0.04900834003868042
+    }
+  },
+  "all_games": {
+    "20212022": {
+      "player_games": 49645,
+      "mean_shots": 1.7736,
+      "baseline": {
+        "nb_log_lik_per_game": -1.62916,
+        "mae": 1.0967,
+        "pred_zero_rate": 0.2364
+      },
+      "glm": {
+        "nb_log_lik_per_game": -1.62334,
+        "mae": 1.0945,
+        "pred_zero_rate": 0.2194
+      },
+      "gbm": {
+        "nb_log_lik_per_game": -1.62339,
+        "mae": 1.0906,
+        "pred_zero_rate": 0.2179
+      },
+      "actual_zero_rate": 0.2267
+    },
+    "20222023": {
+      "player_games": 49860,
+      "mean_shots": 1.7438,
+      "baseline": {
+        "nb_log_lik_per_game": -1.61424,
+        "mae": 1.0864,
+        "pred_zero_rate": 0.2391
+      },
+      "glm": {
+        "nb_log_lik_per_game": -1.60394,
+        "mae": 1.0787,
+        "pred_zero_rate": 0.2219
+      },
+      "gbm": {
+        "nb_log_lik_per_game": -1.60389,
+        "mae": 1.0771,
+        "pred_zero_rate": 0.2199
+      },
+      "actual_zero_rate": 0.232
+    },
+    "20232024": {
+      "player_games": 49889,
+      "mean_shots": 1.6803,
+      "baseline": {
+        "nb_log_lik_per_game": -1.58772,
+        "mae": 1.0669,
+        "pred_zero_rate": 0.2474
+      },
+      "glm": {
+        "nb_log_lik_per_game": -1.58068,
+        "mae": 1.0607,
+        "pred_zero_rate": 0.2321
+      },
+      "gbm": {
+        "nb_log_lik_per_game": -1.57836,
+        "mae": 1.0563,
+        "pred_zero_rate": 0.2331
+      },
+      "actual_zero_rate": 0.2474
+    },
+    "20242025": {
+      "player_games": 49800,
+      "mean_shots": 1.5744,
+      "baseline": {
+        "nb_log_lik_per_game": -1.55626,
+        "mae": 1.0363,
+        "pred_zero_rate": 0.2682
+      },
+      "glm": {
+        "nb_log_lik_per_game": -1.54862,
+        "mae": 1.0241,
+        "pred_zero_rate": 0.2568
+      },
+      "gbm": {
+        "nb_log_lik_per_game": -1.54697,
+        "mae": 1.0224,
+        "pred_zero_rate": 0.2589
+      },
+      "actual_zero_rate": 0.2654
+    },
+    "20252026": {
+      "player_games": 49627,
+      "mean_shots": 1.5522,
+      "baseline": {
+        "nb_log_lik_per_game": -1.5465,
+        "mae": 1.0266,
+        "pred_zero_rate": 0.2746
+      },
+      "glm": {
+        "nb_log_lik_per_game": -1.53871,
+        "mae": 1.0146,
+        "pred_zero_rate": 0.2652
+      },
+      "gbm": {
+        "nb_log_lik_per_game": -1.53676,
+        "mae": 1.0125,
+        "pred_zero_rate": 0.2663
+      },
+      "actual_zero_rate": 0.271
+    },
+    "20262027": {
+      "player_games": 9323,
+      "mean_shots": 1.5286,
+      "baseline": {
+        "nb_log_lik_per_game": -1.53856,
+        "mae": 1.0158,
+        "pred_zero_rate": 0.2805
+      },
+      "glm": {
+        "nb_log_lik_per_game": -1.52863,
+        "mae": 1.0021,
+        "pred_zero_rate": 0.2703
+      },
+      "gbm": {
+        "nb_log_lik_per_game": -1.52596,
+        "mae": 0.9997,
+        "pred_zero_rate": 0.2716
+      },
+      "actual_zero_rate": 0.2722
+    }
+  },
+  "market": {
+    "lines": 15806,
+    "games": 910,
+    "median_margin": 0.0698,
+    "over_rate": 0.4697,
+    "line_counts": {
+      "1.5": 9726,
+      "2.5": 4970,
+      "3.5": 1025,
+      "0.5": 57,
+      "4.5": 28
+    },
+    "market_log_loss": 0.6815,
+    "constant_log_loss": 0.6913,
+    "models": {
+      "baseline": {
+        "log_loss": 0.6873,
+        "mean_p_over": 0.4698,
+        "bets_edge_0.03": 10231,
+        "roi": -0.0445,
+        "roi_se_game_clustered": 0.0094,
+        "over_bets": 3680,
+        "under_bets": 6551
+      },
+      "glm": {
+        "log_loss": 0.6844,
+        "mean_p_over": 0.4446,
+        "bets_edge_0.03": 10663,
+        "roi": -0.0214,
+        "roi_se_game_clustered": 0.0092,
+        "over_bets": 1262,
+        "under_bets": 9401
+      },
+      "gbm": {
+        "log_loss": 0.6821,
+        "mean_p_over": 0.4549,
+        "bets_edge_0.03": 9668,
+        "roi": -0.0171,
+        "roi_se_game_clustered": 0.0095,
+        "over_bets": 1606,
+        "under_bets": 8062
+      }
+    },
+    "by_season": {
+      "20252026": {
+        "lines": 9992,
+        "market_log_loss": 0.6826,
+        "baseline_log_loss": 0.6885,
+        "glm_log_loss": 0.6867,
+        "gbm_log_loss": 0.6844
+      },
+      "20262027": {
+        "lines": 5814,
+        "market_log_loss": 0.6796,
+        "baseline_log_loss": 0.6853,
+        "glm_log_loss": 0.6803,
+        "gbm_log_loss": 0.6781
+      }
+    }
+  }
+}

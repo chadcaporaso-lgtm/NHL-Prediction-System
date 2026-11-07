@@ -1,0 +1,79 @@
+{
+  "items_seen": 13848,
+  "unresolved_items": 563,
+  "by_project": {
+    "NHL_Prediction_System": {
+      "folders": 21,
+      "files": 143,
+      "bytes": 399633252,
+      "duplicate_bytes_within_project": 0,
+      "by_extension": {
+        "parquet": 69,
+        "json": 66,
+        "pkl": 5,
+        "yaml": 1,
+        "pyc": 1,
+        "py": 1
+      },
+      "by_area": {
+        "data": 110,
+        "predictions": 15,
+        "manifests": 5,
+        "models": 5,
+        "reports": 5,
+        "src": 2,
+        "config": 1
+      }
+    },
+    "NHL_Prediction_System_ChatGPT": {
+      "folders": 2294,
+      "files": 10819,
+      "bytes": 1406216896,
+      "duplicate_bytes_within_project": 16826644,
+      "by_extension": {
+        "json": 7804,
+        "body": 1148,
+        "parquet": 846,
+        "joblib": 361,
+        "csv": 236,
+        "py": 208,
+        "md": 38,
+        "pyc": 37,
+        "log": 27,
+        "txt": 20,
+        "ipynb": 19,
+        "jsonl": 17,
+        "application/octet-stream": 15,
+        "sample": 14,
+        "zip": 12,
+        "har": 5,
+        "html": 3,
+        "toml": 2,
+        "lock": 2,
+        "yml": 2,
+        "idx": 1,
+        "pack": 1,
+        "rev": 1
+      },
+      "by_area": {
+        "data": 8666,
+        "models": 1285,
+        "reports": 661,
+        "vendor": 130,
+        "src": 40,
+        "notebooks": 21,
+        "predictions": 7,
+        "manifests": 6,
+        "": 3
+      }
+    },
+    "NHL_Prediction_System_Claude": {
+      "folders": 8,
+      "files": 0,
+      "bytes": 0,
+      "duplicate_bytes_within_project": 0,
+      "by_extension": {},
+      "by_area": {}
+    }
+  }
+}

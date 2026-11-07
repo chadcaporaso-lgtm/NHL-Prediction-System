@@ -1,0 +1,140 @@
+{
+  "all_games_moneyline": {
+    "20212022": {
+      "games": 1401,
+      "constant": 0.6898,
+      "elo_flat": 0.6528,
+      "elo_std": 0.6513,
+      "elo_std_cal": 0.6513,
+      "game_model": 0.6521,
+      "game_model_with_elo": 0.6497
+    },
+    "20222023": {
+      "games": 1400,
+      "constant": 0.6932,
+      "elo_flat": 0.6655,
+      "elo_std": 0.6641,
+      "elo_std_cal": 0.6664,
+      "game_model": 0.6639,
+      "game_model_with_elo": 0.6626
+    },
+    "20232024": {
+      "games": 1400,
+      "constant": 0.6905,
+      "elo_flat": 0.664,
+      "elo_std": 0.6621,
+      "elo_std_cal": 0.6618,
+      "game_model": 0.6576,
+      "game_model_with_elo": 0.6578
+    },
+    "20242025": {
+      "games": 1398,
+      "constant": 0.6868,
+      "elo_flat": 0.6707,
+      "elo_std": 0.6707,
+      "elo_std_cal": 0.6691,
+      "game_model": 0.6623,
+      "game_model_with_elo": 0.662
+    },
+    "20252026": {
+      "games": 1394,
+      "constant": 0.6933,
+      "elo_flat": 0.6932,
+      "elo_std": 0.6913,
+      "elo_std_cal": 0.692,
+      "game_model": 0.6855,
+      "game_model_with_elo": 0.6847
+    },
+    "20262027": {
+      "games": 261,
+      "constant": 0.6866,
+      "elo_flat": 0.6628,
+      "elo_std": 0.6607,
+      "elo_std_cal": 0.6614,
+      "game_model": 0.6527,
+      "game_model_with_elo": 0.653
+    }
+  },
+  "vs_market": {
+    "external|ml|20252026": {
+      "games": 1394,
+      "market": 0.6808,
+      "game_model": 0.6855,
+      "game_model_with_elo": 0.6847,
+      "elo_alone": 0.692,
+      "elo_raw": 0.6913
+    },
+    "external|ml|20262027": {
+      "games": 184,
+      "market": 0.6496,
+      "game_model": 0.6556,
+      "game_model_with_elo": 0.656,
+      "elo_alone": 0.6627,
+      "elo_raw": 0.6634
+    },
+    "external|pl|20252026": {
+      "games": 1385,
+      "market": 0.6272,
+      "game_model": 0.6246,
+      "game_model_with_elo": 0.624
+    },
+    "external|pl|20262027": {
+      "games": 182,
+      "market": 0.6563,
+      "game_model": 0.6565,
+      "game_model_with_elo": 0.6573
+    },
+    "external|tot|20252026": {
+      "games": 1338,
+      "market": 0.6893,
+      "game_model": 0.6948,
+      "game_model_with_elo": 0.6944
+    },
+    "external|tot|20262027": {
+      "games": 183,
+      "market": 0.6942,
+      "game_model": 0.7082,
+      "game_model_with_elo": 0.7092
+    },
+    "sgo|ml|20252026": {
+      "games": 646,
+      "market": 0.6739,
+      "game_model": 0.6759,
+      "game_model_with_elo": 0.6753,
+      "elo_alone": 0.6825,
+      "elo_raw": 0.6801
+    },
+    "sgo|ml|20262027": {
+      "games": 261,
+      "market": 0.647,
+      "game_model": 0.6527,
+      "game_model_with_elo": 0.653,
+      "elo_alone": 0.6614,
+      "elo_raw": 0.6607
+    },
+    "sgo|pl|20252026": {
+      "games": 646,
+      "market": 0.638,
+      "game_model": 0.6364,
+      "game_model_with_elo": 0.6361
+    },
+    "sgo|pl|20262027": {
+      "games": 261,
+      "market": 0.6428,
+      "game_model": 0.6421,
+      "game_model_with_elo": 0.6431
+    },
+    "sgo|tot|20252026": {
+      "games": 627,
+      "market": 0.6864,
+      "game_model": 0.6933,
+      "game_model_with_elo": 0.6933
+    },
+    "sgo|tot|20262027": {
+      "games": 261,
+      "market": 0.6905,
+      "game_model": 0.6987,
+      "game_model_with_elo": 0.6993
+    }
+  }
+}

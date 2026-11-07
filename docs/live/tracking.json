@@ -1,0 +1,29 @@
+{
+  "window_starts_after": "2026-11-06",
+  "rules": "docs/live/frozen_rules.json",
+  "sog": {
+    "all_lines": {
+      "lines": 0,
+      "games": 0,
+      "log_loss_market": null,
+      "log_loss_blend": null
+    },
+    "cumulative": {
+      "bets": 0
+    },
+    "by_week": {},
+    "last_graded_game_date": null
+  },
+  "puck_line": {
+    "all_lines": {
+      "games": 0,
+      "log_loss_market": null,
+      "log_loss_model": null
+    },
+    "cumulative": {
+      "bets": 0
+    },
+    "by_week": {},
+    "last_graded_game_date": null
+  }
+}

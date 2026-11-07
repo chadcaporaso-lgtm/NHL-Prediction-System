@@ -1,0 +1,78 @@
+{
+  "shots": {
+    "lines": 9964,
+    "games": 646,
+    "players": 430,
+    "over_rate": 0.4849,
+    "mean_market_p_over": 0.5007,
+    "market_log_loss": 0.6825,
+    "constant_log_loss": 0.6927,
+    "median_margin": 1.0693,
+    "lines_by_value": {
+      "1.5": 5597,
+      "2.5": 3553,
+      "3.5": 747,
+      "0.5": 40,
+      "4.5": 27
+    },
+    "date_range": [
+      "2026-01-17",
+      "2026-06-15"
+    ]
+  },
+  "points": {
+    "lines": 11900,
+    "games": 646,
+    "players": 493,
+    "over_rate": 0.4474,
+    "mean_market_p_over": 0.4506,
+    "market_log_loss": 0.6621,
+    "constant_log_loss": 0.6876,
+    "median_margin": 1.0697,
+    "lines_by_value": {
+      "0.5": 11216,
+      "1.5": 684
+    },
+    "date_range": [
+      "2026-01-17",
+      "2026-06-15"
+    ]
+  },
+  "assists": {
+    "lines": 11315,
+    "games": 646,
+    "players": 442,
+    "over_rate": 0.3322,
+    "mean_market_p_over": 0.3476,
+    "market_log_loss": 0.6161,
+    "constant_log_loss": 0.6357,
+    "median_margin": 1.0705,
+    "lines_by_value": {
+      "0.5": 11270,
+      "1.5": 45
+    },
+    "date_range": [
+      "2026-01-17",
+      "2026-06-15"
+    ]
+  },
+  "goals": {
+    "lines": 20120,
+    "games": 646,
+    "players": 689,
+    "over_rate": 0.1575,
+    "mean_market_p_over": 0.1767,
+    "market_log_loss": 0.3996,
+    "constant_log_loss": 0.4355,
+    "median_margin": 1.0782,
+    "lines_by_value": {
+      "0.5": 19834,
+      "1.5": 284,
+      "2.5": 2
+    },
+    "date_range": [
+      "2026-01-17",
+      "2026-06-15"
+    ]
+  }
+}

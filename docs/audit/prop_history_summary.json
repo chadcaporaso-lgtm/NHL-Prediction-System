@@ -1,0 +1,94 @@
+{
+  "rows": 745,
+  "players": 16,
+  "by_market": {
+    "player_shots_on_goal": 495,
+    "player_points": 250
+  },
+  "date_range": [
+    "2024-10-09",
+    "2026-11-05"
+  ],
+  "books_per_line_median": 7.0,
+  "lines": {
+    "player_points": {
+      "0.5": 59,
+      "1.5": 191
+    },
+    "player_shots_on_goal": {
+      "2.5": 256,
+      "3.5": 223,
+      "4.5": 16
+    }
+  },
+  "P1_rows_matched_to_nhl_box_score": 626,
+  "P1_actual_disagrees_with_nhl": 2,
+  "P2_overround_quantiles": [
+    1.0545,
+    1.0608,
+    1.0652,
+    1.0719,
+    1.089
+  ],
+  "P2_impossible_prices": 0,
+  "P3_market": {
+    "player_points": {
+      "graded_games": 243,
+      "over_rate": 0.5185,
+      "mean_market_p_over": 0.4647,
+      "market_log_loss": 0.657,
+      "constant_log_loss": 0.6925,
+      "calibration_by_price": {
+        "(0.0, 0.4]": {
+          "n": 102,
+          "mean_p": 0.36,
+          "over_rate": 0.363
+        },
+        "(0.4, 0.5]": {
+          "n": 63,
+          "mean_p": 0.441,
+          "over_rate": 0.54
+        },
+        "(0.5, 0.6]": {
+          "n": 24,
+          "mean_p": 0.555,
+          "over_rate": 0.625
+        },
+        "(0.6, 0.7]": {
+          "n": 54,
+          "mean_p": 0.65,
+          "over_rate": 0.741
+        }
+      }
+    },
+    "player_shots_on_goal": {
+      "graded_games": 489,
+      "over_rate": 0.5256,
+      "mean_market_p_over": 0.513,
+      "market_log_loss": 0.6897,
+      "constant_log_loss": 0.6918,
+      "calibration_by_price": {
+        "(0.0, 0.4]": {
+          "n": 12,
+          "mean_p": 0.395,
+          "over_rate": 0.333
+        },
+        "(0.4, 0.5]": {
+          "n": 201,
+          "mean_p": 0.451,
+          "over_rate": 0.493
+        },
+        "(0.5, 0.6]": {
+          "n": 253,
+          "mean_p": 0.56,
+          "over_rate": 0.542
+        },
+        "(0.6, 0.7]": {
+          "n": 23,
+          "mean_p": 0.605,
+          "over_rate": 0.739
+        }
+      }
+    }
+  }
+}

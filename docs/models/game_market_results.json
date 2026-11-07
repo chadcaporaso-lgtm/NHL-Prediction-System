@@ -1,0 +1,254 @@
+{
+  "log_loss": {
+    "external|ml|20252026": {
+      "games": 1394,
+      "market": 0.6808,
+      "model_raw": 0.683,
+      "model_cal": 0.6855,
+      "constant": 0.6924
+    },
+    "external|ml|20262027": {
+      "games": 184,
+      "market": 0.6496,
+      "model_raw": 0.657,
+      "model_cal": 0.6556,
+      "constant": 0.6779
+    },
+    "external|pl|20252026": {
+      "games": 1385,
+      "market": 0.6272,
+      "model_raw": 0.6233,
+      "model_cal": 0.6246,
+      "constant": 0.6877
+    },
+    "external|pl|20262027": {
+      "games": 182,
+      "market": 0.6563,
+      "model_raw": 0.6712,
+      "model_cal": 0.6565,
+      "constant": 0.6813
+    },
+    "external|tot|20252026": {
+      "games": 1338,
+      "market": 0.6893,
+      "model_raw": 0.7001,
+      "model_cal": 0.6948,
+      "constant": 0.6931
+    },
+    "external|tot|20262027": {
+      "games": 183,
+      "market": 0.6942,
+      "model_raw": 0.6974,
+      "model_cal": 0.7082,
+      "constant": 0.6931
+    },
+    "sgo|ml|20252026": {
+      "games": 646,
+      "market": 0.6739,
+      "model_raw": 0.6751,
+      "model_cal": 0.6759,
+      "constant": 0.6928
+    },
+    "sgo|ml|20262027": {
+      "games": 261,
+      "market": 0.647,
+      "model_raw": 0.655,
+      "model_cal": 0.6527,
+      "constant": 0.6851
+    },
+    "sgo|pl|20252026": {
+      "games": 646,
+      "market": 0.638,
+      "model_raw": 0.6418,
+      "model_cal": 0.6364,
+      "constant": 0.6855
+    },
+    "sgo|pl|20262027": {
+      "games": 261,
+      "market": 0.6428,
+      "model_raw": 0.653,
+      "model_cal": 0.6421,
+      "constant": 0.6893
+    },
+    "sgo|tot|20252026": {
+      "games": 627,
+      "market": 0.6864,
+      "model_raw": 0.6965,
+      "model_cal": 0.6933,
+      "constant": 0.693
+    },
+    "sgo|tot|20262027": {
+      "games": 261,
+      "market": 0.6905,
+      "model_raw": 0.6962,
+      "model_cal": 0.6987,
+      "constant": 0.6923
+    }
+  },
+  "blend": {
+    "ml": {
+      "train_games": 1394,
+      "coef_const_market_model": [
+        -0.0526,
+        0.7743,
+        0.104
+      ],
+      "se": [
+        0.0597,
+        0.3097,
+        0.2719
+      ],
+      "test_external": {
+        "games": 184,
+        "market": 0.6496,
+        "model": 0.6556,
+        "blend": 0.6562
+      },
+      "test_sgo": {
+        "games": 261,
+        "market": 0.647,
+        "model": 0.6527,
+        "blend": 0.6524,
+        "roi_blend": {
+          "0.02": {
+            "bets": 101,
+            "roi": -0.3428,
+            "se": 0.1103
+          },
+          "0.04": {
+            "bets": 1,
+            "roi": -1.0,
+            "se": null
+          }
+        }
+      }
+    },
+    "pl": {
+      "train_games": 1385,
+      "coef_const_market_model": [
+        -0.0719,
+        0.6927,
+        0.6125
+      ],
+      "se": [
+        0.059,
+        0.3515,
+        0.3164
+      ],
+      "test_external": {
+        "games": 182,
+        "market": 0.6563,
+        "model": 0.6565,
+        "blend": 0.6584
+      },
+      "test_sgo": {
+        "games": 261,
+        "market": 0.6428,
+        "model": 0.6421,
+        "blend": 0.6423,
+        "roi_blend": {
+          "0.02": {
+            "bets": 210,
+            "roi": -0.0195,
+            "se": 0.0517
+          },
+          "0.04": {
+            "bets": 151,
+            "roi": 0.0334,
+            "se": 0.0575
+          }
+        }
+      }
+    },
+    "tot": {
+      "train_games": 1338,
+      "coef_const_market_model": [
+        -0.0028,
+        2.6956,
+        0.0993
+      ],
+      "se": [
+        0.063,
+        0.7181,
+        0.3049
+      ],
+      "test_external": {
+        "games": 183,
+        "market": 0.6942,
+        "model": 0.7082,
+        "blend": 0.7076
+      },
+      "test_sgo": {
+        "games": 261,
+        "market": 0.6905,
+        "model": 0.6987,
+        "blend": 0.6975,
+        "roi_blend": {
+          "0.02": {
+            "bets": 226,
+            "roi": -0.0494,
+            "se": 0.0596
+          },
+          "0.04": {
+            "bets": 180,
+            "roi": -0.0425,
+            "se": 0.0662
+          }
+        }
+      }
+    }
+  },
+  "roi_model_alone_sgo": {
+    "ml": {
+      "0.02": {
+        "bets": 602,
+        "roi": -0.0242,
+        "se": 0.0397
+      },
+      "0.04": {
+        "bets": 368,
+        "roi": -0.0067,
+        "se": 0.0513
+      },
+      "0.06": {
+        "bets": 191,
+        "roi": 0.0001,
+        "se": 0.0721
+      }
+    },
+    "pl": {
+      "0.02": {
+        "bets": 557,
+        "roi": -0.0012,
+        "se": 0.0427
+      },
+      "0.04": {
+        "bets": 308,
+        "roi": 0.0039,
+        "se": 0.0563
+      },
+      "0.06": {
+        "bets": 125,
+        "roi": -0.0233,
+        "se": 0.0836
+      }
+    },
+    "tot": {
+      "0.02": {
+        "bets": 635,
+        "roi": -0.1035,
+        "se": 0.0378
+      },
+      "0.04": {
+        "bets": 331,
+        "roi": -0.1103,
+        "se": 0.0536
+      },
+      "0.06": {
+        "bets": 143,
+        "roi": -0.2379,
+        "se": 0.0811
+      }
+    }
+  }
+}
