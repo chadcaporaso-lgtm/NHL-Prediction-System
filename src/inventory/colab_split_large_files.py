@@ -1,8 +1,8 @@
 """Colab cell: split large Drive files into parts the audit can download.
 
 The Drive connection used for the audit downloads files up to 10 MB. This
-cell copies each large file listed below into 9 MB parts under
-NHL_Prediction_System_Claude/01_raw/_transfer/, and writes a manifest with the
+cell copies each large file listed below into 3 MB parts under
+NHL_Prediction_System_Claude/01_raw/_transfer_3mb/, and writes a manifest with the
 SHA-256 of every original file. The audit reassembles the parts and checks
 each checksum, so the files examined are byte-for-byte the originals.
 
@@ -22,8 +22,9 @@ from google.colab import drive
 drive.mount("/content/drive")
 
 MY_DRIVE = "/content/drive/MyDrive"
-DEST = f"{MY_DRIVE}/NHL_Prediction_System_Claude/01_raw/_transfer"
-PART_BYTES = 9 * 1024 * 1024
+# 3 MB parts: 9 MB parts proved too large for the Drive connection used by the audit.
+DEST = f"{MY_DRIVE}/NHL_Prediction_System_Claude/01_raw/_transfer_3mb"
+PART_BYTES = 3 * 1024 * 1024
 
 FILES = [
     # v1 production system: feature tables and MoneyPuck source
