@@ -1,5 +1,7 @@
 # NHL Prediction System
 
+[![CI](https://github.com/chadcaporaso-lgtm/NHL-Prediction-System/actions/workflows/ci.yml/badge.svg)](https://github.com/chadcaporaso-lgtm/NHL-Prediction-System/actions/workflows/ci.yml)
+
 Machine learning models for NHL betting markets: moneyline, puck line, total
 goals, and player props for shots on goal and points. Every model is trained
 and evaluated with walk-forward validation and backtested against sportsbook
@@ -9,8 +11,26 @@ This README is a living document. Each phase of the project adds a section
 recording what was done, what was found, and the numbers behind it. Decisions
 and their reasons are logged in [docs/decision-log.md](docs/decision-log.md).
 
-**Status:** Phase 1, inventory and audit of the two earlier versions of this
-project. No new models have been trained yet.
+**Status:** data audit, models and backtests done (phases 1-3, 6); live test
+of two pre-registered betting rules running since 2026-11-07 (phase 4). The
+shots-on-goal model adds information to the closing price; the other markets
+show no edge. See [Results at a glance](#results-at-a-glance).
+
+## How to run
+
+```bash
+pip install -r requirements.txt
+python3 run.py check     # pipeline + leakage tests on synthetic data (no real data needed)
+```
+
+`check` builds a small random league with the same files and columns as the
+real inputs (`tests/synthetic/make_data.py`) and runs every feature builder,
+leakage test, the probable-starter model and the game models on it, in a
+temporary folder. GitHub Actions runs the same command on every push. With
+the real data restored (see `CLAUDE.md`): `python3 run.py update` rebuilds
+everything and grades the live test, and `python3 run.py test` runs the
+leakage tests alone. The real data is licensed (odds, MoneyPuck) and is not
+in this repository.
 
 ---
 
@@ -102,7 +122,9 @@ every sportsbook closing line in 2025-26 (log loss about 0.690 vs 0.674-0.682).
 |------|----------|
 | `docs/` | Plan, decision log, data dictionary, model cards, audit reports |
 | `src/` | Cleaning, features, models, backtest |
-| `tests/` | Data checks and leakage checks |
+| `tests/` | Leakage tests; `tests/synthetic/` synthetic data for CI |
+| `run.py` | Entry point: `check`, `restore`, `update`, `test` |
+| `.github/workflows/ci.yml` | Runs `python run.py check` on every push |
 
 Data files are not committed. See `.gitignore`.
 
@@ -319,3 +341,14 @@ on price (mean CLV -2.1 points at a 4-point edge): the opening margin (7%)
 is larger than the move. ROI at the open is +5.5% (SE 1.0), mostly from the
 7% of lines that later moved, which cannot be confirmed as bettable. Betting
 at the open is not adopted (decision 30).
+
+**6f. Reproducibility (2026-11-07).** `python3 run.py` is now the single
+entry point (`check`, `restore`, `update`, `test`). Because the real inputs
+are licensed and cannot be in a public repository, a generator builds a
+synthetic league with the same files and columns: 8 teams, 2018-19 to
+2026-27, Arizona continuing into Utah, back-to-backs, overtime and shootouts,
+goalie rotations and call-ups, pulled goalies, playoffs. The full feature
+pipeline, all 13 leakage tests and both game models run on it in about 40
+seconds, in a temporary copy, on every push (GitHub Actions). A planted leak
+was caught in both checks tried: team form including the current game (1,218
+mismatches) and starter features seeing the current game.

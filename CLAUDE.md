@@ -77,16 +77,21 @@ A cloud session starts on a fresh machine with only this repository.
    `01_raw/_transfer_3mb/core_<date>/`.
 3. Download the manifest and every part with the Google Drive connector
    (search by title `core__`), save the manifest locally, then run
-   `python3 src/inventory/restore_core_inputs.py <manifest.json>`. It
+   `python3 run.py restore <manifest.json>`. It
    verifies every SHA-256. The MoneyPuck table appears twice in the manifest
    with the same SHA-256 (core input and weekly refresh): download its 5 parts
    once; the script reuses identical files. Parts of 3 MB come back as saved
    tool results, smaller ones inline; the script searches both.
 4. Re-download SportsGameOdds history (uses the stored network secret):
    `python3 src/ingest/fetch_sgo_events.py 2026-01-16 <yesterday>`.
-5. Rebuild everything: run the steps in `src/live/weekly_update.py` (it also
-   fetches new odds, rebuilds features and models, runs the leakage tests,
-   grades the live test and redraws the charts).
+5. Rebuild everything: `python3 run.py update` (runs
+   `src/live/weekly_update.py`: fetches new odds, rebuilds features and
+   models, runs the leakage tests, grades the live test, redraws the charts).
+
+`python3 run.py check` runs the pipeline and leakage tests on synthetic data
+without any real data (what GitHub Actions runs). When a builder or its
+inputs change, keep `tests/synthetic/make_data.py` producing the same columns,
+and run `check` before pushing.
 
 Purchased PuckAPI prop history is not in the repository (decision 13). It is
 used only by the prop-price audit (`src/audit/prop_history_profile.py`), whose
@@ -97,7 +102,7 @@ copy in the owner's private Drive.
 
 Owner runs `src/ingest/colab_weekly_refresh.py`; download the parts from
 `01_raw/_transfer_3mb/live_<date>/` into `data/live/<date>/`, verify against
-the manifest, then `python3 src/live/weekly_update.py <date>`. Commit
+the manifest, then `python3 run.py update <date>`. Commit
 `docs/live/tracking.json` and the redrawn `docs/figures/`, and add the week
 to the README. Treat the result as meaningful after about 500 bets.
 
@@ -123,18 +128,17 @@ to the README. Treat the result as meaningful after about 500 bets.
   it until the owner deletes the branch and GitHub purges the PR refs.
 - Restore and full weekly rebuild checked on a fresh machine: every committed
   results file reproduced exactly; charts are now byte-stable.
+- Reproducibility: `run.py` entry point; GitHub Actions runs the pipeline and
+  all 13 leakage tests on synthetic data on every push (decision 31).
 - Charts: `src/reporting/make_figures.py` -> `docs/figures/*.svg`.
 
 ## Next steps (agreed order)
 
-1. Reproducibility: tests in GitHub Actions with small synthetic fixtures (no
-   licensed data in the public repo), and one command to run the pipeline.
-   (The git remote already points to `chadcaporaso-lgtm/NHL-Prediction-System`.)
-2. Linemates from NHL shift charts (free; Colab) for the points model.
-3. Optional, costs credits: check PuckAPI archive odds (about 30 games a
+1. Linemates from NHL shift charts (free; Colab) for the points model.
+2. Optional, costs credits: check PuckAPI archive odds (about 30 games a
    season) before buying older seasons; and a per-book timestamped check of
    opening shots lines (`get_prop_movement`) to see if opening prices were
    bettable.
-4. Totals: in-season scoring level or a bivariate score model.
-5. Optional: improve the probable-starter model (team rotation habits, a
+3. Totals: in-season scoring level or a bivariate score model.
+4. Optional: improve the probable-starter model (team rotation habits, a
    tree model) or add confirmed-starter data if a free source exists.

@@ -65,4 +65,4 @@ def test_probabilities_sum_to_one():
 if __name__ == "__main__":
     for t in [test_candidate_features_use_only_earlier_games, test_probabilities_sum_to_one]:
         t()
-        print("ok", t.__name__)
+        print("PASS", t.__name__)
