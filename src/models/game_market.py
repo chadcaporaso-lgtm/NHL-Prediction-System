@@ -13,7 +13,8 @@ Model probabilities at the market's line
 Blend test: logistic regression y ~ logit(market) + logit(model) fitted on
 2025-26 external closes, tested on 2026-27 (external and sgo).
 
-Input:  data/models/game_predictions.parquet (game_model.py)
+Usage:  python3 src/models/game_market.py [elo]
+Input:  data/models/game_predictions[_elo].parquet (game_model.py)
 Output: docs/models/game_market_results.json, data/models/game_market_graded.parquet
 """
 
@@ -33,6 +34,7 @@ from game_model import joint_scores, logit, logloss  # noqa: E402
 
 XW = os.path.join(ROOT, "data/drive/NHL_Prediction_System_ChatGPT/data/evaluation/external_closing_comparison/20261026T210505Z_bed9e020/external_official_crosswalk.parquet")
 M = "glm"
+SUFFIX = f"_{sys.argv[1]}" if len(sys.argv) > 1 else ""
 
 
 def american_prob(a):
@@ -65,7 +67,7 @@ def model_total(g, line):
 
 
 def market_frame() -> pd.DataFrame:
-    g = pd.read_parquet(os.path.join(ROOT, "data/models/game_predictions.parquet"))
+    g = pd.read_parquet(os.path.join(ROOT, f"data/models/game_predictions{SUFFIX}.parquet"))
     g.index.name = "game_id"
     g = g.reset_index()
     rows = []
@@ -127,7 +129,7 @@ def roi(d, p, thr):
 
 if __name__ == "__main__":
     d = market_frame()
-    d.to_parquet(os.path.join(ROOT, "data/models/game_market_graded.parquet"), index=False)
+    d.to_parquet(os.path.join(ROOT, f"data/models/game_market_graded{SUFFIX}.parquet"), index=False)
     res = {"log_loss": {}, "blend": {}, "roi_model_alone_sgo": {}}
     for (src, mk, s), x in d.groupby(["source", "market", "season"]):
         res["log_loss"][f"{src}|{mk}|{s}"] = {"games": len(x), "market": round(logloss(x.p_mkt, x.y), 4),
@@ -152,5 +154,5 @@ if __name__ == "__main__":
         res["blend"][mk] = r
         sg = d[(d.source == "sgo") & (d.market == mk)]
         res["roi_model_alone_sgo"][mk] = {str(t): roi(sg, sg.p_cal, t) for t in [0.02, 0.04, 0.06]}
-    json.dump(res, open(os.path.join(ROOT, "docs/models/game_market_results.json"), "w"), indent=2)
+    json.dump(res, open(os.path.join(ROOT, f"docs/models/game_market_results{SUFFIX}.json"), "w"), indent=2)
     print(json.dumps(res, indent=1))

@@ -31,4 +31,5 @@ Each entry records a decision, the date, and the reason. Newest last.
 | 25 | 2026-11-07 | The shots-on-goal blend for live tracking is fitted on all 15,777 lines through 2026-11-06 | Decision 20 fixed the cutoff; using every line before it gives the most stable coefficients |
 | 26 | 2026-11-07 | Lineup features use the skaters who dressed for the game (assumption L-1) | Teams announce lineups before puck drop; the features use only those players' pregame form, never game results |
 | 27 | 2026-11-07 | Points model v2 (with lineup features) replaces v1; v1 results are kept | v2 is better in every season on all games and on prop lines; neither shows an edge over the market |
+| 28 | 2026-11-07 | Elo is a documented power rating and an optional game-model feature, not part of the default game model | Adding it moved moneyline log loss by 0.0002 to 0.0024 either way across six seasons, within noise; the default model is also the one frozen for live tracking |
 

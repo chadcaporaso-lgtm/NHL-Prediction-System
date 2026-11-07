@@ -22,15 +22,20 @@ and is reported uncalibrated.
 Walk-forward: test seasons 2021-22 to 2026-27, each trained on every earlier
 season from 2019-20.
 
+Variant: `python3 src/models/game_model.py elo` adds the team's pre-game
+Elo rating minus the opponent's (src/features/build_elo.py) as a feature and
+writes *_elo outputs; the default model and its files are unchanged.
+
 Outputs
-  data/models/game_predictions.parquet  one row per test game
-  docs/models/game_results.json         metrics on all games and against closing lines
+  data/models/game_predictions[_elo].parquet  one row per test game
+  docs/models/game_results[_elo].json         metrics on all games
 """
 
 from __future__ import annotations
 
 import json
 import os
+import sys
 
 import numpy as np
 import pandas as pd
@@ -50,6 +55,10 @@ OPP = ["ewm20_xga", "ewm60_xga", "ewm20_ga", "ewm60_ga", "ewm20_sa",
 FEATURES = OWN + [f"opp_{c}" for c in OPP] + ["is_home", "is_playoff", "rest", "opp_rest", "back_to_back", "opp_back_to_back",
                                               "league_reg_gpg_l300"]
 MARKETS = ["ml", "home_by2", "away_by2", "over55", "over65"]
+VARIANT = sys.argv[1] if len(sys.argv) > 1 else ""
+SUFFIX = f"_{VARIANT}" if VARIANT else ""
+if VARIANT == "elo":
+    FEATURES = FEATURES + ["elo_diff"]
 
 
 def load() -> pd.DataFrame:
@@ -63,7 +72,13 @@ def load() -> pd.DataFrame:
     f["league_reg_gpg_l300"] = f.league_reg_gpg_l300.fillna(f.league_reg_gpg_l300.mean())
     opp = f[["game_id", "team"] + OPP + ["rest", "back_to_back"]].rename(
         columns={**{c: f"opp_{c}" for c in OPP}, "team": "opponent", "rest": "opp_rest", "back_to_back": "opp_back_to_back"})
-    return f.merge(opp, on=["game_id", "opponent"], validate="one_to_one")
+    f = f.merge(opp, on=["game_id", "opponent"], validate="one_to_one")
+    if VARIANT == "elo":
+        e = pd.read_parquet(os.path.join(ROOT, "data/features/elo_games.parquet"))[["game_id", "std_rh", "std_ra"]]
+        f = f.merge(e, on="game_id", how="left", validate="many_to_one")
+        f["elo_diff"] = np.where(f.is_home == 1, f.std_rh - f.std_ra, f.std_ra - f.std_rh)
+        f["elo_diff"] = f.elo_diff.fillna(0.0)
+    return f
 
 
 def joint_scores(lh, la, theta=0.0):
@@ -194,9 +209,9 @@ if __name__ == "__main__":
     f = load()
     g, joints = walk_forward(f)
     g, cal = calibrate(g)
-    g.to_parquet(os.path.join(ROOT, "data/models/game_predictions.parquet"))
+    g.to_parquet(os.path.join(ROOT, f"data/models/game_predictions{SUFFIX}.parquet"))
     res = {"features": FEATURES, "all_games": score_all_games(g),
            "calibration": {f"{m}|{k}|{s}": v for (m, k, s), v in cal.items()}}
-    json.dump(res, open(os.path.join(ROOT, "docs/models/game_results.json"), "w"), indent=2)
+    json.dump(res, open(os.path.join(ROOT, f"docs/models/game_results{SUFFIX}.json"), "w"), indent=2)
     for s, r in res["all_games"].items():
         print(s, r["games"], "tie", r["reg_tie_rate"], r["pred_tie_rate_glm"], {k: r[k] for k in MARKETS})

@@ -269,3 +269,12 @@ every season (prop-line log loss 0.6551 to 0.6542), but still trails the
 closing price (0.6515), and a market blend still gains nothing. Details in the
 points model card.
 
+**6c. Team Elo ratings (2026-11-07).** Model card:
+[docs/models/elo-model.md](docs/models/elo-model.md). Margin-of-victory Elo
+built from scratch, with its settings chosen walk-forward from earlier seasons
+only and two leakage tests. It beats a constant every season and a flat-K
+Elo in five of six, but on its own trails the game model from 2023-24 on and
+trails the closing moneyline by about 0.01 log loss. As a game-model feature
+it changes log loss by 0.0002 to 0.0024 either way, within noise, so the
+default model stays without it. Current ratings serve as a power ranking.
+
