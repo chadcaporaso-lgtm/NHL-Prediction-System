@@ -49,6 +49,18 @@ Add new features as variants or separate outputs, never by editing those
 defaults (see the `elo` variant). If the rules must change, write a new
 frozen file with a new start date and a decision-log entry.
 
+## Starting a new session (for the owner)
+
+1. Open Claude Code on the web and choose the `NHL-Prediction-System`
+   repository (branch `main` once the work branch is merged; until then,
+   `claude/peaceful-volta-mygk7c`).
+2. Say: "Read CLAUDE.md, restore the data, then continue with the next step."
+3. Run the Colab cell Claude gives you (`colab_bundle_core_inputs.py`) and
+   paste its output back.
+4. Claude restores and checks the data, rebuilds the pipeline, and picks up
+   the next step from the list below. Old chats stay in the session list at
+   claude.ai/code if you want to reread them.
+
 ## Restoring the data in a new session
 
 A cloud session starts on a fresh machine with only this repository.
