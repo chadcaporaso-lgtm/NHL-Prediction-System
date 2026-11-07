@@ -1,0 +1,200 @@
+{
+  "A1_reference_duplicate_game_ids": {
+    "checked": 9256,
+    "failing": 0
+  },
+  "reference_completed_games_by_season": {
+    "20192020": 1212,
+    "20202021": 952,
+    "20212022": 1401,
+    "20222023": 1400,
+    "20232024": 1400,
+    "20242025": 1398,
+    "20252026": 1394,
+    "20262027": 85
+  },
+  "reference_decisions": {
+    "REG": 7168,
+    "OT": 1440,
+    "SO": 634
+  },
+  "B1_v1_labels_duplicate_game_ids": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "B2_v1_labels_missing_completed_reference_games": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "B3_v1_labels_for_games_not_in_reference": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "B4_v1_labels_for_games_not_completed": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "C1_v1_teams_differ": {
+    "checked": 9242,
+    "failing": 0,
+    "note": "abbreviation changes such as ARI to UTA appear here"
+  },
+  "C2_v1_final_score_differs": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "C3_v1_decision_differs": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "D1_v1_final_not_reg_plus_ot_plus_so_credit": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "D2_v1_margin_wrong": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "D3_v1_total_wrong": {
+    "checked": 9242,
+    "failing": 0,
+    "note": "total_final_goals is the official total, including the shootout credit"
+  },
+  "D4_v1_reg_decision_but_tied_after_regulation": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "D5_v1_ot_or_so_but_not_tied_after_regulation": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "D6_v1_ot_margin_not_one": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "D7_v1_so_margin_not_one": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "D8_v1_shootout_flag_mismatch": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "D9_v1_ties": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "D10_v1_playoff_games_marked_shootout": {
+    "checked": 647,
+    "failing": 2
+  },
+  "v1_label_rows_by_season": {
+    "2019-20": 1212,
+    "2020-21": 952,
+    "2021-22": 1401,
+    "2022-23": 1400,
+    "2023-24": 1400,
+    "2024-25": 1398,
+    "2025-26": 1394,
+    "2026-27": 85
+  },
+  "v1_label_phase_counts": {
+    "REGULAR": 8595,
+    "PLAYOFF": 647
+  },
+  "D11_v1_labels_disagree_with_v1_games_table": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "v1_games_table_rows_without_label": {
+    "rows": 14,
+    "status_counts": {
+      "LIVE": 9,
+      "FUT": 4,
+      "PRE": 1
+    }
+  },
+  "B5_v2_labels_duplicate_game_ids": {
+    "checked": 9392,
+    "failing": 0
+  },
+  "B6_v2_labels_missing_completed_reference_games": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "B7_v2_labels_for_games_not_in_reference": {
+    "checked": 9392,
+    "failing": 136,
+    "note": "games outside the v1 schedule files, e.g. seasons before 2019-20"
+  },
+  "C4_v2_final_score_differs": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "C5_v2_decision_differs": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "D12_v2_final_not_real_plus_credit": {
+    "checked": 9392,
+    "failing": 0
+  },
+  "D13_v2_shootout_credit_outside_so_games": {
+    "checked": 9392,
+    "failing": 0
+  },
+  "D14_v2_so_games_without_exactly_one_credit": {
+    "checked": 9392,
+    "failing": 0
+  },
+  "D15_v2_win_label_wrong": {
+    "checked": 9392,
+    "failing": 0
+  },
+  "D16_v2_totals_wrong": {
+    "checked": 9392,
+    "failing": 0
+  },
+  "v2_label_rows_by_season": {
+    "20192020": 1212,
+    "20202021": 952,
+    "20212022": 1401,
+    "20222023": 1400,
+    "20232024": 1400,
+    "20242025": 1398,
+    "20252026": 1394,
+    "20262027": 235
+  },
+  "E1_v1_v2_labels_disagree": {
+    "checked": 9242,
+    "failing": 0
+  },
+  "v1_v2_overlap_games": 9242,
+  "puckapi_games_by_season": {
+    "20192020": 1212,
+    "20202021": 952,
+    "20212022": 1401,
+    "20222023": 1400,
+    "20232024": 1400,
+    "20242025": 1398,
+    "20252026": 1394,
+    "20262027": 264
+  },
+  "F1_v2_labels_missing_from_puckapi": {
+    "checked": 9392,
+    "failing": 0
+  },
+  "F2_puckapi_games_missing_from_v2_labels": {
+    "checked": 9421,
+    "failing": 29,
+    "note": "games finished after the v2 run date are expected here"
+  },
+  "F3_v2_final_score_differs_from_puckapi": {
+    "checked": 9392,
+    "failing": 0
+  },
+  "F4_v1_final_score_differs_from_puckapi": {
+    "checked": 9242,
+    "failing": 0
+  }
+}

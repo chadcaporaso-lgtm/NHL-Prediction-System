@@ -127,3 +127,9 @@ originals. Findings so far in [docs/audit/data-audit.md](docs/audit/data-audit.m
   identical to the rows that already existed). Player features still need
   rebuilding.
 - **D-2 (Low):** the `_full` raw files are byte-identical duplicates.
+- **Game results and labels: clean.** Both projects' labels match the NHL
+  schedule and an independent copy from PuckAPI on every game (9,242 in v1,
+  9,392 in v2), with correct regulation, overtime and shootout handling.
+  Modeling note: the official final score credits the shootout winner with a
+  goal, so the rebuild models real goals and uses the official score only to
+  grade bets.

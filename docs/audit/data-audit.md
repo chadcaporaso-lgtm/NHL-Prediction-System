@@ -95,3 +95,70 @@ complete data before any prop model is retrained or compared.
 `skater_summary_20242025.parquet` and `skater_summary_20242025_full.parquet`
 have the same MD5. The other six `_full` pairs have identical sizes and are
 expected to match. Keep one copy of each in `01_raw`.
+
+## Game results and labels
+
+Script: [`src/audit/audit_game_results.py`](../../src/audit/audit_game_results.py).
+Every check, with counts, is in [`game_results_summary.json`](game_results_summary.json).
+
+### Sources compared
+
+| Source | Games | Role |
+|--------|------:|------|
+| NHL schedule responses saved by v1 (2019-20 to 2026-27, retrieved 2026-10-14) | 9,242 completed | Reference |
+| PuckAPI `get_games` (retrieved 2026-11-07) | 9,421 completed | Independent check |
+| v1 `data/labels/game_labels.parquet` | 9,242 | Labels under audit |
+| v2 `game_labels.parquet` (run 2026-11-03) | 9,392 | Labels under audit |
+
+The NHL schedule is the same source both projects were built from, so it
+cannot catch an error made at the source. PuckAPI is an independent copy and
+closes that gap. It labels the Arizona franchise `UTA` in every season, so the
+cross-check matches on game id and score, not team abbreviation.
+
+### Result: labels are clean
+
+All 25 checks on both label tables pass, apart from the three expected
+differences explained below.
+
+| Check | v1 | v2 |
+|-------|:--:|:--:|
+| One row per game, no duplicates | pass | pass |
+| Every completed game present | pass (9,242 of 9,242) | pass (9,242 of 9,242) |
+| No labels for unplayed or unknown games | pass | pass |
+| Final score matches NHL reference | pass | pass |
+| Final score matches PuckAPI | pass (9,242) | pass (9,392) |
+| Decision (REG / OT / SO) matches reference | pass | pass |
+| Final = regulation + overtime (+ shootout credit) | pass | pass |
+| Margin and total derived correctly | pass | pass |
+| OT and SO games tied after regulation; REG games not | pass | n/a |
+| OT and SO games decided by one goal | pass | pass |
+| Shootout credit only in SO games, exactly one per game | pass | pass |
+| v1 and v2 agree on every shared game | pass (9,242 games) | |
+
+### Expected differences (not errors)
+
+- **G-1. Two playoff games decided by shootout** (2019030002, 2019030016).
+  These are 2020 bubble round-robin seeding games, which did use shootouts.
+  They are labelled game type 3 like the rest of the playoffs.
+- **G-2. v2 has 136 games the v1 schedule lacks.** All are 2026-27 games
+  played after 2026-10-14, when v1 last saved the schedule. v1 has not been
+  updated since.
+- **G-3. 29 PuckAPI games are missing from v2.** All were played 2026-11-03 to
+  2026-11-06, after the last v2 run.
+
+### Notes for modeling
+
+- **Shootout scoring.** Both projects store the official final score, which
+  credits the shootout winner with one goal. That is the right number for
+  grading moneyline, puck line and totals, because sportsbooks count the
+  shootout winner as one goal. It is the wrong number for modeling goal
+  scoring: in the 645 shootout games, real goals average 5.25 per game against
+  an official 6.25. v2 stores real goals and shootout credit separately; v1
+  does not. The rebuild uses real goals as the model target and the official
+  score for grading bets.
+- **Unusual seasons.** 2019-20 was paused in March 2020 and finished with a
+  qualifying round and round robin in two bubble cities (no home ice); 2020-21
+  was a 56-game season in realigned divisions with few or no fans. These
+  seasons need flags, or exclusion from home-advantage features.
+- **Decision mix is stable.** Over 2019-20 to 2026-27, 75-79% of games end in
+  regulation, 14-17% in overtime and 6-9% in a shootout.
