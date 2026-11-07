@@ -1,0 +1,631 @@
+{
+  "lines": 15806,
+  "games": 910,
+  "dates": [
+    "2026-01-16",
+    "2026-11-06"
+  ],
+  "same_line_share": 0.9143,
+  "median_open_margin": 0.0709,
+  "median_close_margin": 0.0698,
+  "control_every_line_both_sides": {
+    "bets": 31612,
+    "games": 910,
+    "over_share": 0.5,
+    "mean_abs_edge": 1.0,
+    "same_line_bets": 28904,
+    "clv_mean": -0.035,
+    "clv_se": 0.0002,
+    "market_move_toward_bet_mean": 0.0,
+    "market_move_se": 0.0,
+    "line_moved_bets": 2708,
+    "line_moved_our_way": 1354,
+    "line_moved_against": 1354,
+    "beat_close_rate": 0.1444,
+    "beat_close_se": 0.0029,
+    "roi_at_open": -0.06,
+    "roi_at_open_se": 0.0012,
+    "graded_bets": 31612
+  },
+  "control_every_under": {
+    "same_line": {
+      "bets": 14452,
+      "win_rate_at_open_line": 0.5327,
+      "p_close_fair_side": 0.5128,
+      "breakeven_open_price": 0.5453,
+      "roi_at_open": -0.02,
+      "roi_at_open_se": 0.008,
+      "roi_at_close": -0.0301,
+      "roi_at_close_se": 0.0078
+    },
+    "line_moved": {
+      "bets": 1354,
+      "win_rate_at_open_line": 0.582,
+      "p_close_fair_side": 0.483,
+      "breakeven_open_price": 0.5195,
+      "roi_at_open": 0.1634,
+      "roi_at_open_se": 0.0298,
+      "roi_at_close": -0.0239,
+      "roi_at_close_se": 0.027
+    }
+  },
+  "control_every_over": {
+    "same_line": {
+      "bets": 14452,
+      "win_rate_at_open_line": 0.4673,
+      "p_close_fair_side": 0.4872,
+      "breakeven_open_price": 0.5247,
+      "roi_at_open": -0.1083,
+      "roi_at_open_se": 0.0083,
+      "roi_at_close": -0.1054,
+      "roi_at_close_se": 0.0083
+    },
+    "line_moved": {
+      "bets": 1354,
+      "win_rate_at_open_line": 0.418,
+      "p_close_fair_side": 0.517,
+      "breakeven_open_price": 0.5019,
+      "roi_at_open": -0.195,
+      "roi_at_open_se": 0.0278,
+      "roi_at_close": -0.1056,
+      "roi_at_close_se": 0.0255
+    }
+  },
+  "information_test": {
+    "model": {
+      "lines": 14452,
+      "r2": 0.181,
+      "intercept": 0.00469,
+      "slope_p_model_open": 0.2067,
+      "se_p_model_open": 0.0068
+    },
+    "baseline": {
+      "lines": 14452,
+      "r2": 0.1482,
+      "intercept": 0.00035,
+      "slope_p_baseline_open": 0.1511,
+      "se_p_baseline_open": 0.0052
+    },
+    "model_and_baseline": {
+      "lines": 14452,
+      "r2": 0.1975,
+      "intercept": 0.0041,
+      "slope_p_model_open": 0.1481,
+      "se_p_model_open": 0.0066,
+      "slope_p_baseline_open": 0.0691,
+      "se_p_baseline_open": 0.0049
+    },
+    "model_20252026": {
+      "lines": 9102,
+      "r2": 0.1143,
+      "intercept": 0.00445,
+      "slope_p_model_open": 0.1429,
+      "se_p_model_open": 0.008
+    },
+    "model_20262027": {
+      "lines": 5350,
+      "r2": 0.2494,
+      "intercept": 0.00418,
+      "slope_p_model_open": 0.2718,
+      "se_p_model_open": 0.0099
+    }
+  },
+  "model_alone": {
+    "0.02": {
+      "all": {
+        "bets": 12206,
+        "games": 910,
+        "over_share": 0.212,
+        "mean_abs_edge": 0.0761,
+        "same_line_bets": 10975,
+        "clv_mean": -0.0242,
+        "clv_se": 0.0005,
+        "market_move_toward_bet_mean": 0.0114,
+        "market_move_se": 0.0004,
+        "line_moved_bets": 1231,
+        "line_moved_our_way": 1137,
+        "line_moved_against": 94,
+        "beat_close_rate": 0.2466,
+        "beat_close_se": 0.0058,
+        "roi_at_open": 0.0315,
+        "roi_at_open_se": 0.0091,
+        "graded_bets": 12206
+      },
+      "split": {
+        "same_line": {
+          "bets": 10975,
+          "win_rate_at_open_line": 0.541,
+          "p_close_fair_side": 0.5156,
+          "breakeven_open_price": 0.5398,
+          "roi_at_open": 0.0056,
+          "roi_at_open_se": 0.0094,
+          "roi_at_close": -0.0205,
+          "roi_at_close_se": 0.0092
+        },
+        "line_moved": {
+          "bets": 1231,
+          "win_rate_at_open_line": 0.6539,
+          "p_close_fair_side": 0.4358,
+          "breakeven_open_price": 0.5385,
+          "roi_at_open": 0.2624,
+          "roi_at_open_se": 0.0289,
+          "roi_at_close": -0.0323,
+          "roi_at_close_se": 0.0315
+        }
+      },
+      "20252026": {
+        "bets": 7538,
+        "games": 646,
+        "over_share": 0.21,
+        "mean_abs_edge": 0.0718,
+        "same_line_bets": 6724,
+        "clv_mean": -0.0283,
+        "clv_se": 0.0005,
+        "market_move_toward_bet_mean": 0.0063,
+        "market_move_se": 0.0004,
+        "line_moved_bets": 814,
+        "line_moved_our_way": 755,
+        "line_moved_against": 59,
+        "beat_close_rate": 0.1835,
+        "beat_close_se": 0.0064,
+        "roi_at_open": 0.0225,
+        "roi_at_open_se": 0.0119,
+        "graded_bets": 7538
+      },
+      "20262027": {
+        "bets": 4668,
+        "games": 264,
+        "over_share": 0.214,
+        "mean_abs_edge": 0.0829,
+        "same_line_bets": 4251,
+        "clv_mean": -0.0176,
+        "clv_se": 0.0008,
+        "market_move_toward_bet_mean": 0.0194,
+        "market_move_se": 0.0007,
+        "line_moved_bets": 417,
+        "line_moved_our_way": 382,
+        "line_moved_against": 35,
+        "beat_close_rate": 0.3485,
+        "beat_close_se": 0.0082,
+        "roi_at_open": 0.046,
+        "roi_at_open_se": 0.014,
+        "graded_bets": 4668
+      }
+    },
+    "0.04": {
+      "all": {
+        "bets": 9008,
+        "games": 910,
+        "over_share": 0.161,
+        "mean_abs_edge": 0.0925,
+        "same_line_bets": 7895,
+        "clv_mean": -0.0213,
+        "clv_se": 0.0006,
+        "market_move_toward_bet_mean": 0.0145,
+        "market_move_se": 0.0005,
+        "line_moved_bets": 1113,
+        "line_moved_our_way": 1057,
+        "line_moved_against": 56,
+        "beat_close_rate": 0.2886,
+        "beat_close_se": 0.0067,
+        "roi_at_open": 0.0551,
+        "roi_at_open_se": 0.0104,
+        "graded_bets": 9008
+      },
+      "split": {
+        "same_line": {
+          "bets": 7895,
+          "win_rate_at_open_line": 0.5496,
+          "p_close_fair_side": 0.5199,
+          "breakeven_open_price": 0.5412,
+          "roi_at_open": 0.0195,
+          "roi_at_open_se": 0.0109,
+          "roi_at_close": -0.0129,
+          "roi_at_close_se": 0.0105
+        },
+        "line_moved": {
+          "bets": 1113,
+          "win_rate_at_open_line": 0.6703,
+          "p_close_fair_side": 0.4323,
+          "breakeven_open_price": 0.5353,
+          "roi_at_open": 0.3076,
+          "roi_at_open_se": 0.0303,
+          "roi_at_close": -0.0337,
+          "roi_at_close_se": 0.0337
+        }
+      },
+      "20252026": {
+        "bets": 5353,
+        "games": 646,
+        "over_share": 0.154,
+        "mean_abs_edge": 0.089,
+        "same_line_bets": 4607,
+        "clv_mean": -0.0263,
+        "clv_se": 0.0006,
+        "market_move_toward_bet_mean": 0.0085,
+        "market_move_se": 0.0005,
+        "line_moved_bets": 746,
+        "line_moved_our_way": 710,
+        "line_moved_against": 36,
+        "beat_close_rate": 0.2208,
+        "beat_close_se": 0.0078,
+        "roi_at_open": 0.0496,
+        "roi_at_open_se": 0.014,
+        "graded_bets": 5353
+      },
+      "20262027": {
+        "bets": 3655,
+        "games": 264,
+        "over_share": 0.169,
+        "mean_abs_edge": 0.0977,
+        "same_line_bets": 3288,
+        "clv_mean": -0.0143,
+        "clv_se": 0.0009,
+        "market_move_toward_bet_mean": 0.023,
+        "market_move_se": 0.0007,
+        "line_moved_bets": 367,
+        "line_moved_our_way": 347,
+        "line_moved_against": 20,
+        "beat_close_rate": 0.388,
+        "beat_close_se": 0.0092,
+        "roi_at_open": 0.0633,
+        "roi_at_open_se": 0.0153,
+        "graded_bets": 3655
+      }
+    },
+    "0.06": {
+      "all": {
+        "bets": 6320,
+        "games": 905,
+        "over_share": 0.13,
+        "mean_abs_edge": 0.1108,
+        "same_line_bets": 5301,
+        "clv_mean": -0.0178,
+        "clv_se": 0.0007,
+        "market_move_toward_bet_mean": 0.0183,
+        "market_move_se": 0.0006,
+        "line_moved_bets": 1019,
+        "line_moved_our_way": 987,
+        "line_moved_against": 32,
+        "beat_close_rate": 0.3468,
+        "beat_close_se": 0.008,
+        "roi_at_open": 0.0904,
+        "roi_at_open_se": 0.0126,
+        "graded_bets": 6320
+      },
+      "split": {
+        "same_line": {
+          "bets": 5301,
+          "win_rate_at_open_line": 0.5629,
+          "p_close_fair_side": 0.5241,
+          "breakeven_open_price": 0.5419,
+          "roi_at_open": 0.044,
+          "roi_at_open_se": 0.0135,
+          "roi_at_close": 0.0034,
+          "roi_at_close_se": 0.013
+        },
+        "line_moved": {
+          "bets": 1019,
+          "win_rate_at_open_line": 0.6781,
+          "p_close_fair_side": 0.4295,
+          "breakeven_open_price": 0.5313,
+          "roi_at_open": 0.3318,
+          "roi_at_open_se": 0.0316,
+          "roi_at_close": -0.0247,
+          "roi_at_close_se": 0.0353
+        }
+      },
+      "20252026": {
+        "bets": 3572,
+        "games": 641,
+        "over_share": 0.12,
+        "mean_abs_edge": 0.1088,
+        "same_line_bets": 2880,
+        "clv_mean": -0.0233,
+        "clv_se": 0.0009,
+        "market_move_toward_bet_mean": 0.0115,
+        "market_move_se": 0.0007,
+        "line_moved_bets": 692,
+        "line_moved_our_way": 671,
+        "line_moved_against": 21,
+        "beat_close_rate": 0.2836,
+        "beat_close_se": 0.0101,
+        "roi_at_open": 0.093,
+        "roi_at_open_se": 0.0175,
+        "graded_bets": 3572
+      },
+      "20262027": {
+        "bets": 2748,
+        "games": 264,
+        "over_share": 0.143,
+        "mean_abs_edge": 0.1135,
+        "same_line_bets": 2421,
+        "clv_mean": -0.0112,
+        "clv_se": 0.0011,
+        "market_move_toward_bet_mean": 0.0265,
+        "market_move_se": 0.0009,
+        "line_moved_bets": 327,
+        "line_moved_our_way": 316,
+        "line_moved_against": 11,
+        "beat_close_rate": 0.429,
+        "beat_close_se": 0.0109,
+        "roi_at_open": 0.0871,
+        "roi_at_open_se": 0.0181,
+        "graded_bets": 2748
+      }
+    }
+  },
+  "baseline_alone": {
+    "0.02": {
+      "all": {
+        "bets": 12561,
+        "games": 910,
+        "over_share": 0.36,
+        "mean_abs_edge": 0.0801,
+        "same_line_bets": 11321,
+        "clv_mean": -0.0243,
+        "clv_se": 0.0005,
+        "market_move_toward_bet_mean": 0.011,
+        "market_move_se": 0.0004,
+        "line_moved_bets": 1240,
+        "line_moved_our_way": 1137,
+        "line_moved_against": 103,
+        "beat_close_rate": 0.2537,
+        "beat_close_se": 0.0054,
+        "roi_at_open": 0.006,
+        "roi_at_open_se": 0.0089,
+        "graded_bets": 12561
+      },
+      "split": {
+        "same_line": {
+          "bets": 11321,
+          "win_rate_at_open_line": 0.523,
+          "p_close_fair_side": 0.5107,
+          "breakeven_open_price": 0.535,
+          "roi_at_open": -0.0209,
+          "roi_at_open_se": 0.0093,
+          "roi_at_close": -0.0456,
+          "roi_at_close_se": 0.009
+        },
+        "line_moved": {
+          "bets": 1240,
+          "win_rate_at_open_line": 0.6508,
+          "p_close_fair_side": 0.4359,
+          "breakeven_open_price": 0.5396,
+          "roi_at_open": 0.2524,
+          "roi_at_open_se": 0.0292,
+          "roi_at_close": -0.049,
+          "roi_at_close_se": 0.0317
+        }
+      }
+    },
+    "0.04": {
+      "all": {
+        "bets": 9467,
+        "games": 910,
+        "over_share": 0.332,
+        "mean_abs_edge": 0.0966,
+        "same_line_bets": 8359,
+        "clv_mean": -0.0219,
+        "clv_se": 0.0006,
+        "market_move_toward_bet_mean": 0.0136,
+        "market_move_se": 0.0005,
+        "line_moved_bets": 1108,
+        "line_moved_our_way": 1042,
+        "line_moved_against": 66,
+        "beat_close_rate": 0.2897,
+        "beat_close_se": 0.0062,
+        "roi_at_open": 0.0162,
+        "roi_at_open_se": 0.0102,
+        "graded_bets": 9467
+      },
+      "split": {
+        "same_line": {
+          "bets": 8359,
+          "win_rate_at_open_line": 0.5247,
+          "p_close_fair_side": 0.5135,
+          "breakeven_open_price": 0.5354,
+          "roi_at_open": -0.0197,
+          "roi_at_open_se": 0.0108,
+          "roi_at_close": -0.0497,
+          "roi_at_close_se": 0.0105
+        },
+        "line_moved": {
+          "bets": 1108,
+          "win_rate_at_open_line": 0.6643,
+          "p_close_fair_side": 0.4331,
+          "breakeven_open_price": 0.5364,
+          "roi_at_open": 0.2869,
+          "roi_at_open_se": 0.0312,
+          "roi_at_close": -0.0305,
+          "roi_at_close_se": 0.0336
+        }
+      }
+    },
+    "0.06": {
+      "all": {
+        "bets": 6799,
+        "games": 907,
+        "over_share": 0.302,
+        "mean_abs_edge": 0.115,
+        "same_line_bets": 5793,
+        "clv_mean": -0.019,
+        "clv_se": 0.0007,
+        "market_move_toward_bet_mean": 0.0165,
+        "market_move_se": 0.0006,
+        "line_moved_bets": 1006,
+        "line_moved_our_way": 965,
+        "line_moved_against": 41,
+        "beat_close_rate": 0.3375,
+        "beat_close_se": 0.0072,
+        "roi_at_open": 0.0437,
+        "roi_at_open_se": 0.0121,
+        "graded_bets": 6799
+      },
+      "split": {
+        "same_line": {
+          "bets": 5793,
+          "win_rate_at_open_line": 0.5332,
+          "p_close_fair_side": 0.5168,
+          "breakeven_open_price": 0.5358,
+          "roi_at_open": -0.003,
+          "roi_at_open_se": 0.0128,
+          "roi_at_close": -0.0404,
+          "roi_at_close_se": 0.0123
+        },
+        "line_moved": {
+          "bets": 1006,
+          "win_rate_at_open_line": 0.6759,
+          "p_close_fair_side": 0.4305,
+          "breakeven_open_price": 0.5359,
+          "roi_at_open": 0.3125,
+          "roi_at_open_se": 0.0324,
+          "roi_at_close": -0.0189,
+          "roi_at_close_se": 0.0354
+        }
+      }
+    }
+  },
+  "blend_walk_forward": {
+    "fit_lines_2025_26": 9992,
+    "coef_const_market_model": [
+      0.0104,
+      0.3685,
+      0.6387
+    ],
+    "se_game_clustered": [
+      0.0241,
+      0.1125,
+      0.0756
+    ],
+    "0.02": {
+      "all": {
+        "bets": 4040,
+        "games": 264,
+        "over_share": 0.21,
+        "mean_abs_edge": 0.0584,
+        "same_line_bets": 3649,
+        "clv_mean": -0.0156,
+        "clv_se": 0.0009,
+        "market_move_toward_bet_mean": 0.0216,
+        "market_move_se": 0.0007,
+        "line_moved_bets": 391,
+        "line_moved_our_way": 368,
+        "line_moved_against": 23,
+        "beat_close_rate": 0.374,
+        "beat_close_se": 0.0087,
+        "roi_at_open": 0.0542,
+        "roi_at_open_se": 0.0151,
+        "graded_bets": 4040
+      },
+      "split": {
+        "same_line": {
+          "bets": 3649,
+          "win_rate_at_open_line": 0.5656,
+          "p_close_fair_side": 0.5352,
+          "breakeven_open_price": 0.5509,
+          "roi_at_open": 0.0309,
+          "roi_at_open_se": 0.0159,
+          "roi_at_close": -0.0161,
+          "roi_at_close_se": 0.0152
+        },
+        "line_moved": {
+          "bets": 391,
+          "win_rate_at_open_line": 0.7008,
+          "p_close_fair_side": 0.4459,
+          "breakeven_open_price": 0.5664,
+          "roi_at_open": 0.2716,
+          "roi_at_open_se": 0.0489,
+          "roi_at_close": -0.0055,
+          "roi_at_close_se": 0.0579
+        }
+      }
+    },
+    "0.04": {
+      "all": {
+        "bets": 2574,
+        "games": 264,
+        "over_share": 0.159,
+        "mean_abs_edge": 0.0749,
+        "same_line_bets": 2253,
+        "clv_mean": -0.0105,
+        "clv_se": 0.0012,
+        "market_move_toward_bet_mean": 0.0273,
+        "market_move_se": 0.0009,
+        "line_moved_bets": 321,
+        "line_moved_our_way": 310,
+        "line_moved_against": 11,
+        "beat_close_rate": 0.4355,
+        "beat_close_se": 0.0115,
+        "roi_at_open": 0.0968,
+        "roi_at_open_se": 0.0191,
+        "graded_bets": 2574
+      },
+      "split": {
+        "same_line": {
+          "bets": 2253,
+          "win_rate_at_open_line": 0.5868,
+          "p_close_fair_side": 0.5439,
+          "breakeven_open_price": 0.5544,
+          "roi_at_open": 0.066,
+          "roi_at_open_se": 0.0201,
+          "roi_at_close": 0.0062,
+          "roi_at_close_se": 0.0187
+        },
+        "line_moved": {
+          "bets": 321,
+          "win_rate_at_open_line": 0.7134,
+          "p_close_fair_side": 0.4467,
+          "breakeven_open_price": 0.5596,
+          "roi_at_open": 0.3129,
+          "roi_at_open_se": 0.0549,
+          "roi_at_close": 0.0026,
+          "roi_at_close_se": 0.0645
+        }
+      }
+    },
+    "0.06": {
+      "all": {
+        "bets": 1528,
+        "games": 264,
+        "over_share": 0.115,
+        "mean_abs_edge": 0.0926,
+        "same_line_bets": 1273,
+        "clv_mean": -0.0046,
+        "clv_se": 0.0019,
+        "market_move_toward_bet_mean": 0.0334,
+        "market_move_se": 0.0015,
+        "line_moved_bets": 255,
+        "line_moved_our_way": 251,
+        "line_moved_against": 4,
+        "beat_close_rate": 0.5026,
+        "beat_close_se": 0.0156,
+        "roi_at_open": 0.1692,
+        "roi_at_open_se": 0.0237,
+        "graded_bets": 1528
+      },
+      "split": {
+        "same_line": {
+          "bets": 1273,
+          "win_rate_at_open_line": 0.6167,
+          "p_close_fair_side": 0.5502,
+          "breakeven_open_price": 0.5548,
+          "roi_at_open": 0.123,
+          "roi_at_open_se": 0.0252,
+          "roi_at_close": 0.0452,
+          "roi_at_close_se": 0.023
+        },
+        "line_moved": {
+          "bets": 255,
+          "win_rate_at_open_line": 0.7451,
+          "p_close_fair_side": 0.4479,
+          "breakeven_open_price": 0.5499,
+          "roi_at_open": 0.3999,
+          "roi_at_open_se": 0.0598,
+          "roi_at_close": 0.0404,
+          "roi_at_close_se": 0.0716
+        }
+      }
+    }
+  }
+}

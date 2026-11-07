@@ -101,7 +101,7 @@ the manifest, then `python3 src/live/weekly_update.py <date>`. Commit
 `docs/live/tracking.json` and the redrawn `docs/figures/`, and add the week
 to the README. Treat the result as meaningful after about 500 bets.
 
-## Current state (2026-11-07, second session)
+## Current state (2026-11-07, third session)
 
 - Data audit done (findings D-1, D-2, O-1 to O-7, goalie and live-feed checks).
 - Models: shots on goal (adds information to the closing price; blend +8.3%
@@ -110,24 +110,31 @@ to the README. Treat the result as meaningful after about 500 bets.
   (no edge), totals (no skill), team Elo (power rating and optional feature),
   probable starting goalie (71.0% top-pick accuracy out of sample; the
   actual-starter look-ahead moves game-model log loss by at most 0.002).
+- Closing-line value (shots): the market moves toward the model between open
+  and close (slope 0.21, SE 0.007), but bets at the open lose to the fair
+  close on price (CLV -2.1 points); opening-price profit comes mainly from
+  lines that later moved. Not adopted (decision 30).
 - Live test: rules version 2 frozen on 2026-11-07 (puck line on the
   probable-starter model, games after 2026-11-07); no games graded yet. The
   newest data (refresh 2026-11-07) ends on 2026-11-05 for team and goalie
   lines and 2026-11-06 for skaters.
+- Repository is public. `main` was rewritten to remove purchased data; the
+  old branch `claude/peaceful-volta-mygk7c` and pull request #1 still hold
+  it until the owner deletes the branch and GitHub purges the PR refs.
 - Restore and full weekly rebuild checked on a fresh machine: every committed
   results file reproduced exactly; charts are now byte-stable.
 - Charts: `src/reporting/make_figures.py` -> `docs/figures/*.svg`.
 
 ## Next steps (agreed order)
 
-1. Closing-line value: test whether the shots model's picks at the opening
-   price beat the close (SportsGameOdds has opening prices from 2026-01-16).
-2. Reproducibility: tests in GitHub Actions with small fixtures, one command
-   to run the pipeline, update the git remote to the repo's new location
-   (`chadcaporaso-lgtm/NHL-Prediction-System`).
-3. Linemates from NHL shift charts (free; Colab) for the points model.
-4. Optional, costs credits: check PuckAPI archive odds (about 30 games a
-   season) before buying older seasons.
-5. Totals: in-season scoring level or a bivariate score model.
-6. Optional: improve the probable-starter model (team rotation habits, a
+1. Reproducibility: tests in GitHub Actions with small synthetic fixtures (no
+   licensed data in the public repo), and one command to run the pipeline.
+   (The git remote already points to `chadcaporaso-lgtm/NHL-Prediction-System`.)
+2. Linemates from NHL shift charts (free; Colab) for the points model.
+3. Optional, costs credits: check PuckAPI archive odds (about 30 games a
+   season) before buying older seasons; and a per-book timestamped check of
+   opening shots lines (`get_prop_movement`) to see if opening prices were
+   bettable.
+4. Totals: in-season scoring level or a bivariate score model.
+5. Optional: improve the probable-starter model (team rotation habits, a
    tree model) or add confirmed-starter data if a free source exists.

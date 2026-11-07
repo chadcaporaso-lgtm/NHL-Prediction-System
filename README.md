@@ -308,3 +308,14 @@ second night of a back-to-back. The leakage test found and fixed one case: a
 traded goalie whose game for his new team began earlier the same evening.
 Weighting the game model's goalie features by these probabilities changes
 every log loss by at most 0.002, so the actual-starter look-ahead was small.
+
+**6e. Closing-line value of the shots model (2026-11-07).** Details in the
+[shots-on-goal model card](docs/models/sog-model.md#closing-line-value-at-the-opening-price-2026-11-07).
+On 15,806 lines with opening and closing prices, the market moves from open
+to close toward the model's opening edge (slope 0.21, SE 0.007; R² 0.18,
+against 0.15 for a model-free recent average). The model holds information
+the opening market lacks. But bets at the open still lose to the fair close
+on price (mean CLV -2.1 points at a 4-point edge): the opening margin (7%)
+is larger than the move. ROI at the open is +5.5% (SE 1.0), mostly from the
+7% of lines that later moved, which cannot be confirmed as bettable. Betting
+at the open is not adopted (decision 30).
