@@ -115,4 +115,12 @@ almost no overlap between them. Details and findings in
 - v1 skater tables for 2021-22 to 2023-24 are a quarter the size of later
   seasons, which may mean truncated downloads.
 
-**1b. Data audit.** In progress.
+**1b. Data audit (in progress).** The 10 files over the 10 MB download
+limit were transferred in 3 MB parts and all verified by SHA-256 against the
+originals. Findings so far in [docs/audit/data-audit.md](docs/audit/data-audit.md):
+
+- **D-1 (High):** v1 skater data for 2021-22 to 2023-24 holds about 5
+  skaters per game instead of 36. The gap carries into the player feature
+  table used to train the shots-on-goal and points models. The 2025-26
+  holdout is complete.
+- **D-2 (Low):** the `_full` raw files are byte-identical duplicates.
