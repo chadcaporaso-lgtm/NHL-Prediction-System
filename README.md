@@ -139,3 +139,11 @@ originals. Findings so far in [docs/audit/data-audit.md](docs/audit/data-audit.m
   the problem and excluded those quotes. Clean pregame closing prices exist
   for about 1,560 games (2025-26 and early 2026-27); there are no bookmaker
   odds before February 2024 in either project.
+
+**1c. Backtest review.** [docs/audit/backtest-review.md](docs/audit/backtest-review.md).
+On clean closing prices the earlier moneyline models score close to, but
+not better than, the market (v1: 0.6735 vs 0.6706 log loss on 727 games,
+reproduced exactly; v2 2025-26: 0.687 vs 0.682 on 1,292 games). Betting the
+model's positive-EV picks at the best of nine books returns -1.5% (SE 2.9%).
+The +4.4% ROI in the v1 manifest cannot be reproduced from the saved ledger.
+No prop betting backtest exists, because there is no historical prop-price data.
