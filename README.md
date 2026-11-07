@@ -153,3 +153,10 @@ from PuckAPI (shots on goal and points, 16 star players, mostly 2025-26):
 [docs/audit/prop-history.md](docs/audit/prop-history.md). Results agree with
 NHL box scores on 624 of 626 games. Closing shots-on-goal prices are close to
 coin flips (log loss 0.690 vs 0.692 for a constant), with a 6.5% margin.
+
+**1e. Prop closing prices at scale (SportsGameOdds).** Downloaded every NHL
+game from 2026-01-16 to 2026-11-06 and extracted about 120,000 player-prop
+closing lines: [docs/audit/sgo-props.md](docs/audit/sgo-props.md). Graded on
+NHL box scores, 2025-26 gives about 53,000 lines across shots on goal, points,
+assists and goals. Found that the provider's `points` stat is goals and
+`goals+assists` is points. This is the prop backtest set.
