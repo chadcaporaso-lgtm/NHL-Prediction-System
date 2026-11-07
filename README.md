@@ -161,6 +161,8 @@ NHL box scores, 2025-26 gives about 53,000 lines across shots on goal, points,
 assists and goals. Found that the provider's `points` stat is goals and
 `goals+assists` is points. This is the prop backtest set.
 
+See [docs/data-coverage.md](docs/data-coverage.md) for what each model needs and the open gaps.
+
 **1f. Game-market closing prices (SportsGameOdds).** Extracted full-game
 moneyline, puck line and total opening and closing prices from the same
 downloads: 881 completed games from 2026-01-16 to 2026-11-02, every one with
