@@ -1,0 +1,105 @@
+{
+  "v1_rows": 149760,
+  "v1_games_by_season": {
+    "2023-24": 606,
+    "2024-25": 1339,
+    "2025-26": 1394,
+    "2026-27": 82
+  },
+  "v1_books": [
+    "bet365",
+    "betmgm",
+    "betonline",
+    "caesars",
+    "circa",
+    "draftkings",
+    "espnbet",
+    "fanduel",
+    "pinnacle",
+    "sgo_consensus"
+  ],
+  "v1_share_with_close_price": 0.262,
+  "O1_v1_moneyline_updated_after_start_share": 0.861,
+  "O1_v1_minutes_after_start_median": 157.4,
+  "O2_v1_current_price_log_loss": {
+    "current_updated_after_start": {
+      "rows": 43352,
+      "log_loss": 0.4558
+    },
+    "current_updated_before_start": {
+      "rows": 94,
+      "log_loss": 0.6328
+    },
+    "current_no_timestamp": {
+      "rows": 6904,
+      "log_loss": 0.2859
+    }
+  },
+  "O2_v1_close_price_log_loss": {
+    "rows": 13096,
+    "log_loss": 0.6704
+  },
+  "O3_v1_eval_price_source_share": {
+    "close_decimal_odds": 0.262,
+    "current_decimal_odds": 0.791,
+    "open_decimal_odds": 0.03
+  },
+  "O4_v1_grading_errors": 0,
+  "O4_v1_profit_errors": 0,
+  "O5_v2_quotes": 942494,
+  "O5_v2_quotes_snapshot_after_start_share": 0.9991,
+  "O5_v2_quotes_asof_eligible": 0,
+  "O5_v2_quotes_roi_eligible": 0,
+  "O5_v2_join_status": {
+    "MATCHED_OFFICIAL_FINAL": 937837,
+    "NO_UNIQUE_OFFICIAL_MATCH": 3831,
+    "START_CHANGE_REQUIRES_REVIEW": 654,
+    "PROVIDER_OFFICIAL_SCORE_MISMATCH": 172
+  },
+  "O6_v2_closing_rows": 87740,
+  "O6_v2_closing_games": 729,
+  "O6_v2_closing_books": 56,
+  "O6_v2_closing_date_range": [
+    "2026-01-16",
+    "2026-10-13"
+  ],
+  "O6_v2_closing_games_by_season": {
+    "20252026.0": 646,
+    "20262027.0": 83
+  },
+  "O6_v2_closing_duplicates": 0,
+  "O6_v2_closing_impossible_prices": 0,
+  "O6_v2_closing_margin_quantiles": [
+    0.8889,
+    1.0058,
+    1.0462,
+    1.0862,
+    1.4156
+  ],
+  "O6_v2_closing_margin_below_1": {
+    "sporttrade": 79
+  },
+  "O6_v2_closing_margin_above_1_15": {
+    "matchbook": 4,
+    "kalshi": 2,
+    "bookmakereu": 1,
+    "fliff": 1,
+    "polymarket": 1,
+    "prophetexchange": 1
+  },
+  "O6_v2_closing_moneyline_log_loss": {
+    "rows": 30948,
+    "games": 729,
+    "log_loss": 0.6698
+  },
+  "O7_external_rows": 1578,
+  "O7_external_matched": 1559,
+  "O7_external_games_by_season_type": {
+    "20252026-2": 1312,
+    "20252026-3": 82,
+    "20262027-2": 165
+  },
+  "O7_external_close_log_loss": 0.6777,
+  "O7_external_open_log_loss": 0.6795,
+  "O7_external_methodology_verified": false
+}

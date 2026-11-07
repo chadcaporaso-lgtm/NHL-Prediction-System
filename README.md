@@ -133,3 +133,9 @@ originals. Findings so far in [docs/audit/data-audit.md](docs/audit/data-audit.m
   Modeling note: the official final score credits the shootout winner with a
   goal, so the rebuild models real goals and uses the official score only to
   grade bets.
+- **Odds, O-1 (Critical):** v1 graded about 74% of its bets at prices captured
+  during or after the game (log loss 0.29 to 0.46, where a real closing line
+  scores about 0.67). Results that rely on those prices are invalid. v2 caught
+  the problem and excluded those quotes. Clean pregame closing prices exist
+  for about 1,560 games (2025-26 and early 2026-27); there are no bookmaker
+  odds before February 2024 in either project.

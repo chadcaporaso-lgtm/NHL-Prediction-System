@@ -162,3 +162,84 @@ differences explained below.
   seasons need flags, or exclusion from home-advantage features.
 - **Decision mix is stable.** Over 2019-20 to 2026-27, 75-79% of games end in
   regulation, 14-17% in overtime and 6-9% in a shootout.
+
+## Odds
+
+Script: [`src/audit/audit_odds.py`](../../src/audit/audit_odds.py).
+Numbers: [`odds_summary.json`](odds_summary.json).
+
+### Sources found
+
+| Source | Coverage | Contents |
+|--------|----------|----------|
+| SportsGameOdds via v1 `normalized/odds.parquet` | Feb 2024 to Oct 2026 (3,421 games) | 9 books plus a consensus; moneyline, puck line, totals |
+| SportsGameOdds via v2 `quote_observations` | Same events | 942,494 quotes with timing flags |
+| SportsGameOdds dedicated closing lines (v2 `closing_benchmarks`) | 2026-01-16 to 2026-10-13 (729 games) | 56 books |
+| User-supplied closing CSV (v2 `user_closing_csv`) | 2025-26 full season and 165 games of 2026-27 (1,559 games) | Consensus of 16 to 24 books: opening and closing win probability, puck line, total |
+
+There are no bookmaker odds before February 2024 in either project.
+
+### O-1 (Critical): v1 graded most bets at prices captured during or after the game
+
+**Evidence.** v1 stores four prices per quote (open, close, current, fair).
+`close` exists on only 26% of rows. Where it is missing, v1 grades the bet at
+the `current` price, which was captured when the data was downloaded, after
+the game had started:
+
+- 86% of moneyline prices were last updated after puck drop, a median of 157
+  minutes after the start, which is near the end of a game.
+- Measured against the result, `current` prices are far too accurate to be
+  pregame prices. The best pregame line, the close, scores a log loss of
+  about 0.67 in the NHL.
+
+| v1 price | Rows | Log loss |
+|----------|-----:|---------:|
+| close | 13,096 | 0.670 (normal for a closing line) |
+| current, updated after puck drop | 43,352 | 0.456 |
+| current, no timestamp | 6,904 | 0.286 |
+
+- Lines drifted in game too: puck lines of -2.5 and -3.5 appear, which are
+  in-game lines.
+- v1's grading column (`eval_decimal_odds`) uses the close price on 26% of
+  rows and the in-game `current` price on 74%.
+
+**Impact.** Any v1 result that grades bets or measures edge against
+`eval_decimal_odds` on rows without a close price is invalid: the "market" it
+was compared with already knew the score. This includes v1's paper-trading
+edge calculations. Which v1 reports rely on these rows is checked in the model
+audit.
+
+**What is correct in v1.** The grading logic itself: all 149,760 bets are
+graded correctly (win, loss and push, with the shootout goal counted on totals
+and puck lines), and profit arithmetic has no errors.
+
+### O-2 (Pass): v2 detected the same problem and excluded the data
+
+v2 flags 99.9% of the SportsGameOdds quotes as captured after the event
+started, and marks every quote ineligible for as-of features and for ROI
+(0 of 942,494). v2 uses only dedicated closing lines and the external CSV as
+market benchmarks, and does not claim ROI from them.
+
+### O-3 (Medium): the clean closing-line history is short
+
+| Clean source | Games | Log loss of closing moneyline |
+|--------------|------:|------------------------------:|
+| v2 dedicated SportsGameOdds closing lines | 729 | 0.670 |
+| External closing CSV | 1,559 | 0.678 (open: 0.680) |
+
+Both behave like genuine pregame prices. Between them they cover the
+2025-26 season and the start of 2026-27, about 1,560 games. That is enough
+to benchmark a model against the market for one season, but not to run a
+multi-season betting backtest.
+
+The external CSV's methodology (which books, which moment counts as the
+close) is not documented, so it is used as a consensus benchmark, not as a
+price anyone could have bet.
+
+### O-4 (Low): exchanges distort margins
+
+In the dedicated closing lines the median two-way margin is 4.6% and there are
+no duplicates or impossible prices. The outliers are exchanges and prediction
+markets: Sporttrade quotes 79 pairs below 100% (mid prices), and Matchbook,
+Kalshi, Polymarket and a few others have pairs above 115%. Exclude these when
+building a consensus line.
