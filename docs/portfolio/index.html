@@ -135,7 +135,7 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
           <tr><td>Shots on goal</td><td>Gradient-boosted negative binomial, blended with the market price</td><td class="num">0.6764</td><td class="num">0.6796</td><td><span class="chip good">Adds information</span></td></tr>
           <tr><td>Puck line</td><td>Poisson regulation-goal model, tie-adjusted, calibrated</td><td class="num">0.6246</td><td class="num">0.6272</td><td><span class="chip mid">Level, not significant</span></td></tr>
           <tr><td>Moneyline</td><td>Same goal model</td><td class="num">0.6830</td><td class="num">0.6808</td><td><span class="chip mid">Close, behind</span></td></tr>
-          <tr><td>Points</td><td>Poisson GLM with goalie and team features</td><td class="num">0.6551</td><td class="num">0.6515</td><td><span class="chip bad">No edge</span></td></tr>
+          <tr><td>Points</td><td>Poisson GLM with goalie, team and lineup-role features</td><td class="num">0.6542</td><td class="num">0.6515</td><td><span class="chip bad">No edge</span></td></tr>
           <tr><td>Total goals</td><td>Same goal model</td><td class="num">0.6948</td><td class="num">0.6893</td><td><span class="chip bad">No skill</span></td></tr>
         </tbody>
       </table>
@@ -211,7 +211,7 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
 
   <section class="col">
     <h2>What did not work, and why</h2>
-    <p><b>Points.</b> The model beats a recent-form baseline every season but adds nothing to the closing price on held-out lines. Points depend on linemates and power-play units, which books know on game day and these features do not.</p>
+    <p><b>Points.</b> The model beats a recent-form baseline every season but adds nothing to the closing price on held-out lines. Adding each player's role in the night's lineup (ice-time and power-play rank among dressed teammates, a linemate-quality proxy) improved it in every season, from 0.6551 to 0.6542 log loss, but the closing price still sits at 0.6515. Books know the actual line combinations and same-day news.</p>
     <p><b>Totals.</b> Predicted totals correlate only 0.04 to 0.20 with actual totals, and the model's scoring level lags season-to-season shifts by up to 0.45 goals. Adding a league scoring-level feature did not fix it. Both versions are reported.</p>
     <p><b>Moneyline.</b> 0.6830 against the close's 0.6808 on the full 2025-26 season, better than either earlier version (best 0.6867) but still behind the market, and a blend gives it no weight.</p>
   </section>
@@ -240,7 +240,7 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
     { name: "Puck line", v: 0.6246 - 0.6272, m: 0.6246, c: 0.6272, n: "1,385 games, 2025-26" },
     { name: "Shots on goal (alone)", v: 0.6821 - 0.6815, m: 0.6821, c: 0.6815, n: "15,806 lines" },
     { name: "Moneyline", v: 0.6830 - 0.6808, m: 0.6830, c: 0.6808, n: "1,394 games, 2025-26" },
-    { name: "Points", v: 0.6551 - 0.6515, m: 0.6551, c: 0.6515, n: "18,902 lines" },
+    { name: "Points", v: 0.6542 - 0.6515, m: 0.6542, c: 0.6515, n: "18,902 lines" },
     { name: "Total goals", v: 0.6948 - 0.6893, m: 0.6948, c: 0.6893, n: "1,338 games, 2025-26" },
   ];
   function drawGap() {
