@@ -178,62 +178,62 @@
     }
   },
   "market": {
-    "lines": 15777,
+    "lines": 15806,
     "games": 910,
-    "median_margin": 0.0697,
-    "over_rate": 0.4701,
+    "median_margin": 0.0698,
+    "over_rate": 0.4697,
     "line_counts": {
-      "1.5": 9697,
+      "1.5": 9726,
       "2.5": 4970,
       "3.5": 1025,
       "0.5": 57,
       "4.5": 28
     },
     "market_log_loss": 0.6815,
-    "constant_log_loss": 0.6914,
+    "constant_log_loss": 0.6913,
     "models": {
       "baseline": {
-        "log_loss": 0.6874,
-        "mean_p_over": 0.4699,
-        "bets_edge_0.03": 10206,
-        "roi": -0.0452,
+        "log_loss": 0.6873,
+        "mean_p_over": 0.4698,
+        "bets_edge_0.03": 10231,
+        "roi": -0.0445,
         "roi_se_game_clustered": 0.0094,
-        "over_bets": 3681,
-        "under_bets": 6525
+        "over_bets": 3680,
+        "under_bets": 6551
       },
       "glm": {
-        "log_loss": 0.6845,
-        "mean_p_over": 0.4447,
-        "bets_edge_0.03": 10637,
-        "roi": -0.0224,
+        "log_loss": 0.6844,
+        "mean_p_over": 0.4446,
+        "bets_edge_0.03": 10663,
+        "roi": -0.0214,
         "roi_se_game_clustered": 0.0092,
         "over_bets": 1262,
-        "under_bets": 9375
+        "under_bets": 9401
       },
       "gbm": {
-        "log_loss": 0.6822,
-        "mean_p_over": 0.455,
-        "bets_edge_0.03": 9640,
-        "roi": -0.018,
+        "log_loss": 0.6821,
+        "mean_p_over": 0.4549,
+        "bets_edge_0.03": 9668,
+        "roi": -0.0171,
         "roi_se_game_clustered": 0.0095,
-        "over_bets": 1607,
-        "under_bets": 8033
+        "over_bets": 1606,
+        "under_bets": 8062
       }
     },
     "by_season": {
       "20252026": {
-        "lines": 9963,
-        "market_log_loss": 0.6825,
+        "lines": 9992,
+        "market_log_loss": 0.6826,
         "baseline_log_loss": 0.6885,
-        "glm_log_loss": 0.6869,
-        "gbm_log_loss": 0.6845
+        "glm_log_loss": 0.6867,
+        "gbm_log_loss": 0.6844
       },
       "20262027": {
         "lines": 5814,
-        "market_log_loss": 0.6797,
-        "baseline_log_loss": 0.6854,
-        "glm_log_loss": 0.6805,
-        "gbm_log_loss": 0.6782
+        "market_log_loss": 0.6796,
+        "baseline_log_loss": 0.6853,
+        "glm_log_loss": 0.6803,
+        "gbm_log_loss": 0.6781
       }
     }
   }

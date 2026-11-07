@@ -211,7 +211,7 @@ season from 2021-22, beats a recent-form baseline in every season. Against
 loss 0.6821 vs 0.6815). Combined with the market price, it adds information:
 fitted on 2025-26 lines and tested on 2026-27, the model's weight is 0.35
 (SE 0.09) and the blend scores 0.6766 vs the market's 0.6797. Betting the
-blend at a 4-point edge returned +8.4% (SE 2.8%) on 839 bets, but this is
+blend at a 4-point edge returned +8.3% (SE 2.7%) on 907 bets, but this is
 one short test period with thresholds chosen afterward, so it is a
 hypothesis to confirm on later 2026-27 games, not a result.
 
@@ -252,4 +252,12 @@ rebuilds features, reruns the leakage tests and models, and grades the rules.
 **5a. Case study page (2026-11-07).** [docs/portfolio/index.html](docs/portfolio/index.html):
 the audit findings, methods and results against the closing line in one page,
 with every figure taken from the results files in `docs/models/`.
+
+### Phase 6: Improvements
+
+**6a. Player-name matching (2026-11-07).** An alias list for 12 players the
+odds provider lists under another first name cut unmatched shots and points
+lines from 3.4% to 3.1%; the rest are scratched players whose bets are void.
+Results moved only slightly (shots blend on 2026-27: 0.6764 vs the market's
+0.6796; 907 bets at a 4-point edge, +8.3%, SE 2.7%).
 

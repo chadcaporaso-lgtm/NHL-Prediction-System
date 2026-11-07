@@ -79,13 +79,16 @@ information the closing price has not fully priced.
 
 Betting the blend on 2026-27 at the closing price (rerun 2026-11-07 after games
 from 2026-11-03 to 11-06 gained real team and goalie context; the first run,
-with those filled by league averages, gave +9.2% on 824 bets at 4 points):
+with those filled by league averages, gave +9.2% on 824 bets at 4 points; a
+later fix to player-name matching added 29 lines to 2025-26, which moved the
+blend coefficients slightly and the 4-point result from 839 bets at +8.4% to
+the figures below):
 
 | Edge threshold | Bets | ROI | SE (game-clustered) |
 |---:|---:|---:|---:|
-| 2 points | 2,656 | +1.3% | 1.7% |
-| 4 points | 839 | +8.4% | 2.8% |
-| 6 points | 232 | +18.2% | 4.8% |
+| 2 points | 2,725 | +1.2% | 1.6% |
+| 4 points | 907 | +8.3% | 2.7% |
+| 6 points | 262 | +19.9% | 4.5% |
 
 ## Limits (read before quoting the ROI)
 
@@ -109,3 +112,13 @@ with those filled by league averages, gave +9.2% on 824 bets at 4 points):
 
 Live tracking on games after 2026-11-06 with the rule fixed in advance:
 [docs/live/README.md](../live/README.md).
+
+
+## Player matching (2026-11-07)
+
+An alias list for 12 players the provider lists under another first name
+(Nick/Nicholas Robertson, Freddy/Frederick Gaudreau and others) cut unmatched
+shots and points lines from 3.4% to 3.1%. The rest are players with no
+box-score row that night (scratched), whose bets are void. Current figures:
+15,806 graded shots lines; model 0.6821 vs market 0.6815; blend on 2026-27
+0.6764 vs 0.6796, model weight 0.36 (SE 0.09).

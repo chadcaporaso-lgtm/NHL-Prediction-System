@@ -188,59 +188,59 @@
     }
   },
   "market": {
-    "lines": 18851,
+    "lines": 18902,
     "games": 910,
     "median_margin": 0.0699,
-    "over_rate": 0.4278,
+    "over_rate": 0.4273,
     "line_counts": {
-      "0.5": 17921,
+      "0.5": 17972,
       "1.5": 930
     },
-    "market_log_loss": 0.6517,
-    "constant_log_loss": 0.6827,
+    "market_log_loss": 0.6515,
+    "constant_log_loss": 0.6825,
     "models": {
       "baseline": {
-        "log_loss": 0.6641,
-        "mean_p_over": 0.4185,
-        "bets_edge_0.03": 12695,
-        "roi": -0.0701,
+        "log_loss": 0.6639,
+        "mean_p_over": 0.4179,
+        "bets_edge_0.03": 12735,
+        "roi": -0.0707,
         "roi_se_game_clustered": 0.0092,
-        "over_bets": 5192,
-        "under_bets": 7503
+        "over_bets": 5193,
+        "under_bets": 7542
       },
       "glm": {
-        "log_loss": 0.6553,
-        "mean_p_over": 0.4018,
-        "bets_edge_0.03": 10876,
-        "roi": -0.0428,
-        "roi_se_game_clustered": 0.0103,
-        "over_bets": 1461,
-        "under_bets": 9415
+        "log_loss": 0.6551,
+        "mean_p_over": 0.4014,
+        "bets_edge_0.03": 10919,
+        "roi": -0.0429,
+        "roi_se_game_clustered": 0.0102,
+        "over_bets": 1468,
+        "under_bets": 9451
       },
       "gbm": {
-        "log_loss": 0.6562,
-        "mean_p_over": 0.4035,
-        "bets_edge_0.03": 11092,
-        "roi": -0.0472,
-        "roi_se_game_clustered": 0.0102,
-        "over_bets": 2140,
-        "under_bets": 8952
+        "log_loss": 0.6559,
+        "mean_p_over": 0.403,
+        "bets_edge_0.03": 11131,
+        "roi": -0.0473,
+        "roi_se_game_clustered": 0.0101,
+        "over_bets": 2147,
+        "under_bets": 8984
       }
     },
     "by_season": {
       "20252026": {
-        "lines": 11900,
+        "lines": 11922,
         "market_log_loss": 0.6621,
         "baseline_log_loss": 0.6717,
         "glm_log_loss": 0.6642,
         "gbm_log_loss": 0.6653
       },
       "20262027": {
-        "lines": 6951,
-        "market_log_loss": 0.634,
-        "baseline_log_loss": 0.651,
-        "glm_log_loss": 0.6401,
-        "gbm_log_loss": 0.6405
+        "lines": 6980,
+        "market_log_loss": 0.6333,
+        "baseline_log_loss": 0.6504,
+        "glm_log_loss": 0.6394,
+        "gbm_log_loss": 0.6397
       }
     }
   }
