@@ -184,3 +184,20 @@ against that reconcile with official team totals (differences are empty-net
 goals). 81 rows (0.2%) are off by one between saves, goals and shots, a quirk
 in the NHL source. With this, every training table is in place.
 
+### Phase 2: Features
+
+**2a. Skater game table and as-of features (2026-11-07).**
+`src/features/build_skater_games.py` joins the audited skater summary and
+ice-time tables into one row per player-game: 339,062 rows covering all
+9,421 completed games from 2019-20 to 2026-11-06, with no duplicates and ice
+time on every row. `src/features/build_skater_features.py` adds features
+built only from earlier games: weighted recent form, last 10 games, season
+to date and career means for shots, ice time, power-play time, goals,
+assists and points; shot and point rates per 60 minutes; previous-season
+rates; rest days; and team context (own team's shots for, opponent's shots
+and goals allowed over their last 20 games).
+`tests/test_skater_feature_leakage.py` recomputes the features for 500
+random player-games and 300 team-games using only games dated before each
+one, and checks that no feature reproduces the same-game target. All tests
+pass.
+

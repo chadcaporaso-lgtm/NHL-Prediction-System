@@ -1,0 +1,50 @@
+{
+  "rows": 339062,
+  "games": 9421,
+  "duplicate_game_player": 0,
+  "games_not_in_schedule": 0,
+  "completed_schedule_games_missing": 0,
+  "games_not_36_rows": 84,
+  "by_season": {
+    "20192020": {
+      "rows": 43630,
+      "games": 1212,
+      "rows_without_toi": 0
+    },
+    "20202021": {
+      "rows": 34250,
+      "games": 952,
+      "rows_without_toi": 0
+    },
+    "20212022": {
+      "rows": 50412,
+      "games": 1401,
+      "rows_without_toi": 0
+    },
+    "20222023": {
+      "rows": 50376,
+      "games": 1400,
+      "rows_without_toi": 0
+    },
+    "20232024": {
+      "rows": 50389,
+      "games": 1400,
+      "rows_without_toi": 0
+    },
+    "20262027": {
+      "rows": 9503,
+      "games": 264,
+      "rows_without_toi": 0
+    },
+    "20242025": {
+      "rows": 50320,
+      "games": 1398,
+      "rows_without_toi": 0
+    },
+    "20252026": {
+      "rows": 50182,
+      "games": 1394,
+      "rows_without_toi": 0
+    }
+  }
+}
