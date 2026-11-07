@@ -1,4 +1,6 @@
-"""Does the shots-on-goal model add information beyond the closing price?
+"""Does a prop model add information beyond the closing price?
+
+Usage: python3 src/models/prop_market_blend.py sog    (or points)
 
 Fits logistic regression y ~ logit(p_market) + logit(p_model) on 2025-26
 prop lines and tests it on 2026-27 lines (walk-forward: the blend never sees
@@ -6,19 +8,21 @@ prop lines and tests it on 2026-27 lines (walk-forward: the blend never sees
 the market on 2026-27, the model carries information the market has not
 priced. Also reports a reliability table for the model's over probability.
 
-Input:  data/models/sog_market_graded.parquet (sog_model.py)
-Output: docs/models/sog_blend_results.json
+Input:  data/models/<name>_market_graded.parquet (prop_model.py)
+Output: docs/models/<name>_blend_results.json
 """
 
 from __future__ import annotations
 
 import json
 import os
+import sys
 
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
+NAME = sys.argv[1] if len(sys.argv) > 1 else "sog"
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
@@ -37,7 +41,7 @@ def payout(a):
     return np.where(a < 0, 100 / -a, a / 100)
 
 
-d = pd.read_parquet(os.path.join(ROOT, "data/models/sog_market_graded.parquet"))
+d = pd.read_parquet(os.path.join(ROOT, f"data/models/{NAME}_market_graded.parquet"))
 tr, te = d[d.season == 20252026], d[d.season == 20262027]
 out = {"train_lines_2025_26": len(tr), "test_lines_2026_27": len(te), "models": {}}
 for m in ["glm", "gbm"]:
@@ -65,5 +69,5 @@ d["bin"] = pd.cut(d.p_gbm, [0, .3, .4, .45, .5, .55, .6, .7, 1])
 out["gbm_reliability"] = [{"bin": str(k), "n": int(len(g)), "mean_p": round(float(g.p_gbm.mean()), 3),
                            "actual": round(float(g.y.mean()), 3), "market_p": round(float(g.p_market.mean()), 3)}
                           for k, g in d.groupby("bin", observed=True)]
-json.dump(out, open(os.path.join(ROOT, "docs/models/sog_blend_results.json"), "w"), indent=2)
+json.dump(out, open(os.path.join(ROOT, f"docs/models/{NAME}_blend_results.json"), "w"), indent=2)
 print(json.dumps(out, indent=2))

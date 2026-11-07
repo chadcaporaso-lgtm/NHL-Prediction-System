@@ -1,6 +1,6 @@
 # Model Card: Shots on Goal
 
-Code: `src/models/sog_model.py`, `src/models/sog_market_blend.py`.
+Code: `src/models/prop_model.py shots`, `src/models/prop_market_blend.py sog`.
 Results: `docs/models/sog_results.json`, `docs/models/sog_blend_results.json`.
 Features: `src/features/build_skater_features.py` (leakage-tested).
 

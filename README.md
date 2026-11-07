@@ -203,7 +203,7 @@ pass.
 
 ### Phase 3: Models
 
-**3a. Shots on goal (2026-11-07).** Model card:
+**3a. Shots on goal (2026-11-07).** Code: `src/models/prop_model.py`. Model card:
 [docs/models/sog-model.md](docs/models/sog-model.md). A negative binomial
 shot model (gradient boosting with Poisson loss), validated walk-forward by
 season from 2021-22, beats a recent-form baseline in every season. Against
@@ -214,4 +214,13 @@ fitted on 2025-26 lines and tested on 2026-27, the model's weight is 0.35
 blend at a 4-point edge returned +9.2% (SE 2.7%) on 824 bets, but this is
 one short test period with thresholds chosen afterward, so it is a
 hypothesis to confirm on later 2026-27 games, not a result.
+
+**3b. Points (2026-11-07).** Model card:
+[docs/models/points-model.md](docs/models/points-model.md). Same walk-forward
+method, with goal, assist, power-play, team-scoring and opposing-goalie
+features. It beats the baseline every season, but against 18,851 closing
+lines it is worse than the market (2026-27 log loss 0.6405 vs 0.6340), and a
+market + model blend gains nothing on held-out 2026-27 lines. No betting edge;
+used as a projection only. The likely missing piece is lineup information
+(linemates, power-play unit) that the closing price already reflects.
 

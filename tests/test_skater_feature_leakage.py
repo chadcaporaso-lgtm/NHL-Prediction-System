@@ -41,6 +41,7 @@ def test_player_features_use_only_prior_games(n=500, seed=7):
             "ewm_shots": prior.shots.ewm(halflife=10).mean().iloc[-1],
             "l10_toi": prior.toi.tail(10).mean(),
             "car_points": prior.points.mean(),
+            "l10_pp_points": prior.pp_points.tail(10).mean(),
         }
         ps = prior[prior.season == r.season]
         if len(ps):
@@ -68,6 +69,21 @@ def test_team_context_uses_only_prior_games(n=300, seed=11):
     assert not bad, f"{len(bad)} mismatches, first: {bad[:5]}"
 
 
+def test_opposing_goalie_uses_only_prior_appearances(n=300, seed=3):
+    f, _ = _load()
+    gl = pd.read_parquet(f"{RUN}/goalie_history_candidates.parquet")
+    gl = gl[gl.participated].sort_values(["scheduled_utc", "game_id"])
+    sample = f.dropna(subset=["opp_goalie_sv_l40"]).drop_duplicates(["game_id", "opponent"]).sample(n, random_state=seed)
+    bad = []
+    for _, r in sample.iterrows():
+        st = gl[(gl.game_id == r.game_id) & (gl.team_abbrev == r.opponent) & gl.starter].iloc[0]
+        prior = gl[(gl.player_id == st.player_id) & (gl.scheduled_utc < st.scheduled_utc)].tail(40)
+        expect = (prior.saves.sum() + 0.905 * 300) / (prior.shots_against.sum() + 300)
+        if not np.isclose(r.opp_goalie_sv_l40, expect):
+            bad.append((r.game_id, r.opponent, r.opp_goalie_sv_l40, expect))
+    assert not bad, f"{len(bad)} mismatches, first: {bad[:5]}"
+
+
 def test_no_feature_reproduces_target():
     f, _ = _load()
     feats = [c for c in f.columns if c.startswith(("ewm_", "l10_", "std_", "car_", "prev_", "team_", "opp_"))]
@@ -77,6 +93,7 @@ def test_no_feature_reproduces_target():
 
 
 if __name__ == "__main__":
-    for t in [test_player_features_use_only_prior_games, test_team_context_uses_only_prior_games, test_no_feature_reproduces_target]:
+    for t in [test_player_features_use_only_prior_games, test_team_context_uses_only_prior_games,
+              test_opposing_goalie_uses_only_prior_appearances, test_no_feature_reproduces_target]:
         t()
         print("PASS", t.__name__)

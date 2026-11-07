@@ -13,12 +13,15 @@ Player features (prior games only)
   l10_<x>      mean of the last 10 games
   std_<x>      season-to-date mean (NaN for a player's first game of a season)
   car_<x>      mean over all prior games in the data (career to date, from 2019-20)
-  for x in shots, toi, toi_pp, goals, assists, points
+  for x in shots, toi, toi_pp, goals, assists, points, pp_points
   shots_per60_ewm, points_per60_ewm (from the EWMA sums)
   prev_season_shots_pg, prev_season_points_pg, prev_season_toi
   n_prior, n_prior_season, days_rest, back_to_back
 Team context (team-game level, prior games only, last 20)
-  team_sog_for_l20, opp_sog_against_l20, opp_goals_against_l20
+  team_sog_for_l20, opp_sog_against_l20, opp_goals_against_l20, team_goals_for_l20
+Opposing goalie (the goalie who started for the opponent; see gap G-E)
+  opp_goalie_sv_l40  save percentage over that goalie's previous 40
+                     appearances, shrunk toward .905 with 300 pseudo-shots
 Static: is_home, is_defense, is_playoff, season
 """
 
@@ -31,8 +34,9 @@ import pandas as pd
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 RUN = os.path.join(ROOT, "data/drive/NHL_Prediction_System_ChatGPT/data/normalized/official_incremental/20261103T160656Z_4414a3fb")
-STATS = ["shots", "toi", "toi_pp", "goals", "assists", "points"]
+STATS = ["shots", "toi", "toi_pp", "goals", "assists", "points", "pp_points"]
 HALF_LIFE = 10
+PRIOR_SV, PRIOR_SHOTS = 0.905, 300
 
 
 def build() -> pd.DataFrame:
@@ -75,15 +79,27 @@ def build() -> pd.DataFrame:
     tg["team"] = tg.team_id.map(abbrev)
     tg = tg.sort_values(["team", "scheduled_utc", "game_id"])
     tb = tg.groupby("team", sort=False)
-    for src, name in [("sog_for", "sog_for_l20"), ("sog_against", "sog_against_l20"), ("real_goals_against", "goals_against_l20")]:
+    for src, name in [("sog_for", "sog_for_l20"), ("sog_against", "sog_against_l20"),
+                      ("real_goals_against", "goals_against_l20"), ("real_goals_for", "goals_for_l20")]:
         tg[name] = tb[src].shift(1).groupby(tg.team).transform(lambda s: s.rolling(20, min_periods=5).mean())
-    team = tg[["game_id", "team", "sog_for_l20", "sog_against_l20", "goals_against_l20"]]
-    f = f.merge(team[["game_id", "team", "sog_for_l20"]].rename(columns={"sog_for_l20": "team_sog_for_l20"}),
+    team = tg[["game_id", "team", "sog_for_l20", "sog_against_l20", "goals_against_l20", "goals_for_l20"]]
+    f = f.merge(team[["game_id", "team", "sog_for_l20", "goals_for_l20"]].rename(
+                    columns={"sog_for_l20": "team_sog_for_l20", "goals_for_l20": "team_goals_for_l20"}),
                 on=["game_id", "team"], how="left")
     f = f.merge(team.rename(columns={"team": "opponent", "sog_against_l20": "opp_sog_against_l20",
                                      "goals_against_l20": "opp_goals_against_l20"})[
                     ["game_id", "opponent", "opp_sog_against_l20", "opp_goals_against_l20"]],
                 on=["game_id", "opponent"], how="left")
+    # Opposing starting goalie: save percentage over his previous 40 appearances.
+    gl = pd.read_parquet(f"{RUN}/goalie_history_candidates.parquet")
+    gl = gl[gl.participated].sort_values(["player_id", "scheduled_utc", "game_id"]).copy()
+    gb = gl.groupby("player_id", sort=False)
+    for c in ["saves", "shots_against"]:
+        gl[f"{c}_l40"] = gb[c].shift(1).groupby(gl.player_id).transform(lambda s: s.rolling(40, min_periods=1).sum()).fillna(0)
+    gl["goalie_sv_l40"] = (gl.saves_l40 + PRIOR_SV * PRIOR_SHOTS) / (gl.shots_against_l40 + PRIOR_SHOTS)
+    starters = gl[gl.starter][["game_id", "team_abbrev", "goalie_sv_l40"]].rename(
+        columns={"team_abbrev": "opponent", "goalie_sv_l40": "opp_goalie_sv_l40"})
+    f = f.merge(starters, on=["game_id", "opponent"], how="left")
     return f
 
 

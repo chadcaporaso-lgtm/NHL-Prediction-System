@@ -1,4 +1,5 @@
 {
+  "target": "shots",
   "features": [
     "ewm_shots",
     "l10_shots",
