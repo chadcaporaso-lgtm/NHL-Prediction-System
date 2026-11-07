@@ -201,3 +201,17 @@ random player-games and 300 team-games using only games dated before each
 one, and checks that no feature reproduces the same-game target. All tests
 pass.
 
+### Phase 3: Models
+
+**3a. Shots on goal (2026-11-07).** Model card:
+[docs/models/sog-model.md](docs/models/sog-model.md). A negative binomial
+shot model (gradient boosting with Poisson loss), validated walk-forward by
+season from 2021-22, beats a recent-form baseline in every season. Against
+15,777 closing prop lines, it alone is slightly worse than the market (log
+loss 0.6821 vs 0.6815). Combined with the market price, it adds information:
+fitted on 2025-26 lines and tested on 2026-27, the model's weight is 0.35
+(SE 0.09) and the blend scores 0.6766 vs the market's 0.6797. Betting the
+blend at a 4-point edge returned +9.2% (SE 2.7%) on 824 bets, but this is
+one short test period with thresholds chosen afterward, so it is a
+hypothesis to confirm on later 2026-27 games, not a result.
+

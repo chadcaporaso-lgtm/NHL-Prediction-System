@@ -3,7 +3,7 @@
 Inputs
   data/sgo/player_props_close.parquet                       (extract_sgo_props.py)
   v2 games_schedule.parquet                                 (official NHL schedule and results)
-  skater summary tables: 2025-26 from v1 raw, which is complete
+  data/clean/skater_games.parquet (all seasons, src/features/build_skater_games.py)
 
 Output
   data/sgo/player_props_matched.parquet: prop lines with NHL game_id,
@@ -29,7 +29,7 @@ import pandas as pd
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 TEAM = {"LA": "LAK", "NJ": "NJD", "SJ": "SJS", "TB": "TBL"}
 SCHED = os.path.join(ROOT, "data/drive/NHL_Prediction_System_ChatGPT/data/normalized/official_incremental/20261103T160656Z_4414a3fb/games_schedule.parquet")
-SKATERS = [os.path.join(ROOT, "data/drive/NHL_Prediction_System/data/raw/nhl_api/skater_summary_20252026.parquet")]
+SKATERS = os.path.join(ROOT, "data/clean/skater_games.parquet")
 
 
 def norm(name: str | None) -> str:
@@ -52,8 +52,8 @@ gm = gm[(gm.ts - gm.ts_nhl).abs() < pd.Timedelta(hours=12)]
 gm = gm.drop_duplicates("event_id")
 props = props.merge(gm[["event_id", "game_id", "game_type"]], on="event_id", how="left")
 
-box = pd.concat([pd.read_parquet(p) for p in SKATERS if os.path.exists(p)])
-box = box[["gameId", "playerId", "skaterFullName", "teamAbbrev", "goals", "assists", "points", "shots"]].rename(columns={"gameId": "game_id"})
+box = pd.read_parquet(SKATERS, columns=["game_id", "player_id", "player_name", "team", "goals", "assists", "points", "shots"])
+box = box.rename(columns={"player_id": "playerId", "player_name": "skaterFullName", "team": "teamAbbrev"})
 box["name_key"] = box.skaterFullName.map(norm)
 props["name_key"] = props.player_name.map(norm)
 props = props.merge(box.drop(columns="skaterFullName"), on=["game_id", "name_key"], how="left")
