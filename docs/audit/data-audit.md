@@ -334,8 +334,13 @@ and no goals or ice time. The revisions are small but show that MoneyPuck
 updates past games, so each feature build records which dated snapshot it
 used.
 
-Open: the 2026-27 skater table has 256 games and MoneyPuck 264 for the same
-dates; the 8 games will be identified when the files are loaded.
+The first 2026-27 skater fetch started on 2026-10-01, but the season opened
+on 2026-09-29, so it missed 8 games. Re-fetched with
+`src/ingest/colab_update_current_season.py`: 264 games from 2026-09-29 to
+2026-11-06, the same game set as MoneyPuck, one game with 35 skaters, no
+duplicates. All files from the gap fill were transferred and verified by
+SHA-256. The 2025-26 ice-time table (v1) was also checked: 1,394 games,
+36 per game, no duplicates.
 
 ## Goalie game logs (`src/audit/audit_goalie_games.py`)
 
