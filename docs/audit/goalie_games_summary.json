@@ -1,0 +1,131 @@
+{
+  "rows": 37568,
+  "seasons": {
+    "20192020": {
+      "completed_games": 1212,
+      "games_with_goalie_rows": 1212,
+      "games_with_both_teams": 1212
+    },
+    "20202021": {
+      "completed_games": 952,
+      "games_with_goalie_rows": 952,
+      "games_with_both_teams": 952
+    },
+    "20212022": {
+      "completed_games": 1401,
+      "games_with_goalie_rows": 1401,
+      "games_with_both_teams": 1401
+    },
+    "20222023": {
+      "completed_games": 1400,
+      "games_with_goalie_rows": 1400,
+      "games_with_both_teams": 1400
+    },
+    "20232024": {
+      "completed_games": 1400,
+      "games_with_goalie_rows": 1400,
+      "games_with_both_teams": 1400
+    },
+    "20242025": {
+      "completed_games": 1398,
+      "games_with_goalie_rows": 1398,
+      "games_with_both_teams": 1398
+    },
+    "20252026": {
+      "completed_games": 1394,
+      "games_with_goalie_rows": 1394,
+      "games_with_both_teams": 1394
+    },
+    "20262027": {
+      "completed_games": 235,
+      "games_with_goalie_rows": 235,
+      "games_with_both_teams": 235
+    }
+  },
+  "K2_duplicate_game_player": 0,
+  "K3_team_games": 18784,
+  "K3_team_games_not_one_starter": 0,
+  "K3_sample": [],
+  "K4_saves_ga_mismatch": 81,
+  "K5_team_games_matched": 18784,
+  "K5_real_minus_goalie_ga_counts": {
+    "0": 15743,
+    "1": 2759,
+    "2": 280,
+    "3": 2
+  },
+  "K6_official_minus_goalie_sa_counts": {
+    "0": 15770,
+    "1": 2737,
+    "2": 276,
+    "3": 1
+  },
+  "K6_sample": [
+    [
+      2019020005,
+      13,
+      30,
+      29
+    ],
+    [
+      2019020006,
+      52,
+      32,
+      31
+    ],
+    [
+      2019020009,
+      30,
+      32,
+      31
+    ],
+    [
+      2019020011,
+      20,
+      32,
+      31
+    ],
+    [
+      2019020025,
+      18,
+      28,
+      27
+    ],
+    [
+      2019020026,
+      30,
+      32,
+      31
+    ],
+    [
+      2019020028,
+      23,
+      30,
+      29
+    ],
+    [
+      2019020036,
+      13,
+      35,
+      34
+    ],
+    [
+      2019020041,
+      28,
+      25,
+      24
+    ],
+    [
+      2019020048,
+      8,
+      34,
+      33
+    ]
+  ],
+  "starter_share_of_minutes": 0.9698,
+  "flags": {
+    "historical_starter_flag_only": 18784,
+    "target_pregame_starter_eligible": 0,
+    "historical_availability_verified": 0
+  }
+}

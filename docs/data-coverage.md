@@ -14,7 +14,7 @@ the downloaded files and the inventory. Seasons are labeled by start year
 | Skater game box scores and ice time | Prop models | 2019-20 to 2025-26 complete (2021-24 re-fetched, D-1) | Ready |
 | Skater box scores 2026-27 | Prop features, grading 2026-27 props | 256 games through 2026-11-06, 36 per game, re-fetched 2026-11-07 | Ready (G-B closed); re-fetch as the season goes on |
 | Skater box scores 2019-20, 2020-21 | Prop models (two more training seasons) | 1,212 and 952 games, every scheduled game | Ready (G-C closed) |
-| Goalie game logs (starter, saves, xGA) | Game and totals models | v2 `goalie_history_candidates`, not yet downloaded or audited | **Gap G-D:** audit |
+| Goalie game logs (starter, saves, xGA) | Game and totals models | 2019-20 to 2026-27, every completed game, audited 2026-11-07 | Ready (G-D closed) |
 | Announced starting goalie before the game | Game and totals models | No historical source | **Gap G-E:** use the actual starter and document it (starters are normally confirmed before the close) |
 
 ## Evaluation data (market prices)

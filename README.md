@@ -178,3 +178,9 @@ skater data (now 36 skaters per game), and refreshed MoneyPuck through
 game complete. MoneyPuck revised a few dozen past values out of 106,040 rows,
 so feature builds record which snapshot they use. Details in the data audit.
 
+**1h. Goalie game logs: clean.** 37,568 goalie-games covering every completed
+game from 2019-20, exactly one starter per team-game, and goals and shots
+against that reconcile with official team totals (differences are empty-net
+goals). 81 rows (0.2%) are off by one between saves, goals and shots, a quirk
+in the NHL source. With this, every training table is in place.
+

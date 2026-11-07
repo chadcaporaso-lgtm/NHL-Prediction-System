@@ -337,3 +337,21 @@ used.
 Open: the 2026-27 skater table has 256 games and MoneyPuck 264 for the same
 dates; the 8 games will be identified when the files are loaded.
 
+## Goalie game logs (`src/audit/audit_goalie_games.py`)
+
+Source: v2 `goalie_history_candidates.parquet` (run `20261103T160656Z_4414a3fb`),
+37,568 goalie-game rows. Summary: `docs/audit/goalie_games_summary.json`.
+
+| Check | Result |
+|-------|--------|
+| K1 coverage | Every completed game 2019-20 to 2026-11-02 (9,392) has goalie rows for both teams |
+| K2 duplicates on (game, goalie) | 0 |
+| K3 exactly one starter per team-game | 18,784 of 18,784 |
+| K4 saves + goals against = shots against | 81 rows off by one (0.2%), always one more goal-plus-save than shots; the earlier project flagged the same games for review. Source quirk, left as is |
+| K5 team real goals against minus goalie goals against | 0 on 15,743 team-games, 1 to 3 on the rest: empty-net goals, as expected |
+| K6 official shots against minus goalie shots against | Same pattern as K5 (empty-net shots) |
+
+Result: clean. The `starter` column is the goalie who started the game, taken
+from the box score, not a pregame announcement (gap G-E). Features use it
+under that documented assumption.
+
