@@ -104,4 +104,15 @@ Data files are not committed. See `.gitignore`.
 
 ### Phase 1: Inventory and audit
 
-In progress.
+**1a. Inventory (done 2026-11-07).** Listed every file in both earlier
+projects: 143 files (400 MB) in v1 and 10,819 files (1.4 GB) in v2, with
+almost no overlap between them. Details and findings in
+[docs/inventory.md](docs/inventory.md). Early findings:
+
+- v1 contains no training code, only a loader, so its models are audited from
+  the saved bundles, out-of-fold predictions and reports.
+- v1 has seven pairs of raw files that are probably duplicates.
+- v1 skater tables for 2021-22 to 2023-24 are a quarter the size of later
+  seasons, which may mean truncated downloads.
+
+**1b. Data audit.** In progress.
