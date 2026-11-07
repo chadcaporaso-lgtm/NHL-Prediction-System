@@ -52,7 +52,7 @@ SEASONS = {
     # season id: (first date, last date, always re-fetch)
     "20192020": ("2019-10-01", "2020-09-30", False),  # includes the 2020 bubble playoffs
     "20202021": ("2021-01-12", "2021-07-10", False),
-    "20262027": ("2026-10-01", YESTERDAY, True),
+    "20262027": ("2026-09-25", YESTERDAY, True),  # season opened 2026-09-29
 }
 REPORTS = ["summary", "timeonice"]
 GAME_TYPES = (2, 3)
