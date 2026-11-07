@@ -32,6 +32,10 @@ import os
 import numpy as np
 import pandas as pd
 
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from common import official  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 RUN = os.path.join(ROOT, "data/drive/NHL_Prediction_System_ChatGPT/data/normalized/official_incremental/20261103T160656Z_4414a3fb")
 STATS = ["shots", "toi", "toi_pp", "goals", "assists", "points", "pp_points"]
@@ -72,9 +76,8 @@ def build() -> pd.DataFrame:
     f = f.merge(ps, on=["player_id", "season"], how="left")
 
     # Team context from official team-game totals, prior 20 games.
-    tg = pd.read_parquet(f"{RUN}/official_team_games.parquet")
-    teams = pd.read_parquet(f"{RUN}/games_schedule.parquet")[["home_team_id", "home_abbrev"]].drop_duplicates()
-    abbrev = dict(zip(teams.home_team_id, teams.home_abbrev))
+    tg = official.load_team_games()
+    abbrev = official.team_abbrev()
     tg = tg[tg.game_type.isin([2, 3]) & tg.final_score_for.notna()].copy()
     tg["team"] = tg.team_id.map(abbrev)
     tg = tg.sort_values(["team", "scheduled_utc", "game_id"])
@@ -91,7 +94,7 @@ def build() -> pd.DataFrame:
                     ["game_id", "opponent", "opp_sog_against_l20", "opp_goals_against_l20"]],
                 on=["game_id", "opponent"], how="left")
     # Opposing starting goalie: save percentage over his previous 40 appearances.
-    gl = pd.read_parquet(f"{RUN}/goalie_history_candidates.parquet")
+    gl = official.load_goalies()
     gl = gl[gl.participated].sort_values(["player_id", "scheduled_utc", "game_id"]).copy()
     gb = gl.groupby("player_id", sort=False)
     for c in ["saves", "shots_against"]:

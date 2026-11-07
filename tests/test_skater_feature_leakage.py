@@ -12,10 +12,14 @@ from __future__ import annotations
 
 import os
 
+import sys
+
 import numpy as np
 import pandas as pd
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, "src"))
+from common import official  # noqa: E402
 RUN = os.path.join(ROOT, "data/drive/NHL_Prediction_System_ChatGPT/data/normalized/official_incremental/20261103T160656Z_4414a3fb")
 
 
@@ -54,9 +58,8 @@ def test_player_features_use_only_prior_games(n=500, seed=7):
 
 def test_team_context_uses_only_prior_games(n=300, seed=11):
     f, _ = _load()
-    tg = pd.read_parquet(f"{RUN}/official_team_games.parquet")
-    teams = pd.read_parquet(f"{RUN}/games_schedule.parquet")[["home_team_id", "home_abbrev"]].drop_duplicates()
-    tg["team"] = tg.team_id.map(dict(zip(teams.home_team_id, teams.home_abbrev)))
+    tg = official.load_team_games()
+    tg["team"] = tg.team_id.map(official.team_abbrev())
     tg = tg[tg.game_type.isin([2, 3]) & tg.final_score_for.notna()].sort_values(["scheduled_utc", "game_id"])
     sample = f.dropna(subset=["opp_sog_against_l20"]).drop_duplicates(["game_id", "opponent"]).sample(n, random_state=seed)
     bad = []
@@ -71,7 +74,7 @@ def test_team_context_uses_only_prior_games(n=300, seed=11):
 
 def test_opposing_goalie_uses_only_prior_appearances(n=300, seed=3):
     f, _ = _load()
-    gl = pd.read_parquet(f"{RUN}/goalie_history_candidates.parquet")
+    gl = official.load_goalies()
     gl = gl[gl.participated].sort_values(["scheduled_utc", "game_id"])
     sample = f.dropna(subset=["opp_goalie_sv_l40"]).drop_duplicates(["game_id", "opponent"]).sample(n, random_state=seed)
     bad = []

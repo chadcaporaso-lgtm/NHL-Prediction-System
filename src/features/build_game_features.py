@@ -35,6 +35,10 @@ import os
 import numpy as np
 import pandas as pd
 
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from common import official  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 RUN = os.path.join(ROOT, "data/drive/NHL_Prediction_System_ChatGPT/data/normalized/official_incremental/20261103T160656Z_4414a3fb")
 MP = os.path.join(ROOT, "data/drive/NHL_Prediction_System_Claude/01_raw/moneypuck/moneypuck_all_teams_2018_plus_2026-11-07.parquet")
@@ -47,7 +51,7 @@ PRIOR_SV, PRIOR_SHOTS = 0.905, 300
 
 def team_history() -> pd.DataFrame:
     """Per team-game stats from MoneyPuck, 2018-19 onward."""
-    mp = pd.read_parquet(MP)
+    mp = pd.read_parquet(official.moneypuck_file())
     mp["team"] = mp.team.replace(MP_TEAM)
     key = ["gameId", "team"]
     a = mp[mp.situation == "all"].set_index(key)
@@ -87,7 +91,7 @@ def add_team_form(h: pd.DataFrame) -> pd.DataFrame:
 
 
 def goalie_starters() -> pd.DataFrame:
-    gl = pd.read_parquet(f"{RUN}/goalie_history_candidates.parquet")
+    gl = official.load_goalies()
     gl = gl[gl.participated].sort_values(["player_id", "scheduled_utc", "game_id"]).copy()
     gb = gl.groupby("player_id", sort=False)
     for c in ["saves", "shots_against"]:
@@ -113,9 +117,8 @@ def league_scoring(tg: pd.DataFrame, n_games: int = 300) -> pd.DataFrame:
 
 
 def build() -> pd.DataFrame:
-    tg = pd.read_parquet(f"{RUN}/official_team_games.parquet")
-    sched = pd.read_parquet(f"{RUN}/games_schedule.parquet")
-    abbrev = dict(zip(sched.home_team_id, sched.home_abbrev))
+    tg = official.load_team_games()
+    abbrev = official.team_abbrev()
     tg = tg[tg.game_type.isin([2, 3]) & tg.final_score_for.notna()].copy()
     tg["team"] = tg.team_id.map(abbrev)
     tg["opponent"] = tg.opponent_id.map(abbrev)

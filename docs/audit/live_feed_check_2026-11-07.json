@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-07",
+  "team_games_v2": 470,
+  "team_games_live": 522,
+  "team_games_in_both": 470,
+  "v2_games_missing_from_live": 0,
+  "team_game_mismatches": {
+    "final_score_for": 0,
+    "final_score_against": 0,
+    "real_goals_for": 0,
+    "real_goals_against": 0,
+    "sog_for": 0,
+    "sog_against": 0,
+    "decision_type": 0,
+    "is_home": 0,
+    "won_final": 0
+  },
+  "goalie_rows_v2": 940,
+  "goalie_rows_live": 1044,
+  "goalie_rows_only_v2": 0,
+  "goalie_rows_only_live": 0,
+  "goalie_mismatches": {
+    "starter": 0,
+    "saves": 0,
+    "shots_against": 0,
+    "goals_against": 0,
+    "participated": 0,
+    "team_id": 0
+  },
+  "goalie_mismatch_sample": [],
+  "only_v2_sample": []
+}

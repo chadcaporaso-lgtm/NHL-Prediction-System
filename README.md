@@ -211,7 +211,7 @@ season from 2021-22, beats a recent-form baseline in every season. Against
 loss 0.6821 vs 0.6815). Combined with the market price, it adds information:
 fitted on 2025-26 lines and tested on 2026-27, the model's weight is 0.35
 (SE 0.09) and the blend scores 0.6766 vs the market's 0.6797. Betting the
-blend at a 4-point edge returned +9.2% (SE 2.7%) on 824 bets, but this is
+blend at a 4-point edge returned +8.4% (SE 2.8%) on 839 bets, but this is
 one short test period with thresholds chosen afterward, so it is a
 hypothesis to confirm on later 2026-27 games, not a result.
 
@@ -235,4 +235,15 @@ market, and it adds nothing to the closing price in a blend. On the puck line
 it matches or slightly beats the close in three of four comparisons (blend
 weight 1.9 standard errors), which is suggestive but not significant. Totals
 show no skill. No game market shows a betting edge.
+
+### Phase 4: Live tracking
+
+**4a. Frozen rules and weekly pipeline (2026-11-07).**
+[docs/live/README.md](docs/live/README.md). The shots-on-goal and puck-line
+rules are fixed in advance and graded only on games after 2026-11-06, with
+model fingerprints checked each week so the models cannot drift. A weekly
+Colab cell pulls this season's scores, goalie lines, skater games and
+MoneyPuck from public sources; on all 470 team-games and 940 goalie lines it
+shares with the audited tables, it matched exactly. One command then
+rebuilds features, reruns the leakage tests and models, and grades the rules.
 

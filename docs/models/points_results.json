@@ -175,14 +175,14 @@
         "pred_zero_rate": 0.6614
       },
       "glm": {
-        "nb_log_lik_per_game": -0.85397,
-        "mae": 0.5318,
-        "pred_zero_rate": 0.6617
+        "nb_log_lik_per_game": -0.85369,
+        "mae": 0.5316,
+        "pred_zero_rate": 0.6616
       },
       "gbm": {
-        "nb_log_lik_per_game": -0.85609,
-        "mae": 0.5315,
-        "pred_zero_rate": 0.661
+        "nb_log_lik_per_game": -0.85554,
+        "mae": 0.5317,
+        "pred_zero_rate": 0.6597
       },
       "actual_zero_rate": 0.6445
     }
@@ -209,22 +209,22 @@
         "under_bets": 7503
       },
       "glm": {
-        "log_loss": 0.6555,
+        "log_loss": 0.6553,
         "mean_p_over": 0.4018,
-        "bets_edge_0.03": 10912,
-        "roi": -0.0444,
-        "roi_se_game_clustered": 0.0102,
-        "over_bets": 1480,
-        "under_bets": 9432
+        "bets_edge_0.03": 10876,
+        "roi": -0.0428,
+        "roi_se_game_clustered": 0.0103,
+        "over_bets": 1461,
+        "under_bets": 9415
       },
       "gbm": {
-        "log_loss": 0.6564,
-        "mean_p_over": 0.4029,
-        "bets_edge_0.03": 11160,
-        "roi": -0.049,
-        "roi_se_game_clustered": 0.0101,
-        "over_bets": 2111,
-        "under_bets": 9049
+        "log_loss": 0.6562,
+        "mean_p_over": 0.4035,
+        "bets_edge_0.03": 11092,
+        "roi": -0.0472,
+        "roi_se_game_clustered": 0.0102,
+        "over_bets": 2140,
+        "under_bets": 8952
       }
     },
     "by_season": {
@@ -239,8 +239,8 @@
         "lines": 6951,
         "market_log_loss": 0.634,
         "baseline_log_loss": 0.651,
-        "glm_log_loss": 0.6405,
-        "gbm_log_loss": 0.6411
+        "glm_log_loss": 0.6401,
+        "gbm_log_loss": 0.6405
       }
     }
   }

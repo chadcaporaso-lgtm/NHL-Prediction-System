@@ -38,7 +38,7 @@ def test_team_form_uses_only_prior_games(n=300, seed=5):
 
 def test_starter_save_pct_uses_only_prior_appearances(n=300, seed=9):
     f = pd.read_parquet(os.path.join(ROOT, "data/features/game_team_features.parquet"))
-    gl = pd.read_parquet(f"{bgf.RUN}/goalie_history_candidates.parquet")
+    gl = bgf.official.load_goalies()
     gl = gl[gl.participated].sort_values(["scheduled_utc", "game_id"])
     bad = []
     for _, r in f.dropna(subset=["starter_sv_l40"]).sample(n, random_state=seed).iterrows():

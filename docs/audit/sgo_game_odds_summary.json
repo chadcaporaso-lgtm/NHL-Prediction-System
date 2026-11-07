@@ -1,51 +1,51 @@
 {
   "events": 998,
-  "matched_completed_games": 881,
+  "matched_completed_games": 907,
   "date_range": [
     "2026-01-16",
-    "2026-11-02"
+    "2026-11-05"
   ],
   "by_season": {
     "20252026": 646,
-    "20262027": 235
+    "20262027": 261
   },
   "by_game_type": {
-    "2": 799,
+    "2": 825,
     "3": 82
   },
   "moneyline": {
-    "games": 881,
-    "home_win_rate": 0.5267,
-    "close_log_loss": 0.6672,
-    "open_log_loss": 0.6753,
+    "games": 907,
+    "home_win_rate": 0.527,
+    "close_log_loss": 0.6662,
+    "open_log_loss": 0.6747,
     "constant_log_loss": 0.6917,
     "median_margin": 0.0417,
     "abs_close_odds_over_1000": 0
   },
   "puck_line": {
-    "games": 881,
-    "line_consistent": 881,
+    "games": 907,
+    "line_consistent": 907,
     "home_line_counts": {
-      "-1.5": 569,
-      "1.5": 312
+      "-1.5": 586,
+      "1.5": 321
     },
-    "home_cover_rate": 0.4415,
-    "close_log_loss": 0.6413,
-    "constant_log_loss": 0.6863,
+    "home_cover_rate": 0.4432,
+    "close_log_loss": 0.6394,
+    "constant_log_loss": 0.6867,
     "median_margin": 0.0432
   },
   "totals": {
-    "games": 881,
+    "games": 907,
     "pushes": 19,
     "line_counts": {
-      "6.5": 421,
-      "5.5": 262,
-      "6.0": 195,
+      "6.5": 437,
+      "5.5": 271,
+      "6.0": 196,
       "7.0": 2,
       "7.5": 1
     },
-    "over_rate": 0.5104,
-    "close_log_loss": 0.6875,
+    "over_rate": 0.5113,
+    "close_log_loss": 0.6876,
     "constant_log_loss": 0.6929,
     "median_margin": 0.0471
   }

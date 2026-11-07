@@ -77,12 +77,14 @@ Logistic regression y ~ logit(p_market) + logit(p_model), fitted on the
 The model's weight is about 3.9 standard errors above zero: it carries shot
 information the closing price has not fully priced.
 
-Betting the blend on 2026-27 at the closing price:
+Betting the blend on 2026-27 at the closing price (rerun 2026-11-07 after games
+from 2026-11-03 to 11-06 gained real team and goalie context; the first run,
+with those filled by league averages, gave +9.2% on 824 bets at 4 points):
 
 | Edge threshold | Bets | ROI | SE (game-clustered) |
 |---:|---:|---:|---:|
 | 2 points | 2,613 | +1.8% | 1.7% |
-| 4 points | 824 | +9.2% | 2.7% |
+| 4 points | 839 | +8.4% | 2.8% |
 | 6 points | 230 | +17.9% | 4.8% |
 
 ## Limits (read before quoting the ROI)
@@ -105,6 +107,5 @@ Betting the blend on 2026-27 at the closing price:
 
 ## Next
 
-Confirm on 2026-27 games after 2026-11-06 without changing the model
-(fixed threshold: 4 points). Calibrate the stand-alone model. Improve player
-name matching.
+Live tracking on games after 2026-11-06 with the rule fixed in advance:
+[docs/live/README.md](../live/README.md).

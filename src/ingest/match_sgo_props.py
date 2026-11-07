@@ -26,6 +26,10 @@ import unicodedata
 import numpy as np
 import pandas as pd
 
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from common import official  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 TEAM = {"LA": "LAK", "NJ": "NJD", "SJ": "SJS", "TB": "TBL"}
 SCHED = os.path.join(ROOT, "data/drive/NHL_Prediction_System_ChatGPT/data/normalized/official_incremental/20261103T160656Z_4414a3fb/games_schedule.parquet")
@@ -44,7 +48,7 @@ props["home_nhl"] = props.home.map(lambda t: TEAM.get(t, t))
 props["away_nhl"] = props.away.map(lambda t: TEAM.get(t, t))
 props["ts"] = pd.to_datetime(props.starts_at, utc=True)
 
-sched = pd.read_parquet(SCHED)
+sched = official.load_schedule()
 sched["ts_nhl"] = pd.to_datetime(sched.scheduled_utc, utc=True)
 games = props[["event_id", "home_nhl", "away_nhl", "ts"]].drop_duplicates("event_id")
 gm = games.merge(sched[["game_id", "home_abbrev", "away_abbrev", "ts_nhl", "game_type"]], left_on=["home_nhl", "away_nhl"], right_on=["home_abbrev", "away_abbrev"])

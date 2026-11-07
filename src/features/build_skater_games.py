@@ -19,6 +19,10 @@ import os
 
 import pandas as pd
 
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from common import official  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 NEW = os.path.join(ROOT, "data/drive/NHL_Prediction_System_Claude/01_raw/nhl_api_refetch")
 V1 = os.path.join(ROOT, "data/drive/NHL_Prediction_System/data/raw/nhl_api")
@@ -32,8 +36,8 @@ TOI_COLS = ["gameId", "playerId", "timeOnIce", "evTimeOnIce", "ppTimeOnIce", "sh
 
 frames, report = [], {}
 for season, base in SOURCES.items():
-    s = pd.read_parquet(f"{base}/skater_summary_{season}.parquet")[SUMMARY_COLS]
-    t = pd.read_parquet(f"{base}/skater_timeonice_{season}.parquet")[TOI_COLS]
+    s = pd.read_parquet(official.skater_file("summary", season, f"{base}/skater_summary_{season}.parquet"))[SUMMARY_COLS]
+    t = pd.read_parquet(official.skater_file("timeonice", season, f"{base}/skater_timeonice_{season}.parquet"))[TOI_COLS]
     d = s.merge(t, on=["gameId", "playerId"], how="left", validate="one_to_one")
     d["season"] = int(season)
     report[season] = {"rows": len(d), "games": int(d.gameId.nunique()),
@@ -50,7 +54,7 @@ df["game_type"] = df.game_id // 10000 % 100
 for c in ["toi", "toi_ev", "toi_pp", "toi_sh"]:
     df[c] = df[c] / 60.0  # seconds to minutes
 
-sched = pd.read_parquet(SCHED)
+sched = official.load_schedule()
 done = sched[sched.home_final_score.notna() & sched.game_type.isin([2, 3])]
 checks = {
     "rows": len(df), "games": int(df.game_id.nunique()),

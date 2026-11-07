@@ -17,6 +17,10 @@ import os
 import numpy as np
 import pandas as pd
 
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from common import official  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 TEAM = {"LA": "LAK", "NJ": "NJD", "SJ": "SJS", "TB": "TBL"}
 SCHED = os.path.join(ROOT, "data/drive/NHL_Prediction_System_ChatGPT/data/normalized/official_incremental/20261103T160656Z_4414a3fb/games_schedule.parquet")
@@ -42,7 +46,7 @@ g = pd.read_parquet(os.path.join(ROOT, "data/sgo/game_odds_close.parquet"))
 g["home_nhl"] = g.home.map(lambda t: TEAM.get(t, t))
 g["away_nhl"] = g.away.map(lambda t: TEAM.get(t, t))
 g["ts"] = pd.to_datetime(g.starts_at, utc=True)
-s = pd.read_parquet(SCHED)
+s = official.load_schedule()
 s["ts_nhl"] = pd.to_datetime(s.scheduled_utc, utc=True)
 m = g.merge(s, left_on=["home_nhl", "away_nhl"], right_on=["home_abbrev", "away_abbrev"])
 m = m[(m.ts - m.ts_nhl).abs() < pd.Timedelta(hours=12)].drop_duplicates("event_id")

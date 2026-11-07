@@ -68,6 +68,7 @@ while d <= LAST:
     for day in get(f"https://api-web.nhle.com/v1/schedule/{d.isoformat()}").get("gameWeek", []):
         for g in day.get("games", []):
             if g.get("season") == SEASON and g.get("gameType") in (2, 3):
+                g["_local_date"] = day["date"]  # evening games start after midnight UTC
                 games[g["id"]] = g
     d += timedelta(days=7)
 print("scheduled games found:", len(games))
@@ -79,7 +80,7 @@ for gid, g in sorted(games.items()):
            "home_abbrev": g["homeTeam"]["abbrev"], "away_abbrev": g["awayTeam"]["abbrev"],
            "status": g.get("gameState"), "game_date": None, "home_final_score": None, "away_final_score": None,
            "decision_type": None}
-    if g.get("gameState") in ("OFF", "FINAL") and g["startTimeUTC"][:10] <= LAST.isoformat():
+    if g.get("gameState") in ("OFF", "FINAL") and g["_local_date"] <= LAST.isoformat():
         try:
             b = get(f"https://api-web.nhle.com/v1/gamecenter/{gid}/boxscore")
             dec = (b.get("gameOutcome") or {}).get("lastPeriodType", "REG")
