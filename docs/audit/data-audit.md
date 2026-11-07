@@ -261,3 +261,34 @@ two kinds of line:
 If this pattern holds, the `archive` lines are a usable multi-season closing
 history and the `final` lines should be excluded. One game is not enough to
 decide; a sample of about 30 games per season would settle it.
+
+### O-6 (Pass): SportsGameOdds game lines from 2026-01-16, all three markets
+
+`src/ingest/extract_sgo_game_odds.py` pulls the full-game moneyline, puck
+line and total from the SportsGameOdds files already downloaded for the prop
+work, using only the provider's consensus opening and closing prices. The
+per-book `odds` fields are last-seen prices and include in-game quotes
+(DraftKings home moneyline -50000 after the result was known), the same
+problem as O-1, so they are never read. `src/audit/profile_sgo_game_odds.py`
+matches the events to the NHL schedule and grades them on the official score
+(how sportsbooks settle). Summary: `docs/audit/sgo_game_odds_summary.json`.
+
+881 completed games, 2026-01-16 to 2026-11-02 (646 in 2025-26, 235 in
+2026-27; 82 playoff games). Every game has both closing prices in all three
+markets.
+
+| Market | Closing log loss | Opening log loss | Constant log loss | Median margin |
+|--------|-----------------:|-----------------:|------------------:|--------------:|
+| Moneyline | 0.667 | 0.675 | 0.692 | 4.2% |
+| Puck line (±1.5) | 0.641 | | 0.686 | 4.3% |
+| Total goals | 0.688 | | 0.693 | 4.7% |
+
+No closing moneyline is beyond ±1000, both puck-line sides always carry
+opposite lines, and closing beats opening, all signs of pregame prices.
+Totals: 19 pushes on whole-number lines (6.0, 7.0) are excluded from log
+loss; the over hit 51.0%.
+
+This adds puck line and opening prices to the clean history, but not more
+seasons: it overlaps the sources in O-3. Clean game-market prices for
+2025-26 and the start of 2026-27 now cover all three markets; every earlier
+season still depends on O-5.

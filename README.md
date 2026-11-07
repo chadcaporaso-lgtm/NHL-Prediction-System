@@ -160,3 +160,11 @@ closing lines: [docs/audit/sgo-props.md](docs/audit/sgo-props.md). Graded on
 NHL box scores, 2025-26 gives about 53,000 lines across shots on goal, points,
 assists and goals. Found that the provider's `points` stat is goals and
 `goals+assists` is points. This is the prop backtest set.
+
+**1f. Game-market closing prices (SportsGameOdds).** Extracted full-game
+moneyline, puck line and total opening and closing prices from the same
+downloads: 881 completed games from 2026-01-16 to 2026-11-02, every one with
+closing prices in all three markets (data audit finding O-6). Closing log
+loss: moneyline 0.667, puck line 0.641, totals 0.688, against 0.692, 0.686
+and 0.693 for a constant. Clean game-market prices still cover only 2025-26
+and the start of 2026-27; earlier seasons need PuckAPI's archive odds (O-5).
