@@ -170,3 +170,11 @@ closing prices in all three markets (data audit finding O-6). Closing log
 loss: moneyline 0.667, puck line 0.641, totals 0.688, against 0.692, 0.686
 and 0.693 for a constant. Clean game-market prices still cover only 2025-26
 and the start of 2026-27; earlier seasons need PuckAPI's archive odds (O-5).
+
+**1g. Data gaps filled.** Downloaded skater game data for 2019-20 and
+2020-21 (two more training seasons), re-fetched the incomplete 2026-27
+skater data (now 36 skaters per game), and refreshed MoneyPuck through
+2026-11-06. Skater game data now covers 2019-20 to the present with every
+game complete. MoneyPuck revised a few dozen past values out of 106,040 rows,
+so feature builds record which snapshot they use. Details in the data audit.
+

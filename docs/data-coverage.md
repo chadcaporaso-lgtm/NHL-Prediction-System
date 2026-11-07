@@ -10,10 +10,10 @@ the downloaded files and the inventory. Seasons are labeled by start year
 |------|---------|------|--------|
 | Game schedule and results (real goals, OT/SO) | All game models, labels | 2019-20 to 2026-27 (through 2026-11-02), audited | Ready |
 | Team game stats (shots, official) | Game models | 2019-20 to 2026-27 | Ready |
-| MoneyPuck team xG and possession | Game models | 2018-19 to 2025-26 full; 2026-27 has 89 of 235 completed games | **Gap G-A:** refresh 2026-27 |
-| Skater game box scores and ice time | Prop models | 2021-22 to 2025-26 complete (2021-24 re-fetched, D-1) | Ready |
-| Skater box scores 2026-27 | Prop features, grading 2026-27 props | About 24 skaters per game instead of 36 | **Gap G-B:** re-fetch |
-| Skater box scores 2019-20, 2020-21 | Prop models (two more training seasons) | None | **Gap G-C (optional):** fetch, free |
+| MoneyPuck team xG and possession | Game models | 2018-19 to 2026-27 (through 2026-11-06, 264 games), refreshed 2026-11-07 | Ready (G-A closed) |
+| Skater game box scores and ice time | Prop models | 2019-20 to 2025-26 complete (2021-24 re-fetched, D-1) | Ready |
+| Skater box scores 2026-27 | Prop features, grading 2026-27 props | 256 games through 2026-11-06, 36 per game, re-fetched 2026-11-07 | Ready (G-B closed); re-fetch as the season goes on |
+| Skater box scores 2019-20, 2020-21 | Prop models (two more training seasons) | 1,212 and 952 games, every scheduled game | Ready (G-C closed) |
 | Goalie game logs (starter, saves, xGA) | Game and totals models | v2 `goalie_history_candidates`, not yet downloaded or audited | **Gap G-D:** audit |
 | Announced starting goalie before the game | Game and totals models | No historical source | **Gap G-E:** use the actual starter and document it (starters are normally confirmed before the close) |
 

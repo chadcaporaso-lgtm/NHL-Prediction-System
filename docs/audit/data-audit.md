@@ -309,3 +309,31 @@ Before 2026-01-16 no game has an opening price, and the "closing" price is
 the last price seen, often in-game (+650, -2981). The clean-looking ones
 cannot be told apart from in-game prices taken early in a game, so none are
 used. SportsGameOdds is not a source for earlier seasons.
+
+## Gap fill, 2026-11-07 (`src/ingest/colab_fill_data_gaps.py`)
+
+Run in Colab; report `01_raw/fill_gaps_report_2026-11-07.json` holds the
+SHA-256 of every file.
+
+| File | Games | Rows per game | Duplicates | Games without 36 rows |
+|------|------:|--------------:|-----------:|----------------------:|
+| Skater summary and ice time 2019-20 | 1,212 | 36.0 | 0 | 4 (35 or 37) |
+| Skater summary and ice time 2020-21 | 952 | 35.98 | 0 | 19 (33 to 35) |
+| Skater summary and ice time 2026-27 (to 2026-11-06) | 256 | 36.0 | 0 | 1 (35) |
+
+Game counts match the official schedule (1,212 and 952, the shortened
+COVID seasons). Games with 33 to 35 skaters are teams that dressed short,
+which happened often in 2020-21 under COVID protocols; they are real, not
+gaps. The 2026-27 table replaces the earlier one (about 24 rows per game).
+
+MoneyPuck `all_teams.csv`, seasons 2018 onward: 107,790 rows, no duplicate
+(team, game, situation) rows, 264 games in 2026-27 through 2026-11-06. Every
+row in the earlier file is still present. MoneyPuck has since revised 29 rows'
+expected goals, 17 rows' shots on goal and 26 rows' Corsi out of 106,040,
+and no goals or ice time. The revisions are small but show that MoneyPuck
+updates past games, so each feature build records which dated snapshot it
+used.
+
+Open: the 2026-27 skater table has 256 games and MoneyPuck 264 for the same
+dates; the 8 games will be identified when the files are loaded.
+
