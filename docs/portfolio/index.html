@@ -216,6 +216,19 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
     <p><b>Moneyline.</b> 0.6830 against the close's 0.6808 on the full 2025-26 season, better than either earlier version (best 0.6867) but still behind the market, and a blend gives it no weight.</p>
   </section>
 
+  <section>
+    <h2>Team power rating</h2>
+    <p class="col">An Elo rating built from scratch: margin-of-victory updates, a home-ice term and an off-season pull toward average, with its settings chosen each season from earlier seasons only. It beats a constant every season and a flat Elo in five of six, but trails the game model from 2023-24 on, and adding it to the game model changes log loss by less than the noise. It stays as a power ranking and an optional feature.</p>
+    <figure>
+      <figcaption>
+        <b>Elo power ranking</b>
+        <span>Rating through November 6, 2026. League average is 1500; hover a team for its rating and distance from average.</span>
+      </figcaption>
+      <div class="legend"><span><i class="bar" style="background:var(--better)"></i>Above average</span><span><i class="bar" style="background:var(--worse)"></i>Below average</span></div>
+      <div class="chart" id="elo"></div>
+    </figure>
+  </section>
+
   <section class="col">
     <h2>Stack</h2>
     <p>Python, pandas, scikit-learn, statsmodels and SciPy; DuckDB on Parquet; Google Drive and Colab for storage and public-API pulls; NHL stats and web APIs, MoneyPuck, SportsGameOdds and PuckAPI as sources. Every number on this page traces to a script and a results file in the repository, with a decision log and model cards alongside.</p>
@@ -309,7 +322,38 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
     });
   }
 
-  const draw = () => { drawGap(); drawCal(); };
+  // Chart 3: Elo power ranking, diverging around 1500.
+  const elo = [["CAR",1609.8],["COL",1569.2],["TBL",1562.4],["MIN",1557.9],["MTL",1543.5],["DAL",1542.4],["VGK",1541.7],["BOS",1539.7],["BUF",1532.5],["EDM",1532.2],["OTT",1524.3],["WSH",1523.1],["NJD",1512.1],["UTA",1509.5],["FLA",1508.2],["STL",1505.1],["CBJ",1501.5],["NYR",1491.6],["PIT",1486.1],["NSH",1486.1],["NYI",1478.9],["DET",1475.4],["ANA",1474.7],["TOR",1472.6],["LAK",1471.7],["PHI",1470.2],["WPG",1467.9],["SEA",1464.3],["CGY",1453.1],["SJS",1425.4],["CHI",1390.2],["VAN",1376.7]];
+  function drawElo() {
+    const host = document.getElementById("elo"); host.innerHTML = "";
+    const W = Math.max(300, host.clientWidth), L = 44, R = 48, T = 4, rowH = 19, H = T + rowH * elo.length + 30;
+    const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Elo rating by team" }, host);
+    const lo = 1350, hi = 1640, x = v => L + (v - lo) / (hi - lo) * (W - L - R);
+    for (let t = 1350; t <= 1600; t += 50) {
+      el("line", { x1: x(t), x2: x(t), y1: T, y2: H - 24, stroke: t === 1500 ? css("--ink-3") : css("--grid"), "stroke-width": 1 }, svg);
+      const lab = el("text", { x: x(t), y: H - 8, "text-anchor": "middle", fill: css("--ink-3"), "font-size": 11, "font-family": css("--mono") }, svg); lab.textContent = t;
+    }
+    const tip = tipFor(host);
+    elo.forEach(([team, v], i) => {
+      const cy = T + i * rowH + rowH / 2, x0 = x(1500), x1 = x(v), h = 12, w = Math.abs(x1 - x0), r = Math.min(4, w / 2);
+      const left = Math.min(x0, x1);
+      const name = el("text", { x: L - 8, y: cy + 4, "text-anchor": "end", fill: css("--ink"), "font-size": 12, "font-family": css("--mono") }, svg); name.textContent = team;
+      const d = v < 1500
+        ? `M${x0},${cy - h / 2} H${left + r} Q${left},${cy - h / 2} ${left},${cy - h / 2 + r} V${cy + h / 2 - r} Q${left},${cy + h / 2} ${left + r},${cy + h / 2} H${x0} Z`
+        : `M${x0},${cy - h / 2} H${x1 - r} Q${x1},${cy - h / 2} ${x1},${cy - h / 2 + r} V${cy + h / 2 - r} Q${x1},${cy + h / 2} ${x1 - r},${cy + h / 2} H${x0} Z`;
+      el("path", { d, fill: v >= 1500 ? css("--better") : css("--worse") }, svg);
+      if (i < 3 || i >= elo.length - 3) {
+        const val = el("text", { x: v >= 1500 ? x1 + 5 : x1 - 5, y: cy + 4, "text-anchor": v >= 1500 ? "start" : "end", fill: css("--ink-2"), "font-size": 11, "font-family": css("--mono") }, svg);
+        val.textContent = Math.round(v);
+      }
+      const hit = el("rect", { x: 0, y: cy - rowH / 2, width: W, height: rowH, fill: "transparent", tabindex: 0 }, svg);
+      const show = () => tip.show(`<b>#${i + 1} ${team}</b><br>Elo ${v.toFixed(0)} · ${v >= 1500 ? "+" : ""}${(v - 1500).toFixed(0)} vs average`, (x0 + x1) / 2 / W * host.clientWidth, cy / H * host.clientHeight);
+      hit.addEventListener("mouseenter", show); hit.addEventListener("focus", show);
+      hit.addEventListener("mouseleave", tip.hide); hit.addEventListener("blur", tip.hide);
+    });
+  }
+
+  const draw = () => { drawGap(); drawCal(); drawElo(); };
   draw();
   let raf; new ResizeObserver(() => { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); }).observe(document.querySelector(".page"));
   const mq = matchMedia("(prefers-color-scheme: dark)"); mq.addEventListener?.("change", draw);

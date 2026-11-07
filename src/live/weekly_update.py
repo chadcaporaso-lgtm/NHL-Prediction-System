@@ -9,6 +9,7 @@ Steps, in order, each stopping the run on failure:
   6. match prop lines, rerun the shots model, the game model and market grading
   7. rebuild team Elo ratings (power ranking) and run its leakage tests
   8. grade the frozen rules (fingerprints checked first)
+  9. redraw the charts in docs/figures/
 Usage: python3 src/live/weekly_update.py <refresh date, e.g. 2026-11-14>
 """
 
@@ -50,3 +51,4 @@ run("src/models/game_market.py")
 run("src/features/build_elo.py")
 run("tests/test_elo_leakage.py")
 run("src/live/track.py")
+run("src/reporting/make_figures.py")

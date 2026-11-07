@@ -27,6 +27,8 @@ earlier games in the data.
 
 ## Validation
 
+![Walk-forward gain over the baseline](../figures/sog_walk_forward.svg)
+
 Walk-forward by season: each test season is predicted by models trained only
 on earlier seasons (training starts 2019-20). The negative binomial alpha is
 fitted on the training seasons only.
@@ -47,6 +49,8 @@ The fitted models beat the baseline in every season, and gbm is best from
 1.53 per game); the models track it because recent-form features lead.
 
 ### Against closing prop prices (SportsGameOdds consensus close)
+
+![Calibration of the model and the closing line](../figures/sog_calibration.svg)
 
 15,777 graded lines in 910 games, 2026-01-17 to 2026-11-06 (lines 1.5: 9,697;
 2.5: 4,970; 3.5: 1,025). Median margin 7.0%; overs hit 47.0%.

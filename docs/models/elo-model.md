@@ -38,6 +38,8 @@ unchanged; flipping every 2023-24 result leaves the parameters chosen for
 
 ## Results: moneyline log loss on all games (lower is better)
 
+![Elo against the game model](../figures/elo_vs_models.svg)
+
 | Season | Games | Constant | Flat Elo | Elo | Game model | Game model + Elo |
 |--------|------:|------:|------:|------:|------:|------:|
 | 2021-22 | 1,401 | 0.6898 | 0.6528 | 0.6513 | 0.6521 | 0.6497 |
@@ -74,6 +76,10 @@ Elo is kept as a documented team power rating and as an optional game-model
 feature (the `elo` variant). The default game model stays without it: the
 gain is within noise, and the default model is the one frozen for live
 puck-line tracking (decisions 23 and 28).
+
+![Elo ratings since 2019-20](../figures/elo_history.svg)
+
+![NHL Elo power ranking](../figures/elo_power_ranking.svg)
 
 ## Power ranking (as of 2026-11-06)
 

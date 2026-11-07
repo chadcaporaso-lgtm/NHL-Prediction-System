@@ -34,6 +34,19 @@ Out of scope: goalie saves props, and Monte Carlo simulation of any kind.
 Over/under probabilities come from fitted count distributions (Poisson or
 negative binomial).
 
+## Results at a glance
+
+![Distance from the closing line by market](docs/figures/market_gap.svg)
+
+| | |
+|---|---|
+| ![Shots-on-goal calibration](docs/figures/sog_calibration.svg) | ![NHL Elo power ranking](docs/figures/elo_power_ranking.svg) |
+
+More charts: [shots-on-goal walk-forward gain](docs/figures/sog_walk_forward.svg),
+[regulation ties](docs/figures/tie_rate.svg), [Elo history](docs/figures/elo_history.svg),
+[Elo against the game model](docs/figures/elo_vs_models.svg). All are drawn by
+`src/reporting/make_figures.py` from the results files in `docs/models/`.
+
 ## Project history
 
 This project consolidates two earlier versions built in Google Colab:

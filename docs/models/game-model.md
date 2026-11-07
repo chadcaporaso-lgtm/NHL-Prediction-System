@@ -43,6 +43,8 @@ Walk-forward by season, test seasons 2021-22 to 2026-27 (2026-27 through
 
 ## Results on all games (log loss, lower is better)
 
+![Regulation ties: actual, independent Poisson, tie-adjusted](../figures/tie_rate.svg)
+
 | Season | Games | Moneyline: constant / model | Home wins by 2+: constant / model | Over 5.5: constant / model |
 |--------|------:|------:|------:|------:|
 | 2021-22 | 1,401 | 0.690 / 0.652 | 0.640 / 0.624 | 0.680 / 0.704 |
@@ -58,6 +60,8 @@ the model's scoring level misses by 0.2-0.45 goals in several seasons
 (2024-25: 5.65 predicted, 5.88 actual).
 
 ## Against closing lines
+
+![Distance from the closing line](../figures/market_gap.svg)
 
 Log loss on games graded with the official score; the market is de-vigged.
 
