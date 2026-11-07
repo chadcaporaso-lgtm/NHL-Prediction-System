@@ -127,7 +127,16 @@ Most to least predictable, with the reason:
 
 ## Open questions
 
-Answer these before any code is written.
+Answered on 2026-11-07:
+
+- Question 1 (own statistics): the two earlier Drive projects,
+  `NHL_Prediction_System` and `NHL_Prediction_System_ChatGPT`. They are
+  inventoried and audited in Phase 1.
+- Question 4 (code location): this repository.
+- Question 5 (stack): Python with DuckDB on Parquet; Google Cloud for storage
+  and an optional BigQuery warehouse.
+
+Still open: questions 2, 3 and 6. The original list follows.
 
 1. **Own statistics.** What are they and at what level: per game, per player,
    per season? Which seasons do they cover? Is every row dated so it is clear
