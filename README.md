@@ -122,5 +122,8 @@ originals. Findings so far in [docs/audit/data-audit.md](docs/audit/data-audit.m
 - **D-1 (High):** v1 skater data for 2021-22 to 2023-24 holds about 5
   skaters per game instead of 36. The gap carries into the player feature
   table used to train the shots-on-goal and points models. The 2025-26
-  holdout is complete.
+  holdout is complete. **Raw data fixed:** the three seasons were re-fetched
+  (about 50,400 rows each, every regular-season game present, values
+  identical to the rows that already existed). Player features still need
+  rebuilding.
 - **D-2 (Low):** the `_full` raw files are byte-identical duplicates.

@@ -23,7 +23,7 @@ reassembled; all 10 matched the checksums computed from the originals:
 | v2 `fresh_team_games_reconciled.parquet` | 12.9 MB | yes |
 | v2 `legacy_team_games_reconciled.parquet` | 14.4 MB | yes |
 
-## D-1 (High): skater data for 2021-22 to 2023-24 holds about 14% of player-games
+## D-1 (High, raw data fixed): skater data for 2021-22 to 2023-24 holds about 14% of player-games
 
 **Evidence.** v1 `data/raw/nhl_api/skater_summary_<season>.parquet`:
 
@@ -60,9 +60,35 @@ training data is what is affected.
 
 The 2026-27 rows per game (23.6) are also below 36 and need checking.
 
-**Remedy.** Re-fetch skater game logs for 2021-22 to 2023-24 (NHL API or
-PuckAPI `get_player_game_log`), confirm 36 rows per game, and rebuild the
-player features.
+**Remedy, part 1: raw data re-fetched (2026-11-07).**
+[`src/ingest/colab_refetch_skater_games.py`](../../src/ingest/colab_refetch_skater_games.py)
+re-downloaded the skater summary and time-on-ice tables from the NHL stats API
+in weekly windows, paging with a fixed sort (gameId, playerId). Output is in
+Drive `NHL_Prediction_System_Claude/01_raw/nhl_api_refetch/`.
+
+| Season | Rows | Games (regular + playoff) | Rows per game | Duplicates |
+|--------|-----:|--------------------------:|--------------:|-----------:|
+| 2021-22 | 50,412 | 1,401 (1,312 + 89) | 35.98 | 0 |
+| 2022-23 | 50,376 | 1,400 (1,312 + 88) | 35.98 | 0 |
+| 2023-24 | 50,389 | 1,400 (1,312 + 88) | 35.99 | 0 |
+
+Checks on the new files:
+
+- Every regular-season game is present (1,312 per season).
+- Every game has 34 to 36 skater rows. The 50 games below 36 are teams that
+  dressed 16 or 17 skaters, not missing data: every short game is short by
+  whole team-dressed players (17 or 16 rows for one team).
+- The summary and time-on-ice tables cover exactly the same (game, player)
+  pairs.
+- Every row in the old truncated 2021-22 table appears in the new table with
+  identical goals, assists, points, shots and time on ice. The old data was
+  correct but incomplete; nothing in it was wrong.
+
+The cause of the original gap was not established. Paging without a fixed sort
+order is the most likely explanation, and the new fetch avoids it.
+
+**Remedy, part 2 (to do).** Rebuild the player feature table from the
+complete data before any prop model is retrained or compared.
 
 ## D-2 (Low): `<table>_full` files are byte-identical duplicates
 
