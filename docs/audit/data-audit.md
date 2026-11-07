@@ -243,3 +243,21 @@ no duplicates or impossible prices. The outliers are exchanges and prediction
 markets: Sporttrade quotes 79 pairs below 100% (mid prices), and Matchbook,
 Kalshi, Polymarket and a few others have pairs above 115%. Exclude these when
 building a consensus line.
+
+### O-5 (Open): PuckAPI odds as a multi-season source, one-game probe
+
+PuckAPI holds odds for every game from 2019-20. A probe of one game
+(2021020500, ANA at CGY, start 02:30 UTC, CGY won 6-2) returned 18 books with
+two kinds of line:
+
+- `source: archive`: opening and closing lines with timestamps before puck
+  drop (closing between 22:49 and 02:25 UTC). These agree with each other:
+  CGY between -213 and -233.
+- `source: final`: one line per book stamped 02:30 UTC, the scheduled start.
+  Several do not agree with the archive lines or with each other (DraftKings
+  archive close -222/+185, final -145/+300; bet365 final -135/+275, whose two
+  sides imply only 84%).
+
+If this pattern holds, the `archive` lines are a usable multi-season closing
+history and the `final` lines should be excluded. One game is not enough to
+decide; a sample of about 30 games per season would settle it.
