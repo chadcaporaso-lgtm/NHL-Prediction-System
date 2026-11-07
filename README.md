@@ -147,3 +147,9 @@ reproduced exactly; v2 2025-26: 0.687 vs 0.682 on 1,292 games). Betting the
 model's positive-EV picks at the best of nine books returns -1.5% (SE 2.9%).
 The +4.4% ROI in the v1 manifest cannot be reproduced from the saved ledger.
 No prop betting backtest exists, because there is no historical prop-price data.
+
+**1d. Prop price history.** Bought 745 player-games of closing prop prices
+from PuckAPI (shots on goal and points, 16 star players, mostly 2025-26):
+[docs/audit/prop-history.md](docs/audit/prop-history.md). Results agree with
+NHL box scores on 624 of 626 games. Closing shots-on-goal prices are close to
+coin flips (log loss 0.690 vs 0.692 for a constant), with a 6.5% margin.
