@@ -22,6 +22,17 @@ Team context (team-game level, prior games only, last 20)
 Opposing goalie (the goalie who started for the opponent; see gap G-E)
   opp_goalie_sv_l40  save percentage over that goalie's previous 40
                      appearances, shrunk toward .905 with 300 pseudo-shots
+Lineup (assumption L-1: the skaters who dressed are known before the game,
+from announced lineups; late scratches are rare). Built only from the
+dressed players' pregame form features above, never from game results.
+  toi_rank_pos        rank of ewm_toi among dressed teammates at the same
+                      position group (forwards or defense), 1 = most
+  pp_rank             rank of ewm_toi_pp among all dressed teammates
+  linemates_pts       mean ewm_points of the 5 other dressed skaters closest
+                      to the player in ewm_toi rank (a proxy for linemates)
+  team_dressed_pts    sum of ewm_points over the team's dressed skaters
+  team_dressed_gap    team_dressed_pts minus its mean over the team's
+                      previous 10 games (negative when scorers are out)
 Static: is_home, is_defense, is_playoff, season
 """
 
@@ -93,6 +104,27 @@ def build() -> pd.DataFrame:
                                      "goals_against_l20": "opp_goals_against_l20"})[
                     ["game_id", "opponent", "opp_sog_against_l20", "opp_goals_against_l20"]],
                 on=["game_id", "opponent"], how="left")
+    # Lineup features from dressed teammates' pregame form.
+    f["pos_group"] = np.where(f.is_defense == 1, "D", "F")
+    f["toi_rank_pos"] = f.groupby(["game_id", "team", "pos_group"]).ewm_toi.rank(ascending=False, method="first")
+    f["pp_rank"] = f.groupby(["game_id", "team"]).ewm_toi_pp.rank(ascending=False, method="first")
+    f["_toi_rank"] = f.groupby(["game_id", "team"]).ewm_toi.rank(ascending=False, method="first")
+    lm = f[["game_id", "team", "player_id", "_toi_rank", "ewm_points"]].sort_values(["game_id", "team", "_toi_rank"])
+    def near_mean(d):
+        r, pts = d._toi_rank.values, d.ewm_points.fillna(0).values
+        out = np.empty(len(d))
+        for i in range(len(d)):
+            dist = np.abs(r - r[i]); dist[i] = np.inf
+            out[i] = pts[np.argsort(dist, kind="stable")[:5]].mean()
+        return pd.Series(out, index=d.index)
+    f["linemates_pts"] = lm.groupby(["game_id", "team"], group_keys=False).apply(near_mean)
+    f["team_dressed_pts"] = f.groupby(["game_id", "team"]).ewm_points.transform(lambda s: s.fillna(0).sum())
+    tgame = f.drop_duplicates(["game_id", "team"])[["game_id", "team", "game_date", "team_dressed_pts"]].sort_values(["team", "game_date", "game_id"])
+    tgame["prev10"] = tgame.groupby("team").team_dressed_pts.transform(lambda s: s.shift(1).rolling(10, min_periods=3).mean())
+    f = f.merge(tgame[["game_id", "team", "prev10"]], on=["game_id", "team"], how="left")
+    f["team_dressed_gap"] = f.team_dressed_pts - f.prev10
+    f = f.drop(columns=["prev10", "_toi_rank", "pos_group"])
+
     # Opposing starting goalie: save percentage over his previous 40 appearances.
     gl = official.load_goalies()
     gl = gl[gl.participated].sort_values(["player_id", "scheduled_utc", "game_id"]).copy()

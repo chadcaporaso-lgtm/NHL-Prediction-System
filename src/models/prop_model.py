@@ -54,7 +54,9 @@ CONFIGS = {
         "ewm_toi", "l10_toi", "std_toi", "ewm_toi_pp", "l10_toi_pp", "prev_season_toi", "n_prior_season",
         "is_defense", "is_home", "back_to_back", "is_playoff",
         "team_goals_for_l20", "team_sog_for_l20", "opp_goals_against_l20", "opp_sog_against_l20",
-        "opp_goalie_sv_l40"]},
+        "opp_goalie_sv_l40",
+        # v2 (2026-11-07): lineup role from dressed teammates' pregame form
+        "toi_rank_pos", "pp_rank", "linemates_pts", "team_dressed_pts", "team_dressed_gap"]},
 }
 TARGET = sys.argv[1] if len(sys.argv) > 1 else "shots"
 CFG = CONFIGS[TARGET]
@@ -75,8 +77,10 @@ def prepare(f: pd.DataFrame) -> pd.DataFrame:
     f["opp_goalie_sv_l40"] = f.opp_goalie_sv_l40.fillna(0.905)  # goalie data ends 2026-11-02
     for c in ["shots_per60_ewm", "points_per60_ewm"]:
         f[c] = f[c].fillna(f[c].median())
-    for c in ["ewm_pp_points", "car_pp_points"]:
+    for c in ["ewm_pp_points", "car_pp_points", "team_dressed_gap"]:
         f[c] = f[c].fillna(0.0)
+    for c in ["toi_rank_pos", "pp_rank", "linemates_pts"]:
+        f[c] = f[c].fillna(f[c].median())
     return f
 
 

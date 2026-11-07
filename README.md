@@ -261,3 +261,11 @@ lines from 3.4% to 3.1%; the rest are scratched players whose bets are void.
 Results moved only slightly (shots blend on 2026-27: 0.6764 vs the market's
 0.6796; 907 bets at a 4-point edge, +8.3%, SE 2.7%).
 
+**6b. Lineup features for points (2026-11-07).** Five features for each
+player's role in the night's lineup (ice-time and power-play rank among
+dressed teammates, a linemate-quality proxy, and missing-scorer gaps), built
+from pregame form only and leakage-tested. The points model improves in
+every season (prop-line log loss 0.6551 to 0.6542), but still trails the
+closing price (0.6515), and a market blend still gains nothing. Details in the
+points model card.
+

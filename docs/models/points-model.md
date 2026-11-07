@@ -72,3 +72,31 @@ but has no demonstrated edge over the closing price. It is not used for
 betting. Possible next steps, each tested only on games after 2026-11-06:
 line combinations and power-play unit, an as-of league scoring-level
 feature, and separate goal and assist models.
+
+
+## Version 2: lineup features (2026-11-07)
+
+Added five features describing each player's role in that night's lineup,
+built only from the dressed skaters' pregame form (assumption L-1: lineups
+are announced before the game): ice-time rank at his position, power-play
+rank, mean recent points of the five teammates nearest him in ice-time rank
+(a linemate proxy), the team's summed recent points among dressed skaters,
+and that sum's gap from the team's previous 10 games (scorers out injured).
+Leakage-tested in `tests/test_skater_feature_leakage.py`. Version 1 results
+are kept in `points_v1_results.json` and `points_v1_blend_results.json`.
+
+| | v1 | v2 |
+|---|---:|---:|
+| GLM log-likelihood per game, 2025-26 (higher is better) | -0.83683 | -0.83587 |
+| GLM log-likelihood per game, 2026-27 | -0.85369 | -0.85301 |
+| GLM log loss on 18,902 prop lines (market 0.6515) | 0.6551 | 0.6542 |
+| GLM log loss on 2026-27 lines (market 0.6333) | 0.6394 | 0.6382 |
+| Market + GLM blend on 2026-27 | 0.6332 | 0.6332 |
+| Blend at a 4-point edge, 2026-27 | -2.4% (824 bets) | -4.1% (1,042 bets) |
+
+The lineup features improve the model in every season, but the gap to the
+closing price stays, and the blend still gains nothing on held-out lines.
+The proxies capture role; the market also knows actual line combinations
+and same-day news. The next step would be linemates measured from shift
+data (who was on the ice together in recent games), which the NHL publishes
+per game and a Colab cell could collect.

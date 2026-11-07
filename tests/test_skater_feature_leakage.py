@@ -87,9 +87,24 @@ def test_opposing_goalie_uses_only_prior_appearances(n=300, seed=3):
     assert not bad, f"{len(bad)} mismatches, first: {bad[:5]}"
 
 
+def test_lineup_features_use_only_pregame_form(n=200, seed=13):
+    """Recompute lineup features for random team-games from the stored pregame columns."""
+    f, _ = _load()
+    keys = f[["game_id", "team"]].drop_duplicates().sample(n, random_state=seed)
+    for gid, team in keys.itertuples(index=False, name=None):
+        d = f[(f.game_id == gid) & (f.team == team)]
+        assert np.isclose(d.team_dressed_pts.iloc[0], d.ewm_points.fillna(0).sum()), (gid, team)
+        for grp, dd in d.groupby("is_defense"):
+            expect = dd.ewm_toi.rank(ascending=False, method="first")
+            # rank order must follow pregame ice time; ties may break either way
+            assert (dd.sort_values("toi_rank_pos").ewm_toi.diff().dropna() <= 1e-12).all(), (gid, team, grp)
+        assert d.pp_rank.notna().sum() == d.ewm_toi_pp.notna().sum()
+
+
 def test_no_feature_reproduces_target():
     f, _ = _load()
     feats = [c for c in f.columns if c.startswith(("ewm_", "l10_", "std_", "car_", "prev_", "team_", "opp_"))]
+    feats += ["toi_rank_pos", "pp_rank", "linemates_pts"]
     for target in ["shots", "points"]:
         corr = f[feats].corrwith(f[target]).abs().max()
         assert corr < 0.9, f"a feature correlates {corr:.3f} with same-game {target}"
@@ -97,6 +112,7 @@ def test_no_feature_reproduces_target():
 
 if __name__ == "__main__":
     for t in [test_player_features_use_only_prior_games, test_team_context_uses_only_prior_games,
-              test_opposing_goalie_uses_only_prior_appearances, test_no_feature_reproduces_target]:
+              test_opposing_goalie_uses_only_prior_appearances, test_lineup_features_use_only_pregame_form,
+              test_no_feature_reproduces_target]:
         t()
         print("PASS", t.__name__)

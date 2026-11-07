@@ -29,4 +29,6 @@ Each entry records a decision, the date, and the reason. Newest last.
 | 23 | 2026-11-07 | The puck line is tracked live with a fixed rule: calibrated GLM, 2-point edge, SportsGameOdds consensus close, games after 2026-11-06 | It matched or beat the closing line in three of four comparisons but not significantly; a fixed rule on new games is the honest test |
 | 24 | 2026-11-07 | Current-season schedule, scores and goalie lines come from the NHL web API once the audited v2 tables end (2026-11-02) | The feed matched v2 exactly on all 470 overlapping team-games and 940 goalie lines |
 | 25 | 2026-11-07 | The shots-on-goal blend for live tracking is fitted on all 15,777 lines through 2026-11-06 | Decision 20 fixed the cutoff; using every line before it gives the most stable coefficients |
+| 26 | 2026-11-07 | Lineup features use the skaters who dressed for the game (assumption L-1) | Teams announce lineups before puck drop; the features use only those players' pregame form, never game results |
+| 27 | 2026-11-07 | Points model v2 (with lineup features) replaces v1; v1 results are kept | v2 is better in every season on all games and on prop lines; neither shows an edge over the market |
 
