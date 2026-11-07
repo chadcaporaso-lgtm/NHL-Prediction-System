@@ -292,3 +292,20 @@ This adds puck line and opening prices to the clean history, but not more
 seasons: it overlaps the sources in O-3. Clean game-market prices for
 2025-26 and the start of 2026-27 now cover all three markets; every earlier
 season still depends on O-5.
+
+### O-7 (Fail): SportsGameOdds has no usable game lines before 2026-01-16
+
+Probe on 2026-11-07, one API page (up to 50 games) per window, full-game
+moneyline:
+
+| Window | Games | With a "closing" price | Implausible (beyond ±1000 or two-way total outside 100-110%) |
+|--------|------:|-----------------------:|---------------------------------------:|
+| 2023-11-15 | 0 | 0 | |
+| 2024-10-08 to 2024-10-20 | 50 | 0 (only a last price, e.g. -28590) | |
+| 2025-03-10 to 2025-03-17 | 50 | 50 | 22 |
+| 2025-11-10 to 2025-11-17 | 49 | 49 | 28 |
+
+Before 2026-01-16 no game has an opening price, and the "closing" price is
+the last price seen, often in-game (+650, -2981). The clean-looking ones
+cannot be told apart from in-game prices taken early in a game, so none are
+used. SportsGameOdds is not a source for earlier seasons.
