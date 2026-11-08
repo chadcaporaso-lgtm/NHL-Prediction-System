@@ -109,9 +109,10 @@ to the README. Treat the result as meaningful after about 500 bets.
 ## Current state (2026-11-08, third session)
 
 - Data audit done (findings D-1, D-2, O-1 to O-7, goalie and live-feed checks).
-- Models: shots on goal (edge NOT established: +8.3% on 907 held-out 2026-27
-  bets, SE 2.7%, but older seasons bought from PuckAPI do not repeat it:
-  frozen rule -12.8% on 179 bets, SE 4-7, decision 32; live test decides), puck line (level
+- Models: shots on goal (no demonstrated edge: +8.3% on 907 held-out 2026-27
+  bets, SE 2.7%, but 2,260 older-season PuckAPI lines in two independent
+  batches do not repeat it: frozen rule -7.7% on 349 bets, SE 5.0, model
+  blend weight 0.19, SE 0.20; decisions 32-33; live test decides), puck line (level
   with the close, not significant), moneyline (close, behind), points v2
   (no edge), totals (no skill), team Elo (power rating and optional feature),
   probable starting goalie (71.0% top-pick accuracy out of sample; the
@@ -137,8 +138,8 @@ to the README. Treat the result as meaningful after about 500 bets.
 
 1. Linemates from NHL shift charts (free; Colab) for the points model.
 2. Optional, costs credits: more older-season shots lines would tighten the
-   decision-32 comparison (the 2026-11-08 purchase is 1,116 lines; 10 credits
-   per 25 games; fetch script supports --block). Also possible: a per-book
+   decision-33 comparison (two batches, 2,260 lines; 10 credits per 25 games;
+   `fetch_puckapi_sog_history.py --batch 3 --block 25` draws new players). Also possible: a per-book
    timestamped check of opening shots lines (`get_prop_movement`).
 3. Totals: in-season scoring level or a bivariate score model.
 4. Optional: improve the probable-starter model (team rotation habits, a

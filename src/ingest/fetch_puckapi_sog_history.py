@@ -28,13 +28,20 @@ after a rate-limit error extended 9 finished players by a second block
 instead of drawing 9 new ones (fixed since), so the purchase holds 909 games
 from 29 players, plus McDavid's 225 games (two manual calls, 90 credits).
 
-Usage: python3 src/ingest/fetch_puckapi_sog_history.py --players N --max-calls M [--block 25] [--dry-run]
+Batch 2 (2026-11-08, new key, 499 credits): 49 calls of 25 games, new players
+only (batch-1 players and McDavid excluded). A connection reset after 30
+calls; the restart drew its 19 players afresh (excluding the 30 just bought),
+so batch 2 is still 49 distinct new players. Batch lists are now written
+once and only earlier batches are excluded, so reruns draw the same players.
+
+Usage: python3 src/ingest/fetch_puckapi_sog_history.py --players N --max-calls M [--block 25] [--batch B] [--dry-run]
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import glob
 import json
 import os
 import time
@@ -52,7 +59,7 @@ HEADERS = {"Content-Type": "application/json", "Accept": "application/json, text
            "Authorization": "Bearer proxy-injected"}  # the proxy replaces this placeholder
 
 
-def player_sample(n: int, seed: int = 2026) -> pd.DataFrame:
+def player_sample(n: int, seed: int = 2026, exclude: set | None = None) -> pd.DataFrame:
     p = pd.read_parquet(os.path.join(ROOT, "data/models/sog_predictions.parquet"))
     p["game_date"] = pd.to_datetime(p.game_date)
     old = p[(p.game_date >= FROM) & (p.game_date <= TO)]
@@ -62,6 +69,9 @@ def player_sample(n: int, seed: int = 2026) -> pd.DataFrame:
     pool = info.join(games, how="inner").join(lines, how="inner")
     pool = pool[(pool.old_games >= 150) & (pool.sgo_lines >= 30)].reset_index()
     pool = pool[pool.player_id != 8478402]  # McDavid: bought in full by hand on 2026-11-08
+    pool_size = len(pool)
+    if exclude:
+        pool = pool[~pool.player_id.isin(exclude)]  # later batches: new players only
     pool["group"] = np.where(pool.position == "D", "D", "F")
     rng = np.random.default_rng(seed)
     pool["draw"] = rng.random(len(pool))
@@ -70,7 +80,7 @@ def player_sample(n: int, seed: int = 2026) -> pd.DataFrame:
     share_d = (pool.group == "D").mean()
     n_d = int(round(n * share_d))
     pick = pd.concat([pool[pool.group == "D"].head(n_d), pool[pool.group == "F"].head(n - n_d)])
-    return pick.sort_values("draw").reset_index(drop=True), len(pool)
+    return pick.sort_values("draw").reset_index(drop=True), pool_size
 
 
 class Client:
@@ -95,7 +105,7 @@ class Client:
                 if attempt == 3 or e.code not in (429, 500, 502, 503, 504):
                     raise
                 time.sleep(30 * (attempt + 1) if e.code == 429 else 2 ** (attempt + 1))
-            except urllib.error.URLError:
+            except (urllib.error.URLError, ConnectionError, TimeoutError):
                 if attempt == 3:
                     raise
                 time.sleep(2 ** (attempt + 1))
@@ -115,14 +125,20 @@ def main():
     ap.add_argument("--players", type=int, required=True)
     ap.add_argument("--max-calls", type=int, required=True)
     ap.add_argument("--block", type=int, default=0, help="games per player (one call); 0 = whole window")
+    ap.add_argument("--batch", type=int, default=1, help="2+: exclude players already bought (batch1_players.txt and files)")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
-    pick, pool_size = player_sample(a.players)
+    exclude = None
+    if a.batch > 1:
+        # Earlier batches only, so a rerun of this batch draws the same players.
+        exclude = {int(x) for b in range(1, a.batch) if os.path.exists(os.path.join(OUT, f"batch{b}_players.txt"))
+                   for x in open(os.path.join(OUT, f"batch{b}_players.txt")).read().split()}
+    pick, pool_size = player_sample(a.players, exclude=exclude)
     if a.block:
         p = pd.read_parquet(os.path.join(ROOT, "data/models/sog_predictions.parquet"))
         p["game_date"] = pd.to_datetime(p.game_date)
         p = p[(p.game_date >= FROM) & (p.game_date <= TO)]
-        rng = np.random.default_rng(2027)
+        rng = np.random.default_rng(2027 if a.batch == 1 else 2027 + a.batch)
         starts = []
         for pid in pick.player_id:
             dates = sorted(p.loc[p.player_id == pid, "game_date"].dt.strftime("%Y-%m-%d").unique())
@@ -130,7 +146,9 @@ def main():
         pick["block_start"] = starts
     print(f"pool {pool_size} players; sample {len(pick)} ({(pick.group == 'D').sum()} D)")
     os.makedirs(OUT, exist_ok=True)
-    pick.to_csv(os.path.join(OUT, "sample.csv"), index=False)
+    pick.to_csv(os.path.join(OUT, f"sample_batch{a.batch}.csv"), index=False)
+    if a.batch > 1 and not a.dry_run and not os.path.exists(os.path.join(OUT, f"batch{a.batch}_players.txt")):
+        open(os.path.join(OUT, f"batch{a.batch}_players.txt"), "w").write("\n".join(str(i) for i in pick.player_id) + "\n")
     if a.dry_run:
         print(pick[[c for c in ["player_id", "player_name", "position", "old_games", "sgo_lines", "block_start"] if c in pick]].to_string())
         return

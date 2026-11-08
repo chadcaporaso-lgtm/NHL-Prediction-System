@@ -138,18 +138,37 @@ def summarize(d: pd.DataFrame, frozen) -> dict:
     return out
 
 
-if __name__ == "__main__":
-    d, info = load()
-    frozen = json.load(open(os.path.join(ROOT, "docs/live/frozen_rules_v2.json")))["sog"]["blend_coef_const_market_model"]
-    res = {"source": "PuckAPI get_prop_history, bought 2026-11-08", "window": ["2023-10-01", "2026-01-15"], **info}
-    res["all"] = summarize(d, frozen)
-    for s, x in d.groupby("season"):
-        res[str(s)] = summarize(x, frozen)
+def blend_fit(d: pd.DataFrame) -> dict:
     X = sm.add_constant(np.column_stack([logit(d.p_market), logit(d.p_model)]))
+    out = {}
     for grp in ["player_id", "game_id"]:
         fit = sm.GLM(d.y, X, family=sm.families.Binomial()).fit(cov_type="cluster", cov_kwds={"groups": d[grp]})
-        res[f"blend_fit_clustered_by_{grp}"] = {"coef_const_market_model": [round(float(v), 4) for v in fit.params],
-                                               "se": [round(float(v), 4) for v in fit.bse]}
+        out[f"clustered_by_{grp}"] = {"coef_const_market_model": [round(float(v), 4) for v in fit.params],
+                                      "se": [round(float(v), 4) for v in fit.bse]}
+    return out
+
+
+def batches() -> dict:
+    """Batch 1 (first 500 credits, incl. McDavid) and batch 2 (second key): player id -> batch."""
+    out = {8478402: 1}
+    for b in (1, 2):
+        path = os.path.join(ROOT, f"data/puckapi/sog_history/batch{b}_players.txt")
+        if os.path.exists(path):
+            out.update({int(x): b for x in open(path).read().split()})
+    return out
+
+
+if __name__ == "__main__":
+    d, info = load()
+    d["batch"] = d.player_id.map(batches()).fillna(1).astype(int)
+    frozen = json.load(open(os.path.join(ROOT, "docs/live/frozen_rules_v2.json")))["sog"]["blend_coef_const_market_model"]
+    res = {"source": "PuckAPI get_prop_history, bought 2026-11-08 in two batches (500 + 499 credits)",
+           "window": ["2023-10-01", "2026-01-15"], **info}
+    res["all"] = summarize(d, frozen) | {"blend_fit": blend_fit(d)}
+    for b, x in d.groupby("batch"):
+        res[f"batch_{b}"] = summarize(x, frozen) | {"blend_fit": blend_fit(x)}
+    for s, x in d.groupby("season"):
+        res[str(s)] = summarize(x, frozen)
     # Reference: the same quantities on the 2026 SportsGameOdds lines.
     ref = pd.read_parquet(os.path.join(ROOT, "data/models/sog_market_graded.parquet"))
     res["reference_sgo_2026"] = {"lines": int(len(ref)), "log_loss_market": round(logloss(ref.p_market, ref.y), 4),

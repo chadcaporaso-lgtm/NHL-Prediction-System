@@ -363,3 +363,12 @@ against +8.3% on 2026-27. The model still leans the right way beside the
 market (weight 0.28, SE 0.20-0.30), but not significantly. The shots edge is
 now reported as not established (decision 32); the pre-registered live test
 decides it.
+
+**6h. Second older-season batch (2026-11-08).** Another 499 credits bought
+1,144 lines for 49 new players. The batch agrees with 6g: over 2,260 lines
+and 78 players, the frozen live rule loses 7.7% (349 bets, SE 5.0), the
+model alone loses 2.3% (1,145 bets, SE 2.8), and the blend adds nothing to
+the market's log loss (0.6812 against 0.6809). The shots model is now
+described as having no demonstrated edge over the market (decision 33); the
+2026-27 result (+8.3%) is about 2.8 standard errors away. The live test is
+unchanged and decides it.

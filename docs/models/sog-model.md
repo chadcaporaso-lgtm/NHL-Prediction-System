@@ -262,3 +262,35 @@ later period. Still, the older seasons and the 2026-27 held-out result
 depending on clustering. The honest summary is that **the shots edge is not
 established**: it holds in the 2026 data and fails in this older sample. The
 pre-registered live test (decision 20) decides it; nothing in it changes.
+
+### Second batch (2026-11-08, another 499 credits)
+
+A second key bought 49 calls of 25 games for **49 new players**, none of them
+in batch 1, drawn the same way. A connection reset after 30 calls; the
+restart drew its 19 players afresh, still all new. That gives 1,158 rows and
+1,144 graded lines from 48 players (one had no matched box scores). The
+batch-1 results above are kept as reported. The results file now holds batch
+1, batch 2 and both combined.
+
+| 4-point rules | Lines | Model alone: bets, ROI (SE) | Frozen rule: bets, ROI (SE) | Model weight in blend (SE) | Log loss: market / model / frozen blend |
+|---|---:|---|---|---|---|
+| Batch 1 | 1,116 | 556, 0.0% (3.1-4.0) | 179, -12.8% (4.3-6.9) | 0.28 (0.20-0.30) | 0.6747 / 0.6769 / 0.6739 |
+| Batch 2 | 1,144 | 589, -4.5% (4.0-4.3) | 170, -2.3% (7.4-9.0) | 0.08 (0.30-0.35) | 0.6869 / 0.6936 / 0.6882 |
+| **Combined** | **2,260** | **1,145, -2.3% (2.7-2.8)** | **349, -7.7% (5.0)** | **0.19 (0.20-0.21)** | 0.6809 / 0.6854 / 0.6812 |
+| 2026-27, SportsGameOdds | | | 907, +8.3% (2.7) | 0.42 (0.07) | |
+
+By season, combined: 2023-24 frozen rule -16.5% (138 bets), 2024-25 -5.0%
+(201 bets), early 2025-26 only 10 bets.
+
+**Reading it.** The independent second batch agrees with the first. Over
+2,260 lines from 78 players, the model alone loses 2.3%, a little better
+than the roughly -3.4% that random bets lose to the margin, but not
+profitable. The frozen rule loses 7.7%, and the blend adds nothing to the
+market (log loss 0.6812 against 0.6809). The model's weight beside the price
+(0.19, SE 0.20) is about half the 2026 estimate and not distinguishable
+from zero. The gap to 2026-27 (+8.3% against -7.7%) is about 16 points,
+roughly 2.8 standard errors. Either the 2026 result was partly luck, or the
+model's information was specific to that market (a different consensus,
+SportsGameOdds, in a different period). Prior to the live test, the shots
+model should be described as having **no demonstrated edge over the
+market** (decision 33).
