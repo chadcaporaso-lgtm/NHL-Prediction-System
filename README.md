@@ -352,3 +352,14 @@ pipeline, all 13 leakage tests and both game models run on it in about 40
 seconds, in a temporary copy, on every push (GitHub Actions). A planted leak
 was caught in both checks tried: team form including the current game (1,218
 mismatches) and starter features seeing the current game.
+
+**6g. Older seasons for the shots model (2026-11-08).** Details in the
+[shots-on-goal model card](docs/models/sog-model.md#older-seasons-against-puckapi-closing-prices-2026-11-08).
+500 PuckAPI credits bought 1,116 graded lines from 2023-24 to 2026-01-15,
+from 30 randomly drawn regular players, a period the model had never been
+tested on. The edge does not repeat. The model alone breaks even (556 bets,
+0.0%, SE 3-4) and the frozen live rule loses 12.8% (179 bets, SE 4-7),
+against +8.3% on 2026-27. The model still leans the right way beside the
+market (weight 0.28, SE 0.20-0.30), but not significantly. The shots edge is
+now reported as not established (decision 32); the pre-registered live test
+decides it.

@@ -106,11 +106,12 @@ the manifest, then `python3 run.py update <date>`. Commit
 `docs/live/tracking.json` and the redrawn `docs/figures/`, and add the week
 to the README. Treat the result as meaningful after about 500 bets.
 
-## Current state (2026-11-07, third session)
+## Current state (2026-11-08, third session)
 
 - Data audit done (findings D-1, D-2, O-1 to O-7, goalie and live-feed checks).
-- Models: shots on goal (adds information to the closing price; blend +8.3%
-  ROI on 907 held-out bets, SE 2.7%, not yet confirmed), puck line (level
+- Models: shots on goal (edge NOT established: +8.3% on 907 held-out 2026-27
+  bets, SE 2.7%, but older seasons bought from PuckAPI do not repeat it:
+  frozen rule -12.8% on 179 bets, SE 4-7, decision 32; live test decides), puck line (level
   with the close, not significant), moneyline (close, behind), points v2
   (no edge), totals (no skill), team Elo (power rating and optional feature),
   probable starting goalie (71.0% top-pick accuracy out of sample; the
@@ -135,10 +136,10 @@ to the README. Treat the result as meaningful after about 500 bets.
 ## Next steps (agreed order)
 
 1. Linemates from NHL shift charts (free; Colab) for the points model.
-2. Optional, costs credits: check PuckAPI archive odds (about 30 games a
-   season) before buying older seasons; and a per-book timestamped check of
-   opening shots lines (`get_prop_movement`) to see if opening prices were
-   bettable.
+2. Optional, costs credits: more older-season shots lines would tighten the
+   decision-32 comparison (the 2026-11-08 purchase is 1,116 lines; 10 credits
+   per 25 games; fetch script supports --block). Also possible: a per-book
+   timestamped check of opening shots lines (`get_prop_movement`).
 3. Totals: in-season scoring level or a bivariate score model.
 4. Optional: improve the probable-starter model (team rotation habits, a
    tree model) or add confirmed-starter data if a free source exists.

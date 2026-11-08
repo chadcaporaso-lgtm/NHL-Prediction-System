@@ -18,7 +18,17 @@ ledger (data/puckapi/sog_history/ledger.csv) so a rerun skips what is done.
 
 Output (gitignored, purchased data, never committed):
   data/puckapi/sog_history/<player_id>_<from_date>.json   raw responses
-Usage: python3 src/ingest/fetch_puckapi_sog_history.py --players N --max-calls M [--dry-run]
+Pricing (confirmed 2026-11-08 from the credit balance): 10 credits per 25
+games returned. With --block 25, each player gets one call of 25 consecutive
+games starting at a random game in the window (seed 2026), which spreads a
+small budget over many players, teams and dates.
+
+Purchase log, 2026-11-08: 38 calls with --block 25 (380 credits). A restart
+after a rate-limit error extended 9 finished players by a second block
+instead of drawing 9 new ones (fixed since), so the purchase holds 909 games
+from 29 players, plus McDavid's 225 games (two manual calls, 90 credits).
+
+Usage: python3 src/ingest/fetch_puckapi_sog_history.py --players N --max-calls M [--block 25] [--dry-run]
 """
 
 from __future__ import annotations
@@ -28,6 +38,7 @@ import csv
 import json
 import os
 import time
+import urllib.error
 import urllib.request
 
 import numpy as np
@@ -50,6 +61,7 @@ def player_sample(n: int, seed: int = 2026) -> pd.DataFrame:
     info = p.sort_values("game_date").groupby("player_id")[["player_name", "position"]].last()
     pool = info.join(games, how="inner").join(lines, how="inner")
     pool = pool[(pool.old_games >= 150) & (pool.sgo_lines >= 30)].reset_index()
+    pool = pool[pool.player_id != 8478402]  # McDavid: bought in full by hand on 2026-11-08
     pool["group"] = np.where(pool.position == "D", "D", "F")
     rng = np.random.default_rng(seed)
     pool["draw"] = rng.random(len(pool))
@@ -79,7 +91,11 @@ class Client:
             try:
                 with urllib.request.urlopen(req, timeout=120) as r:
                     return r.headers, r.read().decode()
-            except Exception:
+            except urllib.error.HTTPError as e:
+                if attempt == 3 or e.code not in (429, 500, 502, 503, 504):
+                    raise
+                time.sleep(30 * (attempt + 1) if e.code == 429 else 2 ** (attempt + 1))
+            except urllib.error.URLError:
                 if attempt == 3:
                     raise
                 time.sleep(2 ** (attempt + 1))
@@ -98,14 +114,25 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--players", type=int, required=True)
     ap.add_argument("--max-calls", type=int, required=True)
+    ap.add_argument("--block", type=int, default=0, help="games per player (one call); 0 = whole window")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     pick, pool_size = player_sample(a.players)
+    if a.block:
+        p = pd.read_parquet(os.path.join(ROOT, "data/models/sog_predictions.parquet"))
+        p["game_date"] = pd.to_datetime(p.game_date)
+        p = p[(p.game_date >= FROM) & (p.game_date <= TO)]
+        rng = np.random.default_rng(2027)
+        starts = []
+        for pid in pick.player_id:
+            dates = sorted(p.loc[p.player_id == pid, "game_date"].dt.strftime("%Y-%m-%d").unique())
+            starts.append(dates[int(rng.integers(0, max(1, len(dates) - a.block)))])
+        pick["block_start"] = starts
     print(f"pool {pool_size} players; sample {len(pick)} ({(pick.group == 'D').sum()} D)")
     os.makedirs(OUT, exist_ok=True)
     pick.to_csv(os.path.join(OUT, "sample.csv"), index=False)
     if a.dry_run:
-        print(pick[["player_id", "player_name", "position", "old_games", "sgo_lines"]].to_string())
+        print(pick[[c for c in ["player_id", "player_name", "position", "old_games", "sgo_lines", "block_start"] if c in pick]].to_string())
         return
     ledger = os.path.join(OUT, "ledger.csv")
     done = set()
@@ -113,7 +140,9 @@ def main():
         done = {(int(r["player_id"]), r["from_date"]) for r in csv.DictReader(open(ledger))}
     client, calls = Client(), 0
     for r in pick.itertuples():
-        start = FROM
+        start = r.block_start if a.block else FROM
+        if a.block and any(k[0] == int(r.player_id) for k in done):
+            continue  # one block per player; a rerun must not extend finished players
         while start and calls < a.max_calls:
             key = (int(r.player_id), start)
             path = os.path.join(OUT, f"{r.player_id}_{start}.json")
@@ -121,7 +150,7 @@ def main():
                 start = json.load(open(path)).get("next_from_date") if json.load(open(path)).get("truncated") else None
                 continue
             res = client.call("get_prop_history", {"player_id": str(r.player_id), "market": "player_shots_on_goal",
-                                                   "from_date": start, "to_date": TO, "limit": 200})
+                                                   "from_date": start, "to_date": TO, "limit": a.block or 200})
             calls += 1
             json.dump(res, open(path, "w"))
             with open(ledger, "a", newline="") as fh:
@@ -130,7 +159,8 @@ def main():
                     w.writerow(["player_id", "from_date", "games", "next_from_date"])
                 w.writerow([r.player_id, start, res.get("count"), res.get("next_from_date")])
             print(f"call {calls}: {r.player_name} from {start}: {res.get('count')} games", flush=True)
-            start = res.get("next_from_date") if res.get("truncated") else None
+            time.sleep(2)  # stay under the rate limit
+            start = None if a.block else (res.get("next_from_date") if res.get("truncated") else None)
         if calls >= a.max_calls:
             break
     print(f"calls made: {calls}")

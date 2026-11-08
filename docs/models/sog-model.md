@@ -205,3 +205,60 @@ adopted (decision 30). The frozen live test stays at the closing price. A
 per-book, timestamped check of opening lines (PuckAPI `get_prop_movement`,
 10 credits per player-game) could settle whether the opening prices were
 bettable.
+
+## Older seasons against PuckAPI closing prices (2026-11-08)
+
+Code: `src/ingest/fetch_puckapi_sog_history.py` (purchase),
+`src/models/sog_older_seasons.py` (test). Results:
+`docs/models/sog_older_seasons_results.json`. The purchased rows stay in
+`data/` and are not committed.
+
+**Why.** All earlier market tests use SportsGameOdds prices from 2026-01-16
+on. PuckAPI's archive holds about 51,700 shots-on-goal lines from 2023-24 to
+2026-01-15. The model has never been tested against prices from that period,
+and none of these lines were used to build or tune anything.
+
+**What was bought (500 credits).** 10 credits per 25 games, so about 1,100
+lines. The sample is random 25-game blocks for regular players drawn at
+random (seeded; pool = 215 players with 150+ games in the window and 30+
+lines in 2026), plus Connor McDavid's full window, which was bought first to
+find the price. A restart bug gave 9 players a second block instead of
+adding 9 new players. Total: 1,134 rows, 1,116 graded lines, 30 players,
+graded with official box-score shots (3 disagreed with the provider's
+result). Market: PuckAPI's median closing line and median prices across
+books (median 6 books), de-vigged proportionally. That is a different
+consensus than SportsGameOdds', and the two medians need not come from the
+same book.
+
+**Results**
+
+| | Lines | Market log loss | Model | Frozen blend | Model weight in blend (SE) |
+|---|---:|---:|---:|---:|---:|
+| Older seasons, PuckAPI | 1,116 | 0.6747 | 0.6769 | 0.6739 | 0.28 (0.20 by player; 0.30 by game) |
+| 2026, SportsGameOdds (reference) | 15,806 | 0.6815 | 0.6821 | | 0.42 (0.07) |
+
+| 4-point rule, older seasons | Bets | Win rate | ROI | SE by player / by game |
+|---|---:|---:|---:|---:|
+| Model alone | 556 | 53.6% | 0.0% | 3.1 / 4.0 |
+| Frozen live rule (blend) | 179 | 47.5% | **-12.8%** | 4.3 / 6.9 |
+| Control: every under | 1,116 | 49.5% | -5.1% | |
+
+By season, the frozen rule loses 13.9% (61 bets) in 2023-24 and 12.2% (118
+bets) in 2024-25, and makes no bets in the 115 early 2025-26 lines.
+
+**Reading it.** The older seasons do not repeat the shots edge. The model
+alone breaks even, and the frozen rule loses: its under picks, priced at a
+49.9% chance by the market and 55% by the blend, came in 47.2% of the time.
+In 2026 the same rule's unders hit 58.3% against a market price of 52.3%.
+The information test points the same way as before (model weight 0.28) but
+is far from significant, and the blend improves on the market by only 0.0008
+in log loss.
+
+Caveats: 1,116 lines from 30 players is a small sample (the frozen rule's
+ROI has a standard error of 4-7 points), the market is a different consensus
+(PuckAPI medians, not SportsGameOdds), and the frozen blend was fitted on a
+later period. Still, the older seasons and the 2026-27 held-out result
+(+8.3%, SE 2.7) differ by about 21 points, roughly 2.5-4 standard errors
+depending on clustering. The honest summary is that **the shots edge is not
+established**: it holds in the 2026 data and fails in this older sample. The
+pre-registered live test (decision 20) decides it; nothing in it changes.
