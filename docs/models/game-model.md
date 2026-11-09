@@ -68,11 +68,11 @@ Log loss on games graded with the official score; the market is de-vigged.
 | Market | Source, season | Games | Market | Model (calibrated) | Constant |
 |--------|----------------|------:|------:|------:|------:|
 | Moneyline | external 2025-26 | 1,394 | **0.6808** | 0.6855 (raw 0.6830) | 0.6924 |
-| | external 2026-27 | 231 | **0.6484** | 0.6532 | 0.6829 |
+| | external 2026-27 | 261 | **0.6477** | 0.6527 | 0.6868 |
 | | SGO 2025-26 (from Jan.) | 646 | **0.6739** | 0.6759 | 0.6928 |
 | | SGO 2026-27 | 235 | **0.6487** | 0.6532 | 0.6844 |
 | Puck line | external 2025-26 | 1,385 | 0.6272 | **0.6246** | 0.6877 |
-| | external 2026-27 | 228 | 0.6495 | **0.6480** | 0.6845 |
+| | external 2026-27 | 257 | 0.6434 | **0.6424** | 0.6880 |
 | | SGO 2025-26 | 646 | 0.6380 | **0.6364** | 0.6855 |
 | | SGO 2026-27 | 235 | 0.6503 | **0.6486** | 0.6884 |
 | Totals | external 2025-26 | 1,338 | **0.6893** | 0.6948 | 0.6931 |
@@ -83,9 +83,9 @@ Log loss on games graded with the official score; the market is de-vigged.
   projects on the same season (v2 best: 0.6867). Blend test: the model's
   weight beside the market is 0.09 (SE 0.27); it adds nothing.
 - **Puck line:** the model matches or slightly beats the closing price in
-  all four comparisons (three of four before the newer 2026-27 external file,
-  decision 37; earlier figures: 184 moneyline games 0.6556 vs 0.6496, 182
-  puck-line games 0.6565 vs 0.6563, kept in `game_market_results_xw2026-10-26.json`). Blend weight 0.58 (SE 0.31), about 1.9 standard
+  all four comparisons (three of four with the 184-game external file of
+  2026-10-26; decisions 37 and 40. Earlier figures are kept in
+  `game_market_results_xw2026-10-26.json` and `_xw2026-11-01.json`). Blend weight 0.58 (SE 0.31), about 1.9 standard
   errors; on 2026-27 the blend does not beat the market. Betting the model
   at the SGO close: +0.4% (SE 4.3%) at a 2-point edge, 545 bets. **Suggestive,
   not significant.**

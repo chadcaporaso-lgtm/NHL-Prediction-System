@@ -82,7 +82,7 @@ A cloud session starts on a fresh machine with only this repository.
    with the same SHA-256 (core input and weekly refresh): download its 5 parts
    once; the script reuses identical files. Parts of 3 MB come back as saved
    tool results, smaller ones inline; the script searches both.
-   The bundle also stages the owner-supplied odds files (decisions 37-39)
+   The bundle also stages the owner-supplied odds files (decisions 37-40)
    when they are in Drive under `01_raw/external/` (`nhl_2026_27_odds.csv`,
    `sportsbook-nhl-2021-2022.csv`, `sportsbook-nhl-2022-2023.csv`) or
    `01_raw/inspect/` (`archive (8).zip`); `run.py restore` then places them
@@ -138,10 +138,11 @@ to the README. Treat the result as meaningful after about 500 bets.
   MoneyPuck: 0.6771 vs 0.6781 on 2026-27 lines, 0.6840 vs 0.6854 on older
   lines; points + all three: 0.6359 vs 0.6382, market 0.6333), but no
   variant beats the close on held-out lines or has a profitable rule.
-- Earlier-season market prices (decisions 37-39, README 6j): a newer
-  2026-27 external file (47 more games; the provider revises past closes,
-  finding E-1), average closing three-way prices 2021-22 to 2026-27 and
-  favorite-only moneylines 2021-23. The game model trails the market in
+- Earlier-season market prices (decisions 37-40, README 6j): a newer
+  2026-27 external file (282 games to 2026-11-08; copies of it disagree on
+  past closes, finding E-1; later games join when the weekly update reruns
+  `build_external_crosswalk.py`), average closing three-way prices 2021-22
+  to 2026-27 and favorite-only moneylines 2021-23. The game model trails the market in
   every season (three-way 1.0364 vs 1.0313 over 6,992 games); the gap is
   team rating, not ties.
 - Closing-line value (shots): the market moves toward the model between open
@@ -152,9 +153,10 @@ to the README. Treat the result as meaningful after about 500 bets.
   probable-starter model, games after 2026-11-07); no games graded yet. The
   newest data (refresh 2026-11-07) ends on 2026-11-05 for team and goalie
   lines and 2026-11-06 for skaters.
-- Repository is public. `main` was rewritten to remove purchased data; the
-  old branch `claude/peaceful-volta-mygk7c` and pull request #1 still hold
-  it until the owner deletes the branch and GitHub purges the PR refs.
+- Repository is public. `main` was rewritten to remove purchased data. The
+  old branch `claude/peaceful-volta-mygk7c` is deleted (2026-11-09); only
+  pull request #1's hidden ref (`refs/pull/1/head`) still holds it, and the
+  owner has asked GitHub Support to purge it.
 - Case study page republished 2026-11-09 (version 6) with the new player
   data and the earlier-season market tests.
 - Owner-supplied files checked and recorded in `docs/audit/external-odds.md`;

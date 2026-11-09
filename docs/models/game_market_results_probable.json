@@ -8,11 +8,11 @@
       "constant": 0.6924
     },
     "external|ml|20262027": {
-      "games": 231,
-      "market": 0.6484,
-      "model_raw": 0.6555,
-      "model_cal": 0.6532,
-      "constant": 0.6829
+      "games": 261,
+      "market": 0.6477,
+      "model_raw": 0.6552,
+      "model_cal": 0.6528,
+      "constant": 0.6851
     },
     "external|pl|20252026": {
       "games": 1385,
@@ -22,11 +22,11 @@
       "constant": 0.6877
     },
     "external|pl|20262027": {
-      "games": 228,
-      "market": 0.6495,
-      "model_raw": 0.663,
-      "model_cal": 0.65,
-      "constant": 0.6845
+      "games": 257,
+      "market": 0.6434,
+      "model_raw": 0.6539,
+      "model_cal": 0.6434,
+      "constant": 0.6849
     },
     "external|tot|20252026": {
       "games": 1338,
@@ -36,11 +36,11 @@
       "constant": 0.6931
     },
     "external|tot|20262027": {
-      "games": 230,
-      "market": 0.693,
-      "model_raw": 0.7009,
-      "model_cal": 0.7047,
-      "constant": 0.6925
+      "games": 260,
+      "market": 0.6925,
+      "model_raw": 0.6988,
+      "model_cal": 0.7026,
+      "constant": 0.6924
     },
     "sgo|ml|20252026": {
       "games": 646,
@@ -99,10 +99,10 @@
         0.2689
       ],
       "test_external": {
-        "games": 231,
-        "market": 0.6484,
-        "model": 0.6532,
-        "blend": 0.6541
+        "games": 261,
+        "market": 0.6477,
+        "model": 0.6528,
+        "blend": 0.653
       },
       "test_sgo": {
         "games": 261,
@@ -136,10 +136,10 @@
         0.3123
       ],
       "test_external": {
-        "games": 228,
-        "market": 0.6495,
-        "model": 0.65,
-        "blend": 0.65
+        "games": 257,
+        "market": 0.6434,
+        "model": 0.6434,
+        "blend": 0.6418
       },
       "test_sgo": {
         "games": 261,
@@ -173,10 +173,10 @@
         0.3089
       ],
       "test_external": {
-        "games": 230,
-        "market": 0.693,
-        "model": 0.7047,
-        "blend": 0.703
+        "games": 260,
+        "market": 0.6925,
+        "model": 0.7026,
+        "blend": 0.7027
       },
       "test_sgo": {
         "games": 261,

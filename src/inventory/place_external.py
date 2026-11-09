@@ -27,8 +27,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 DRIVE = os.path.join(ROOT, "data/drive/NHL_Prediction_System_Claude/01_raw")
 # Drive file name -> (data/external path, SHA-256 of the version used)
 FILES = {
-    "nhl_2026_27_odds.csv": ("closing_csv/nhl_2026_27_odds_2026-11-09.csv",
-                             "f357e746800ac3a88042653a45e54a72c272d2c5cdf11330326e0c5f6da5f3eb"),
+    "nhl_2026_27_odds.csv": ("closing_csv/nhl_2026_27_odds.csv",  # 282 games to 2026-11-08 (decision 40)
+                             "f324cc328e664cbee4b8f5cf396663ae518514d56a61b6813cbe811849eeaee6"),
     "sportsbook-nhl-2021-2022.csv": ("sbr/sportsbook-nhl-2021-2022.csv",
                                      "891229ab16a8aac0d1137e24e1d71ed6f544be28fc3b557b36d6a7ff59c7bfa2"),
     "sportsbook-nhl-2022-2023.csv": ("sbr/sportsbook-nhl-2022-2023.csv",

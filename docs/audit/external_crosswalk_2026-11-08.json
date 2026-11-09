@@ -1,0 +1,96 @@
+{
+  "file_sha256": "f324cc328e664cbee4b8f5cf396663ae518514d56a61b6813cbe811849eeaee6",
+  "file_games": 282,
+  "schedule_ends": "2026-11-05",
+  "pending_after_schedule": 21,
+  "new_rows": 261,
+  "matched_by_start_time": 260,
+  "matched_by_date": 1,
+  "scores_agree": 261,
+  "overlap_with_v2_crosswalk": 184,
+  "official_id_identical": 184,
+  "revisions_vs_v2_copy": {
+    "open_home_win_prob": {
+      "changed": 0,
+      "max_abs_change": 0.0
+    },
+    "close_home_win_prob": {
+      "changed": 0,
+      "max_abs_change": 0.0
+    },
+    "close_spread_home": {
+      "changed": 0,
+      "max_abs_change": 0.0
+    },
+    "close_home_cover_prob": {
+      "changed": 0,
+      "max_abs_change": 0.0
+    },
+    "open_total": {
+      "changed": 0,
+      "max_abs_change": 0.0
+    },
+    "close_total": {
+      "changed": 0,
+      "max_abs_change": 0.0
+    },
+    "close_over_prob": {
+      "changed": 0,
+      "max_abs_change": 0.0
+    },
+    "bookmakers": {
+      "changed": 0,
+      "max_abs_change": 0.0
+    }
+  },
+  "revisions_vs_previous_owner_file": {
+    "shared_games": 231,
+    "columns": {
+      "open_home_win_prob": {
+        "changed": 88,
+        "max_abs_change": 0.0114
+      },
+      "close_home_win_prob": {
+        "changed": 70,
+        "max_abs_change": 0.0033
+      },
+      "close_spread_home": {
+        "changed": 1,
+        "max_abs_change": 3.0
+      },
+      "close_home_cover_prob": {
+        "changed": 81,
+        "max_abs_change": 0.4032
+      },
+      "open_total": {
+        "changed": 11,
+        "max_abs_change": 0.5
+      },
+      "close_total": {
+        "changed": 7,
+        "max_abs_change": 0.5
+      },
+      "close_over_prob": {
+        "changed": 77,
+        "max_abs_change": 0.0643
+      },
+      "bookmakers": {
+        "changed": 130,
+        "max_abs_change": 1.0
+      },
+      "home_score": {
+        "changed": 0,
+        "max_abs_change": 0.0
+      },
+      "away_score": {
+        "changed": 0,
+        "max_abs_change": 0.0
+      }
+    }
+  },
+  "new_games": 77,
+  "output_rows": {
+    "2025-26": 1394,
+    "2026-27": 261
+  }
+}

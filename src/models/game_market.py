@@ -33,10 +33,10 @@ sys.path.insert(0, os.path.join(ROOT, "src/models"))
 from game_model import joint_scores, logit, logloss  # noqa: E402
 
 # External closes: the crosswalk rebuilt with the newest 2026-27 file (src/ingest/build_external_crosswalk.py,
-# decision 37) when present, else v2's crosswalk of 2026-10-26. Results with v2's crosswalk are kept in
-# docs/models/game_market_results*_xw2026-10-26.json.
+# decisions 37, 40) when present, else v2's crosswalk of 2026-10-26. Earlier results are kept:
+# game_market_results*_xw2026-10-26.json (v2's crosswalk) and *_xw2026-11-01.json (231-game file).
 XW_V2 = os.path.join(ROOT, "data/drive/NHL_Prediction_System_ChatGPT/data/evaluation/external_closing_comparison/20261026T210505Z_bed9e020/external_official_crosswalk.parquet")
-XW_NEW = os.path.join(ROOT, "data/external/external_official_crosswalk_2026-11-09.parquet")
+XW_NEW = os.path.join(ROOT, "data/external/external_official_crosswalk.parquet")
 XW = XW_NEW if os.path.exists(XW_NEW) else XW_V2
 M = "glm"
 SUFFIX = f"_{sys.argv[1]}" if len(sys.argv) > 1 else ""
