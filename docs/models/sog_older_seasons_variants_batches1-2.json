@@ -1,0 +1,218 @@
+{
+  "sog": {
+    "lines": 2260,
+    "players": 78,
+    "games": 1739,
+    "median_margin": 0.0671,
+    "over_rate": 0.5097,
+    "mean_p_market": 0.5158,
+    "log_loss": {
+      "constant": 0.693,
+      "market": 0.6809,
+      "model": 0.6854,
+      "frozen_blend": 0.6812
+    },
+    "roi_4pt_model_alone": {
+      "bets": 1145,
+      "players": 77,
+      "under_share": 0.873,
+      "win_rate": 0.5162,
+      "roi": -0.0231,
+      "roi_se_player_clustered": 0.0273,
+      "roi_se_game_clustered": 0.028
+    },
+    "roi_4pt_frozen_blend": {
+      "bets": 349,
+      "players": 56,
+      "under_share": 0.994,
+      "win_rate": 0.4986,
+      "roi": -0.0765,
+      "roi_se_player_clustered": 0.0504,
+      "roi_se_game_clustered": 0.0506
+    },
+    "blend_fit": {
+      "clustered_by_player_id": {
+        "coef_const_market_model": [
+          -0.0075,
+          0.9457,
+          0.1863
+        ],
+        "se": [
+          0.0478,
+          0.2605,
+          0.1982
+        ]
+      },
+      "clustered_by_game_id": {
+        "coef_const_market_model": [
+          -0.0075,
+          0.9457,
+          0.1863
+        ],
+        "se": [
+          0.0522,
+          0.2679,
+          0.2082
+        ]
+      }
+    },
+    "by_season_log_loss": {
+      "20232024": {
+        "market": 0.6845,
+        "model": 0.691
+      },
+      "20242025": {
+        "market": 0.6802,
+        "model": 0.6837
+      },
+      "20252026": {
+        "market": 0.6709,
+        "model": 0.6725
+      }
+    }
+  },
+  "sog_edge": {
+    "lines": 2260,
+    "players": 78,
+    "games": 1739,
+    "median_margin": 0.0671,
+    "over_rate": 0.5097,
+    "mean_p_market": 0.5158,
+    "log_loss": {
+      "constant": 0.693,
+      "market": 0.6809,
+      "model": 0.6857,
+      "frozen_blend": 0.6813
+    },
+    "roi_4pt_model_alone": {
+      "bets": 1122,
+      "players": 78,
+      "under_share": 0.867,
+      "win_rate": 0.5053,
+      "roi": -0.0448,
+      "roi_se_player_clustered": 0.03,
+      "roi_se_game_clustered": 0.0284
+    },
+    "roi_4pt_frozen_blend": {
+      "bets": 341,
+      "players": 57,
+      "under_share": 0.991,
+      "win_rate": 0.5015,
+      "roi": -0.0569,
+      "roi_se_player_clustered": 0.0527,
+      "roi_se_game_clustered": 0.0517
+    },
+    "blend_fit": {
+      "clustered_by_player_id": {
+        "coef_const_market_model": [
+          -0.0125,
+          0.981,
+          0.1537
+        ],
+        "se": [
+          0.0465,
+          0.2761,
+          0.2072
+        ]
+      },
+      "clustered_by_game_id": {
+        "coef_const_market_model": [
+          -0.0125,
+          0.981,
+          0.1537
+        ],
+        "se": [
+          0.0518,
+          0.2659,
+          0.2071
+        ]
+      }
+    },
+    "by_season_log_loss": {
+      "20232024": {
+        "market": 0.6845,
+        "model": 0.693
+      },
+      "20242025": {
+        "market": 0.6802,
+        "model": 0.6828
+      },
+      "20252026": {
+        "market": 0.6709,
+        "model": 0.6732
+      }
+    }
+  },
+  "sog_mp": {
+    "lines": 2260,
+    "players": 78,
+    "games": 1739,
+    "median_margin": 0.0671,
+    "over_rate": 0.5097,
+    "mean_p_market": 0.5158,
+    "log_loss": {
+      "constant": 0.693,
+      "market": 0.6809,
+      "model": 0.684,
+      "frozen_blend": 0.681
+    },
+    "roi_4pt_model_alone": {
+      "bets": 943,
+      "players": 78,
+      "under_share": 0.823,
+      "win_rate": 0.5133,
+      "roi": -0.0371,
+      "roi_se_player_clustered": 0.0312,
+      "roi_se_game_clustered": 0.0312
+    },
+    "roi_4pt_frozen_blend": {
+      "bets": 229,
+      "players": 46,
+      "under_share": 0.987,
+      "win_rate": 0.5066,
+      "roi": -0.0486,
+      "roi_se_player_clustered": 0.0613,
+      "roi_se_game_clustered": 0.0631
+    },
+    "blend_fit": {
+      "clustered_by_player_id": {
+        "coef_const_market_model": [
+          -0.0157,
+          0.9511,
+          0.1819
+        ],
+        "se": [
+          0.0445,
+          0.2779,
+          0.2177
+        ]
+      },
+      "clustered_by_game_id": {
+        "coef_const_market_model": [
+          -0.0157,
+          0.9511,
+          0.1819
+        ],
+        "se": [
+          0.049,
+          0.2835,
+          0.2276
+        ]
+      }
+    },
+    "by_season_log_loss": {
+      "20232024": {
+        "market": 0.6845,
+        "model": 0.6898
+      },
+      "20242025": {
+        "market": 0.6802,
+        "model": 0.6821
+      },
+      "20252026": {
+        "market": 0.6709,
+        "model": 0.6723
+      }
+    }
+  }
+}

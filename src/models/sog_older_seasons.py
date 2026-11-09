@@ -27,6 +27,9 @@ Tests
   ROI            4-point rules (model alone; frozen blend) at the median
                  closing price, clustered by player
 
+Batch 3 (2026-11-09, 49 new players, 490 credits) was added after batches 1-2;
+their two-batch results are kept in *_batches1-2.json.
+
 Output: docs/models/sog_older_seasons_results.json (no purchased rows)
         `python3 src/models/sog_older_seasons.py variants` runs the same test for
         the shots_edge and shots_mp variants -> docs/models/sog_older_seasons_variants.json
@@ -152,9 +155,9 @@ def blend_fit(d: pd.DataFrame) -> dict:
 
 
 def batches() -> dict:
-    """Batch 1 (first 500 credits, incl. McDavid) and batch 2 (second key): player id -> batch."""
+    """Batch 1 (first 500 credits, incl. McDavid), batch 2 (second key), batch 3 (2026-11-09): player id -> batch."""
     out = {8478402: 1}
-    for b in (1, 2):
+    for b in (1, 2, 3):
         path = os.path.join(ROOT, f"data/puckapi/sog_history/batch{b}_players.txt")
         if os.path.exists(path):
             out.update({int(x): b for x in open(path).read().split()})
@@ -191,7 +194,7 @@ elif __name__ == "__main__":
     d, info = load()
     d["batch"] = d.player_id.map(batches()).fillna(1).astype(int)
     frozen = json.load(open(os.path.join(ROOT, "docs/live/frozen_rules_v2.json")))["sog"]["blend_coef_const_market_model"]
-    res = {"source": "PuckAPI get_prop_history, bought 2026-11-08 in two batches (500 + 499 credits)",
+    res = {"source": "PuckAPI get_prop_history, bought in three batches: 2026-11-08 (500 + 499 credits) and 2026-11-09 (490 credits)",
            "window": ["2023-10-01", "2026-01-15"], **info}
     res["all"] = summarize(d, frozen) | {"blend_fit": blend_fit(d)}
     for b, x in d.groupby("batch"):

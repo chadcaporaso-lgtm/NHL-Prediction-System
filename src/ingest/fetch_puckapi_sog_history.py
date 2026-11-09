@@ -34,6 +34,12 @@ calls; the restart drew its 19 players afresh (excluding the 30 just bought),
 so batch 2 is still 49 distinct new players. Batch lists are now written
 once and only earlier batches are excluded, so reruns draw the same players.
 
+Batch 3 (2026-11-09, new key, 500 credits available): 49 calls of 25 games
+(490 credits), 49 new players (batches 1-2 and McDavid excluded; the earlier
+lists were restored from the owner's copy and checked against SHA256SUMS).
+All 49 calls succeeded (1,162 rows). Andrew Copp's block returned 1 game and
+only a summary, no line rows, so 48 of the 49 players have graded lines.
+
 Usage: python3 src/ingest/fetch_puckapi_sog_history.py --players N --max-calls M [--block 25] [--batch B] [--dry-run]
 """
 
