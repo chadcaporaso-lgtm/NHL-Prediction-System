@@ -2,7 +2,8 @@
 
 A cloud session starts on a fresh machine with only the git repository. The
 pipeline needs 19 audited input files (about 28 MB) plus the newest weekly
-refresh. This cell copies them into 3 MB parts with a SHA-256 manifest under
+refresh, and optionally the owner-supplied odds files in 01_raw/external/
+(about 7 MB; src/inventory/place_external.py puts them in data/external/). This cell copies them into 3 MB parts with a SHA-256 manifest under
 NHL_Prediction_System_Claude/01_raw/_transfer_3mb/core_<date>/. The new
 session downloads the parts and runs src/inventory/restore_core_inputs.py.
 Originals are only read.
@@ -28,6 +29,15 @@ FILES += [f"NHL_Prediction_System/data/raw/nhl_api/skater_{r}_{s}.parquet" for s
 FILES += [f"NHL_Prediction_System_Claude/01_raw/nhl_api_refetch/skater_{r}_{s}.parquet"
           for s in ("20192020", "20202021", "20212022", "20222023", "20232024") for r in ("summary", "timeonice")]
 FILES += ["NHL_Prediction_System_Claude/01_raw/moneypuck/moneypuck_all_teams_2018_plus_2026-11-07.parquet"]
+# Owner-supplied odds (decisions 37-39), if present: put them in 01_raw/external/.
+EXTERNAL = ["nhl_2026_27_odds.csv", "sportsbook-nhl-2021-2022.csv", "sportsbook-nhl-2022-2023.csv", "archive (8).zip"]
+for name in EXTERNAL:
+    hits = sorted(glob.glob(f"{MY}/NHL_Prediction_System_Claude/01_raw/external/{name}")
+                  + glob.glob(f"{MY}/NHL_Prediction_System_Claude/01_raw/inspect/{name}"))
+    if hits:
+        FILES.append(os.path.relpath(hits[0], MY))
+    else:
+        print("not found (optional):", name)
 live = sorted(glob.glob(f"{MY}/NHL_Prediction_System_Claude/01_raw/live/*"))
 if live:
     FILES += [os.path.relpath(p, MY) for p in sorted(glob.glob(f"{live[-1]}/*.parquet"))]

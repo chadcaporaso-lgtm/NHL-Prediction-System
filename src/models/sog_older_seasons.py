@@ -28,6 +28,8 @@ Tests
                  closing price, clustered by player
 
 Output: docs/models/sog_older_seasons_results.json (no purchased rows)
+        `python3 src/models/sog_older_seasons.py variants` runs the same test for
+        the shots_edge and shots_mp variants -> docs/models/sog_older_seasons_variants.json
 """
 
 from __future__ import annotations
@@ -35,6 +37,7 @@ from __future__ import annotations
 import glob
 import json
 import os
+import sys
 
 import numpy as np
 import pandas as pd
@@ -158,7 +161,33 @@ def batches() -> dict:
     return out
 
 
-if __name__ == "__main__":
+def variants(names=("sog", "sog_edge", "sog_mp")) -> dict:
+    """The same older-season test for shots-model variants (prop_model.py shots_edge, shots_mp):
+    each variant's own walk-forward predictions and dispersion, same lines, same frozen blend."""
+    frozen = json.load(open(os.path.join(ROOT, "docs/live/frozen_rules_v2.json")))["sog"]["blend_coef_const_market_model"]
+    out, orig = {}, pd.read_parquet
+    for name in names:
+        pd.read_parquet = lambda p, *a, **k: orig(p.replace("sog_predictions", f"{name}_predictions"), *a, **k)
+        try:
+            d, _ = load()
+        finally:
+            pd.read_parquet = orig
+        alpha = json.load(open(os.path.join(ROOT, f"docs/models/{name}_results.json")))["alpha"]
+        d["alpha"] = d.season.map(lambda s: alpha[str(s)]["gbm"])
+        d["p_model"] = p_over(d.line.values, d.mu_gbm.values, d.alpha.values)
+        out[name] = summarize(d, frozen) | {"blend_fit": blend_fit(d),
+                                            "by_season_log_loss": {str(s): {"market": round(logloss(x.p_market, x.y), 4),
+                                                                            "model": round(logloss(x.p_model, x.y), 4)}
+                                                                   for s, x in d.groupby("season")}}
+    return out
+
+
+if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "variants":
+    res = variants()
+    json.dump(res, open(os.path.join(ROOT, "docs/models/sog_older_seasons_variants.json"), "w"), indent=2)
+    print(json.dumps({k: {"log_loss": v["log_loss"], "roi_4pt_model_alone": v["roi_4pt_model_alone"]["roi"],
+                          "roi_4pt_frozen_blend": v["roi_4pt_frozen_blend"]["roi"]} for k, v in res.items()}, indent=1))
+elif __name__ == "__main__":
     d, info = load()
     d["batch"] = d.player_id.map(batches()).fillna(1).astype(int)
     frozen = json.load(open(os.path.join(ROOT, "docs/live/frozen_rules_v2.json")))["sog"]["blend_coef_const_market_model"]

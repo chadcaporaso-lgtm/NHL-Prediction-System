@@ -1,0 +1,190 @@
+{
+  "source_a_three_way": {
+    "20212022": {
+      "games": 1401,
+      "median_margin": 0.0594,
+      "log_loss": {
+        "constant": 1.0621,
+        "market": 1.0156,
+        "model": 1.0219,
+        "model_theta_prev_season": 1.0219,
+        "diagnostic_model_with_market_tie": 1.022
+      },
+      "tie_rate": {
+        "actual": 0.2163,
+        "market": 0.2093,
+        "model": 0.232,
+        "model_theta_prev_season": 0.232
+      },
+      "theta": {
+        "pooled_earlier_seasons": 0.4957,
+        "previous_season": 0.4957
+      }
+    },
+    "20222023": {
+      "games": 1399,
+      "median_margin": 0.061,
+      "log_loss": {
+        "constant": 1.0737,
+        "market": 1.0314,
+        "model": 1.0371,
+        "model_theta_prev_season": 1.0395,
+        "diagnostic_model_with_market_tie": 1.0373
+      },
+      "tie_rate": {
+        "actual": 0.233,
+        "market": 0.2097,
+        "model": 0.2119,
+        "model_theta_prev_season": 0.1984
+      },
+      "theta": {
+        "pooled_earlier_seasons": 0.4847,
+        "previous_season": 0.3664
+      }
+    },
+    "20232024": {
+      "games": 1400,
+      "median_margin": 0.0584,
+      "log_loss": {
+        "constant": 1.0567,
+        "market": 1.02,
+        "model": 1.0211,
+        "model_theta_prev_season": 1.0237,
+        "diagnostic_model_with_market_tie": 1.0204
+      },
+      "tie_rate": {
+        "actual": 0.2057,
+        "market": 0.213,
+        "model": 0.224,
+        "model_theta_prev_season": 0.2412
+      },
+      "theta": {
+        "pooled_earlier_seasons": 0.5221,
+        "previous_season": 0.6766
+      }
+    },
+    "20242025": {
+      "games": 1398,
+      "median_margin": 0.0608,
+      "log_loss": {
+        "constant": 1.0524,
+        "market": 1.0251,
+        "model": 1.0319,
+        "model_theta_prev_season": 1.0307,
+        "diagnostic_model_with_market_tie": 1.0312
+      },
+      "tie_rate": {
+        "actual": 0.2082,
+        "market": 0.2159,
+        "model": 0.2289,
+        "model_theta_prev_season": 0.2143
+      },
+      "theta": {
+        "pooled_earlier_seasons": 0.4862,
+        "previous_season": 0.3656
+      }
+    },
+    "20252026": {
+      "games": 1394,
+      "median_margin": 0.0591,
+      "log_loss": {
+        "constant": 1.081,
+        "market": 1.0648,
+        "model": 1.0701,
+        "model_theta_prev_season": 1.0736,
+        "diagnostic_model_with_market_tie": 1.0704
+      },
+      "tie_rate": {
+        "actual": 0.2496,
+        "market": 0.2217,
+        "model": 0.2249,
+        "model_theta_prev_season": 0.2075
+      },
+      "theta": {
+        "pooled_earlier_seasons": 0.4584,
+        "previous_season": 0.3158
+      }
+    },
+    "20262027": {
+      "games": 136,
+      "median_margin": 0.0642,
+      "log_loss": {
+        "constant": 1.0702,
+        "market": 1.0205,
+        "model": 1.0226,
+        "model_theta_prev_season": 1.0231,
+        "diagnostic_model_with_market_tie": 1.0231
+      },
+      "tie_rate": {
+        "actual": 0.2279,
+        "market": 0.2208,
+        "model": 0.2228,
+        "model_theta_prev_season": 0.2432
+      },
+      "theta": {
+        "pooled_earlier_seasons": 0.4921,
+        "previous_season": 0.672
+      }
+    },
+    "2021-22_to_2025-26": {
+      "games": 6992,
+      "log_loss": {
+        "market": 1.0313,
+        "model": 1.0364,
+        "model_theta_prev_season": 1.0378,
+        "diagnostic_model_with_market_tie": 1.0362
+      },
+      "tie_rate": {
+        "actual": 0.2225,
+        "market": 0.2139,
+        "model": 0.2243,
+        "model_theta_prev_season": 0.2187
+      },
+      "model_minus_market": {
+        "mean": 0.0051,
+        "se": 0.0013
+      }
+    }
+  },
+  "source_b_favorite_moneyline": {
+    "20212022": {
+      "rows": 1311,
+      "matched": 1311,
+      "scores_agree": 1.0,
+      "even_lines": 45,
+      "log_loss": {
+        "constant": 0.6905,
+        "line_no_margin_removed": 0.64,
+        "line_margin_4.5pts_removed": 0.6422,
+        "model_raw": 0.6508,
+        "model_calibrated": 0.6508
+      }
+    },
+    "20222023": {
+      "rows": 1308,
+      "matched": 1308,
+      "scores_agree": 1.0,
+      "even_lines": 36,
+      "log_loss": {
+        "constant": 0.6919,
+        "line_no_margin_removed": 0.6533,
+        "line_margin_4.5pts_removed": 0.6525,
+        "model_raw": 0.6557,
+        "model_calibrated": 0.6594
+      }
+    }
+  },
+  "source_a_matching": {
+    "matched_share_by_season": {
+      "20212022": 1.0,
+      "20222023": 1.0,
+      "20232024": 1.0,
+      "20242025": 1.0,
+      "20252026": 1.0,
+      "20262027": 0.5211
+    },
+    "date_one_day_later": 6189,
+    "same_date": 940,
+    "final_scores_agree": 0.99986
+  }
+}

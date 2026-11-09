@@ -1,7 +1,7 @@
 """Player prop models (shots on goal, points): walk-forward by season, graded
 on all games and on SportsGameOdds closing prop prices.
 
-Usage: python3 src/models/prop_model.py shots    (or points)
+Usage: python3 src/models/prop_model.py shots    (or points; variants points_lm, points_edge, points_lm_edge, shots_edge, shots_mp, points_mp, points_all)
 
 Models (all predict the mean shot count mu for a player-game)
   baseline  mu = player's exponentially weighted target per game (no fitting)
@@ -58,8 +58,33 @@ CONFIGS = {
         # v2 (2026-11-07): lineup role from dressed teammates' pregame form
         "toi_rank_pos", "pp_rank", "linemates_pts", "team_dressed_pts", "team_dressed_gap"]},
 }
-TARGET = sys.argv[1] if len(sys.argv) > 1 else "shots"
-CFG = CONFIGS[TARGET]
+# Variants (2026-11-09), separate outputs; the shots and points configs above stay the reference.
+#   points_lm    points v2 + linemates measured from NHL shift charts (src/features/build_linemates.py)
+#   *_edge       + the player's previous-season NHL Edge profile (src/features/build_edge_features.py)
+LM = ["lm_ev_pts", "lm_pp_pts", "lm_ev_present", "pp_unit_share", "shift_games"]
+EDGE = ["edge_hd_share", "edge_hd_shots_pg", "edge_hd_sh_pct", "edge_oz_pct", "edge_oz_ev_pct", "edge_shot_speed",
+        "edge_max_speed", "edge_bursts_pg", "edge_dist_pg", "edge_gp", "edge_missing"]
+MP = ["mp_ixg", "mp_attempts", "mp_xog", "mp_hd_shots", "mp_pp_ixg", "mp_onice_xgf", "mp_onice_xgf_pct", "mp_ozs_share",
+      "mp_games"]
+LM_FILE, EDGE_FILE = "data/features/linemate_features.parquet", "data/features/edge_features.parquet"
+MP_FILE = "data/features/mp_features.parquet"  # MoneyPuck game-by-game (src/features/build_mp_features.py)
+CONFIGS["points_lm"] = {"name": "points_lm", "target": "points", "stat": "goals+assists", "extra": [LM_FILE],
+                        "features": CONFIGS["points"]["features"] + LM}
+CONFIGS["points_edge"] = {"name": "points_edge", "target": "points", "stat": "goals+assists", "extra": [EDGE_FILE],
+                          "features": CONFIGS["points"]["features"] + EDGE}
+CONFIGS["points_lm_edge"] = {"name": "points_lm_edge", "target": "points", "stat": "goals+assists", "extra": [LM_FILE, EDGE_FILE],
+                             "features": CONFIGS["points"]["features"] + LM + EDGE}
+CONFIGS["shots_mp"] = {"name": "sog_mp", "target": "shots", "stat": "shots_onGoal", "extra": [MP_FILE],
+                       "features": CONFIGS["shots"]["features"] + MP}
+CONFIGS["points_mp"] = {"name": "points_mp", "target": "points", "stat": "goals+assists", "extra": [MP_FILE],
+                        "features": CONFIGS["points"]["features"] + MP}
+CONFIGS["points_all"] = {"name": "points_all", "target": "points", "stat": "goals+assists",
+                         "extra": [LM_FILE, EDGE_FILE, MP_FILE], "features": CONFIGS["points"]["features"] + LM + EDGE + MP}
+CONFIGS["shots_edge"] = {"name": "sog_edge", "target": "shots", "stat": "shots_onGoal", "extra": [EDGE_FILE],
+                         "features": CONFIGS["shots"]["features"] + EDGE}
+KEY = sys.argv[1] if len(sys.argv) > 1 else "shots"
+CFG = CONFIGS[KEY]
+TARGET = CFG.get("target", KEY)
 FEATURES, NAME = CFG["features"], CFG["name"]
 
 
@@ -81,6 +106,19 @@ def prepare(f: pd.DataFrame) -> pd.DataFrame:
         f[c] = f[c].fillna(0.0)
     for c in ["toi_rank_pos", "pp_rank", "linemates_pts"]:
         f[c] = f[c].fillna(f[c].median())
+    if LM_FILE in CFG.get("extra", []):  # shift-chart linemates: no earlier shift data -> his own form / no power play
+        f["lm_ev_pts"] = f.lm_ev_pts.fillna(f.linemates_pts)
+        f["lm_pp_pts"] = f.lm_pp_pts.fillna(f.linemates_pts)
+        f["lm_ev_present"] = f.lm_ev_present.fillna(1.0)
+        f["pp_unit_share"] = f.pp_unit_share.fillna(0.0)
+        f["shift_games"] = f.shift_games.fillna(0)
+    if EDGE_FILE in CFG.get("extra", []):  # no previous-season Edge profile: flag it, fill with the median
+        f["edge_missing"] = f.edge_gp.isna().astype(int)
+        for c in EDGE[:-1]:
+            f[c] = f[c].fillna(f[c].median())
+    if MP_FILE in CFG.get("extra", []):  # no earlier MoneyPuck game: fill with the median
+        for c in MP[:-1]:
+            f[c] = f[c].fillna(f[c].median())
     return f
 
 
@@ -205,7 +243,10 @@ def score_market(p, alphas, edge=0.03):
 
 
 if __name__ == "__main__":
-    f = prepare(pd.read_parquet(os.path.join(ROOT, "data/features/skater_features.parquet")))
+    f = pd.read_parquet(os.path.join(ROOT, "data/features/skater_features.parquet"))
+    for extra in CFG.get("extra", []):
+        f = f.merge(pd.read_parquet(os.path.join(ROOT, extra)), on=["game_id", "player_id"], how="left", validate="one_to_one")
+    f = prepare(f)
     p, alphas = walk_forward(f)
     p.to_parquet(os.path.join(ROOT, f"data/models/{NAME}_predictions.parquet"), index=False)
     results = {"target": TARGET, "features": FEATURES, "min_prior_games": MIN_PRIOR,

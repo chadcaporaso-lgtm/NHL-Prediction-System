@@ -68,11 +68,11 @@ Log loss on games graded with the official score; the market is de-vigged.
 | Market | Source, season | Games | Market | Model (calibrated) | Constant |
 |--------|----------------|------:|------:|------:|------:|
 | Moneyline | external 2025-26 | 1,394 | **0.6808** | 0.6855 (raw 0.6830) | 0.6924 |
-| | external 2026-27 | 184 | **0.6496** | 0.6556 | 0.6779 |
+| | external 2026-27 | 231 | **0.6484** | 0.6532 | 0.6829 |
 | | SGO 2025-26 (from Jan.) | 646 | **0.6739** | 0.6759 | 0.6928 |
 | | SGO 2026-27 | 235 | **0.6487** | 0.6532 | 0.6844 |
 | Puck line | external 2025-26 | 1,385 | 0.6272 | **0.6246** | 0.6877 |
-| | external 2026-27 | 182 | **0.6563** | 0.6565 | 0.6813 |
+| | external 2026-27 | 228 | 0.6495 | **0.6480** | 0.6845 |
 | | SGO 2025-26 | 646 | 0.6380 | **0.6364** | 0.6855 |
 | | SGO 2026-27 | 235 | 0.6503 | **0.6486** | 0.6884 |
 | Totals | external 2025-26 | 1,338 | **0.6893** | 0.6948 | 0.6931 |
@@ -83,7 +83,9 @@ Log loss on games graded with the official score; the market is de-vigged.
   projects on the same season (v2 best: 0.6867). Blend test: the model's
   weight beside the market is 0.09 (SE 0.27); it adds nothing.
 - **Puck line:** the model matches or slightly beats the closing price in
-  three of four comparisons. Blend weight 0.58 (SE 0.31), about 1.9 standard
+  all four comparisons (three of four before the newer 2026-27 external file,
+  decision 37; earlier figures: 184 moneyline games 0.6556 vs 0.6496, 182
+  puck-line games 0.6565 vs 0.6563, kept in `game_market_results_xw2026-10-26.json`). Blend weight 0.58 (SE 0.31), about 1.9 standard
   errors; on 2026-27 the blend does not beat the market. Betting the model
   at the SGO close: +0.4% (SE 4.3%) at a 2-point edge, 545 bets. **Suggestive,
   not significant.**
@@ -91,6 +93,45 @@ Log loss on games graded with the official score; the market is de-vigged.
 
 No game market shows a betting edge. Moneyline ROI at the SGO close is
 between -1.8% and +0.8% with standard errors of 4-7%.
+
+### Earlier seasons: second-source prices (2026-11-09)
+
+Code: `src/models/game_market_history.py` ->
+`docs/models/game_market_history_results.json`. Sources and checks:
+`docs/audit/external-odds.md`. Log loss only: neither source gives
+bettable prices (decisions 38-39).
+
+**Regulation result (home win / tie / away win after 60 minutes)**, average
+closing three-way prices across bookmakers, de-vigged (median margin 6.0%):
+
+| Season | Games | Constant | Market | Model | Actual ties | Market ties | Model ties |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 2021-22 | 1,401 | 1.0621 | **1.0156** | 1.0219 | 21.6% | 20.9% | 23.2% |
+| 2022-23 | 1,399 | 1.0737 | **1.0314** | 1.0371 | 23.3% | 21.0% | 21.2% |
+| 2023-24 | 1,400 | 1.0567 | **1.0200** | 1.0211 | 20.6% | 21.3% | 22.4% |
+| 2024-25 | 1,398 | 1.0524 | **1.0251** | 1.0319 | 20.8% | 21.6% | 22.9% |
+| 2025-26 | 1,394 | 1.0810 | **1.0648** | 1.0701 | 25.0% | 22.2% | 22.5% |
+| 2026-27 (to Oct. 19) | 136 | 1.0702 | **1.0205** | 1.0226 | 22.8% | 22.1% | 22.3% |
+| **2021-22 to 2025-26** | **6,992** | | **1.0313** | 1.0364 | 22.3% | 21.4% | 22.4% |
+
+The model trails the market in every season, by 0.0051 over five seasons
+(SE 0.0013, paired by game). The gap is not about ties: the model's tie
+rate is right on average (the market's is too low), refitting the tie
+adjustment to the previous season scores worse (1.0378), and giving the
+model the market's own tie probability barely helps (1.0362). The market is
+better at the home/away split, i.e. at rating the teams.
+
+**Moneyline, favorite-only files** (the favorite's price, timing unknown;
+margin removed approximately):
+
+| Season | Games | Constant | Line | Model |
+|---|---:|---:|---:|---:|
+| 2021-22 | 1,311 | 0.6905 | **0.6422** | 0.6508 |
+| 2022-23 | 1,308 | 0.6919 | **0.6525** | 0.6557 (raw) |
+
+Same picture: the market is ahead in both seasons. With these, the
+moneyline result ("close, behind the market") now holds in every season
+from 2021-22 to 2026-27.
 
 ## Version history
 

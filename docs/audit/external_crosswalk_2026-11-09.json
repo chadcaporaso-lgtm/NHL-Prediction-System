@@ -1,0 +1,47 @@
+{
+  "new_rows": 231,
+  "matched_by_start_time": 230,
+  "matched_by_date": 1,
+  "scores_agree": 231,
+  "overlap_with_v2_crosswalk": 184,
+  "official_id_identical": 184,
+  "revisions_vs_v2_copy": {
+    "open_home_win_prob": {
+      "changed": 58,
+      "max_abs_change": 0.0114
+    },
+    "close_home_win_prob": {
+      "changed": 46,
+      "max_abs_change": 0.0033
+    },
+    "close_spread_home": {
+      "changed": 1,
+      "max_abs_change": 3.0
+    },
+    "close_home_cover_prob": {
+      "changed": 58,
+      "max_abs_change": 0.4032
+    },
+    "open_total": {
+      "changed": 8,
+      "max_abs_change": 0.5
+    },
+    "close_total": {
+      "changed": 5,
+      "max_abs_change": 0.5
+    },
+    "close_over_prob": {
+      "changed": 47,
+      "max_abs_change": 0.0643
+    },
+    "bookmakers": {
+      "changed": 86,
+      "max_abs_change": 1.0
+    }
+  },
+  "new_games": 47,
+  "output_rows": {
+    "2025-26": 1394,
+    "2026-27": 231
+  }
+}
