@@ -167,7 +167,7 @@ to the README. Treat the result as meaningful after about 500 bets.
   old branch `claude/peaceful-volta-mygk7c` is deleted (2026-11-09); only
   pull request #1's hidden ref (`refs/pull/1/head`) still holds it, and the
   owner has asked GitHub Support to purge it.
-- Case study page republished 2026-11-09 (version 7, adds the team-rating
+- Case study page republished 2026-11-09 (artifact version 8, adds the team-rating
   test of decision 41; version 6 added the new player
   data and the earlier-season market tests.
 - Owner-supplied files checked and recorded in `docs/audit/external-odds.md`;
