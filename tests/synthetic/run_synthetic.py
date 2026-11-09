@@ -21,6 +21,7 @@ import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 STEPS = [
+    ["tests/test_shift_pairs.py"],
     ["src/features/build_skater_games.py"],
     ["src/features/build_skater_features.py"],
     ["tests/test_skater_feature_leakage.py"],
