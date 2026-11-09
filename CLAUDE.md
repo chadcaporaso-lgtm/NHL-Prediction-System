@@ -82,23 +82,22 @@ A cloud session starts on a fresh machine with only this repository.
    with the same SHA-256 (core input and weekly refresh): download its 5 parts
    once; the script reuses identical files. Parts of 3 MB come back as saved
    tool results, smaller ones inline; the script searches both.
+   The bundle also stages the owner-supplied odds files (decisions 37-39)
+   when they are in Drive under `01_raw/external/` (`nhl_2026_27_odds.csv`,
+   `sportsbook-nhl-2021-2022.csv`, `sportsbook-nhl-2022-2023.csv`) or
+   `01_raw/inspect/` (`archive (8).zip`); `run.py restore` then places them
+   in `data/external/` and checks their SHA-256
+   (`src/inventory/place_external.py`). Without them `game_market.py` falls
+   back to v2's crosswalk and `game_market_history.py` cannot run.
 4. Re-download SportsGameOdds history (uses the stored network secret):
    `python3 src/ingest/fetch_sgo_events.py 2026-01-16 <yesterday>`.
-5. Optional (variant models only; the environment allows api.nhle.com,
-   api-web.nhle.com and moneypuck.com): `python3 src/ingest/fetch_shiftcharts.py`
-   (about 1 hour), `python3 src/ingest/fetch_edge.py` (about 25 minutes),
-   `python3 src/ingest/fetch_moneypuck_skaters.py` (about 1.5 hours), then
-   `src/features/build_linemates.py`, `build_edge_features.py`,
-   `build_mp_features.py` and their tests in `tests/`.
-6. Optional: owner-supplied odds in `data/external/` (decisions 37-39; checks
-   in `docs/audit/external-odds.md`). Not in the core bundle: ask the owner
-   to stage the 2026-27 closing CSV and the two `sportsbook-nhl-*.csv` files
-   with `src/inventory/colab_stage_file.py` (`archive (8).zip` is already in
-   Drive under `01_raw/inspect/`), restore, then run
-   `src/ingest/build_external_crosswalk.py` and
-   `src/models/game_market_history.py`. Without them `game_market.py` falls
-   back to v2's crosswalk.
-7. Rebuild everything: `python3 run.py update` (runs
+5. Optional: `python3 run.py extras` (run it in the background, about 3
+   hours; the environment allows api.nhle.com, api-web.nhle.com and
+   moneypuck.com). It fetches NHL shift charts, NHL Edge and MoneyPuck game
+   logs, builds and leakage-tests the features, and reruns the variant
+   models and the earlier-season market tests (decisions 34-39). Only needed
+   to work on those variants; the weekly live test does not use them.
+6. Rebuild everything: `python3 run.py update` (runs
    `src/live/weekly_update.py`: fetches new odds, rebuilds features and
    models, runs the leakage tests, grades the live test, redraws the charts).
 
@@ -120,7 +119,7 @@ the manifest, then `python3 run.py update <date>`. Commit
 `docs/live/tracking.json` and the redrawn `docs/figures/`, and add the week
 to the README. Treat the result as meaningful after about 500 bets.
 
-## Current state (2026-11-09, fourth session)
+## Current state (2026-11-09, end of fourth session)
 
 - Data audit done (findings D-1, D-2, O-1 to O-7, goalie and live-feed checks).
 - Models: shots on goal (no demonstrated edge: +8.3% on 907 held-out 2026-27
@@ -156,6 +155,10 @@ to the README. Treat the result as meaningful after about 500 bets.
 - Repository is public. `main` was rewritten to remove purchased data; the
   old branch `claude/peaceful-volta-mygk7c` and pull request #1 still hold
   it until the owner deletes the branch and GitHub purges the PR refs.
+- Case study page republished 2026-11-09 (version 6) with the new player
+  data and the earlier-season market tests.
+- Owner-supplied files checked and recorded in `docs/audit/external-odds.md`;
+  `src/inventory/colab_stage_file.py` stages any large file for checking.
 - Restore and full weekly rebuild checked on a fresh machine: every committed
   results file reproduced exactly; charts are now byte-stable.
 - Reproducibility: `run.py` entry point; GitHub Actions runs the pipeline and

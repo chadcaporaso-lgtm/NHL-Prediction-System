@@ -101,7 +101,7 @@ def main():
         "matched_share_by_season": {str(k): round(float(v), 4) for k, v in (m.groupby("season").size() / gp.groupby("season").size()).items()},
         "date_one_day_later": int((m.lag == 1).sum()), "same_date": int((m.lag == 0).sum()),
         "final_scores_agree": round(float(((m.final_home == m.home_score) & (m.final_away == m.away_score)).mean()), 5)}
-    m = m[m[["avg_home_odds", "avg_draw_odds", "avg_away_odds"]].notna().all(1)].copy()
+    m = m[m[["avg_home_odds", "avg_draw_odds", "avg_away_odds"]].notna().all(axis=1)].copy()
     inv = 1 / m[["avg_home_odds", "avg_draw_odds", "avg_away_odds"]].to_numpy()
     over = inv.sum(1)
     m["mh"], m["md"], m["ma"], m["margin"] = inv[:, 0] / over, inv[:, 1] / over, inv[:, 2] / over, over - 1

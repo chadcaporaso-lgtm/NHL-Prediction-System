@@ -29,8 +29,10 @@ leakage test, the probable-starter model and the game models on it, in a
 temporary folder. GitHub Actions runs the same command on every push. With
 the real data restored (see `CLAUDE.md`): `python3 run.py update` rebuilds
 everything and grades the live test, and `python3 run.py test` runs the
-leakage tests alone. The real data is licensed (odds, MoneyPuck) and is not
-in this repository.
+leakage tests alone, and `python3 run.py extras` fetches the optional
+player data (NHL shift charts and Edge, MoneyPuck game logs) and reruns the
+variant models and earlier-season market tests. The real data is licensed
+(odds, MoneyPuck) and is not in this repository.
 
 ---
 

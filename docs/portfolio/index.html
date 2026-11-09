@@ -118,6 +118,7 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
       <div class="fact" role="listitem"><b>34,708</b><span>graded player-prop closing lines (shots and points)</span></div>
       <div class="fact" role="listitem"><b>~1,560</b><span>games with clean moneyline, puck line and totals closes</span></div>
       <div class="fact" role="listitem"><b>2,260</b><span>older-season prop lines bought to test the one apparent edge</span></div>
+      <div class="fact" role="listitem"><b>6,992</b><span>games with regulation-result closes, 2021-22 to 2025-26</span></div>
     </div>
   </section>
 
@@ -125,7 +126,7 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
     <h2>The short version</h2>
     <p>Two earlier versions of this project reported a moneyline model that beat the closing line and returned +4.4%. The audit found that 74% of those bets had been graded at prices captured during or after the game. On clean pregame prices the edge disappears, and the +4.4% cannot be reproduced from the saved ledger.</p>
     <p>The rebuild starts from audited data, validates every model walk-forward by season, and compares each one with the closing line. One model looked like it had an edge: shots on goal, combined with the market price, returned +8.3% on 907 held-out bets in 2026-27. So I bought 2,260 lines from earlier seasons the model had never been tested on, in two independent batches. The edge did not repeat there (-7.7% on 349 bets). The rule stays frozen and a live test on new games decides it.</p>
-    <p>The puck line is level with the market, and the other models are sound projections that the market already prices. Every result is reported, including the ones that went against the model.</p>
+    <p>The puck line is level with the market, and the other models are sound projections that the market already prices. Adding player tracking and shot-quality data (NHL shift charts and Edge, MoneyPuck game logs) made the player models better forecasters but did not produce a betting edge. Market prices for five earlier seasons showed the game model behind the market in every one, and pinned down why: team ratings, not tie handling. Every result is reported, including the ones that went against the model.</p>
   </section>
 
   <section>
@@ -162,6 +163,8 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
       <div class="finding"><div class="sev critical">Critical</div><p><strong>Bets graded at in-game prices.</strong> About 74% of the first version's bets used prices stamped during or after the game. Those prices score a log loss of 0.29 to 0.46, where a real closing line scores about 0.67. Every result built on them was set aside.</p></div>
       <div class="finding"><div class="sev high">High</div><p><strong>Truncated skater data.</strong> Three seasons held about 5 skaters per game instead of 36, which fed the prop models' training data. Re-fetched with a fixed sort order and paging; every game now has its full roster.</p></div>
       <div class="finding"><div class="sev high">Trap</div><p><strong>A mislabeled prop market.</strong> The odds provider's <code>points</code> market is goals, and <code>goals+assists</code> is points. Caught by grading lines against NHL box scores.</p></div>
+      <div class="finding"><div class="sev high">Rejected</div><p><strong>A public dataset with placeholder odds.</strong> A public ESPN-derived dataset lists moneyline −105, total 5.5 and spread 1.5 for every game in 16 of its seasons, often records the underdog's price as the favorite's, and sums its "season" stats across all teams (season wins up to 28,799). It was not used.</p></div>
+      <div class="finding"><div class="sev high">Noted</div><p><strong>Closing prices that change after the fact.</strong> A newer copy of one closing-odds file revised games already played when the provider added a bookmaker: puck-line probabilities moved by up to 0.40 and one spread flipped sides. Both versions' results are kept.</p></div>
       <div class="finding"><div class="sev pass">Clean</div><p><strong>Game results and labels.</strong> Both projects matched the NHL schedule and an independent source on every game, with overtime and shootout handled correctly.</p></div>
       <div class="finding"><div class="sev pass">Clean</div><p><strong>Goalie logs and the live feed.</strong> One starter per team-game in 18,784 of 18,784; the new weekly feed matched the audited tables on all 470 team-games and 940 goalie lines it shares with them.</p></div>
     </div>
@@ -248,7 +251,50 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
     <h2>What did not work, and why</h2>
     <p><b>Points.</b> The model beats a recent-form baseline every season but adds nothing to the closing price on held-out lines. Adding each player's role in the night's lineup (ice-time and power-play rank among dressed teammates, a linemate-quality proxy) improved it in every season, from 0.6551 to 0.6542 log loss, but the closing price still sits at 0.6515. Books know the actual line combinations and same-day news.</p>
     <p><b>Totals.</b> Predicted totals correlate only 0.04 to 0.20 with actual totals, and the model's scoring level lags season-to-season shifts by up to 0.45 goals. Adding a league scoring-level feature did not fix it. Both versions are reported.</p>
-    <p><b>Moneyline.</b> 0.6830 against the close's 0.6808 on the full 2025-26 season, better than either earlier version (best 0.6867) but still behind the market, and a blend gives it no weight.</p>
+    <p><b>Moneyline.</b> 0.6830 against the close's 0.6808 on the full 2025-26 season, better than either earlier version (best 0.6867) but still behind the market, and a blend gives it no weight. Earlier seasons tell the same story (below).</p>
+  </section>
+
+  <section>
+    <h2>More data, better forecasts, no edge</h2>
+    <p class="col">Three free sources were added as separate model variants, each with its own leakage test, so the frozen live-test models stayed untouched. NHL shift charts for 9,314 games give who played with whom at 5-on-5 and on the power play (ice time from the shifts matches the box score within 30 seconds for 99.9% of skater-games). NHL Edge tracking data is published only as season totals, so each game uses the player's previous-season profile. MoneyPuck game logs add each skater's expected goals, shot attempts, high-danger shots and zone starts, as rolling averages of earlier games.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Model</th><th class="num">2026-27 lines (market)</th><th class="num">Older lines (market 0.6809)</th><th class="num">Best rule, 4-point edge</th></tr></thead>
+        <tbody>
+          <tr><td>Shots on goal, frozen</td><td class="num">0.6781 (0.6796)</td><td class="num">0.6854</td><td class="num">+8.3%, 907 bets</td></tr>
+          <tr><td>+ NHL Edge</td><td class="num">0.6782</td><td class="num">0.6857</td><td class="num">+10.6%, 928 bets</td></tr>
+          <tr><td>+ MoneyPuck</td><td class="num"><b>0.6771</b></td><td class="num"><b>0.6840</b></td><td class="num">+5.8%, 1,391 bets</td></tr>
+          <tr><td>Points, version 2</td><td class="num">0.6382 (0.6333)</td><td class="num">–</td><td class="num">−4.1%, 1,042 bets</td></tr>
+          <tr><td>+ linemates, Edge, MoneyPuck</td><td class="num"><b>0.6359</b></td><td class="num">–</td><td class="num">−2.4%, 1,640 bets</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Model log loss alone, lower is better; rules use the model + market blend at the closing price. Older lines: the 2,260 PuckAPI lines from 2023-24 to January 2026.</p>
+    <div class="col">
+      <p>MoneyPuck improves the shots model in every comparison, including the older seasons it never saw, and real linemates are the most useful single addition for points. Together they close about half of the points model's gap to the closing price. But no variant beats the market on the older lines, and the highest return (Edge, +10.6%) is the best of seven variants tried on the same lines and does not repeat on older ones: the kind of number that selection produces by chance. None of them replaces the frozen rule; the MoneyPuck shots model is tracked alongside it.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Five more seasons for the game models</h2>
+    <p class="col">The game models had closing prices for two seasons. Average closing prices for the result after 60 minutes (home win, tie, away win) reach back to 2021-22. They are averages across bookmakers, which no one could bet at, so they are used for log loss only. Every one of 6,992 games matched an official result.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Season</th><th class="num">Games</th><th class="num">Market</th><th class="num">Model</th><th class="num">Actual ties</th><th class="num">Market ties</th><th class="num">Model ties</th></tr></thead>
+        <tbody>
+          <tr><td>2021&#8209;22</td><td class="num">1,401</td><td class="num">1.0156</td><td class="num">1.0219</td><td class="num">21.6%</td><td class="num">20.9%</td><td class="num">23.2%</td></tr>
+          <tr><td>2022&#8209;23</td><td class="num">1,399</td><td class="num">1.0314</td><td class="num">1.0371</td><td class="num">23.3%</td><td class="num">21.0%</td><td class="num">21.2%</td></tr>
+          <tr><td>2023&#8209;24</td><td class="num">1,400</td><td class="num">1.0200</td><td class="num">1.0211</td><td class="num">20.6%</td><td class="num">21.3%</td><td class="num">22.4%</td></tr>
+          <tr><td>2024&#8209;25</td><td class="num">1,398</td><td class="num">1.0251</td><td class="num">1.0319</td><td class="num">20.8%</td><td class="num">21.6%</td><td class="num">22.9%</td></tr>
+          <tr><td>2025&#8209;26</td><td class="num">1,394</td><td class="num">1.0648</td><td class="num">1.0701</td><td class="num">25.0%</td><td class="num">22.2%</td><td class="num">22.5%</td></tr>
+          <tr><td><b>All five</b></td><td class="num"><b>6,992</b></td><td class="num"><b>1.0313</b></td><td class="num"><b>1.0364</b></td><td class="num">22.3%</td><td class="num">21.4%</td><td class="num">22.4%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Three-way log loss on the regulation result (lower is better), walk-forward model, prices de-vigged (median margin 6.0%). A favorite-only moneyline file for 2021-22 and 2022-23 agrees: the line is ahead by 0.009 and 0.003.</p>
+    <div class="col">
+      <p>The market is ahead in every season, by 0.0051 overall (standard error 0.0013). A natural suspect was ties, since the model prices more of them than the market. It is not the cause: over five seasons the model's tie rate is right (22.4% against 22.3%; the market's 21.4% is too low), refitting the tie factor to the previous season makes things worse, and even handing the model the market's own tie probability barely helps. The difference is in the home-versus-away split, which means the market rates the teams better. That is where the game model's next improvement has to come from.</p>
+    </div>
   </section>
 
   <section>
@@ -266,17 +312,18 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
 
   <section class="col">
     <h2>Built to be checked</h2>
-    <p><b>Leakage tests that can fail.</b> Thirteen tests rebuild features from earlier data only and compare them with the stored tables. They run on every push in GitHub Actions against a generated league with the same files and columns as the real (licensed) data. Planted leaks, team form that includes the current game and goalie features that see the current game, were caught by them; one real leak was found the same way, a traded goalie whose game for his new team started earlier the same evening.</p>
+    <p><b>Leakage tests that can fail.</b> Thirteen tests rebuild features from earlier data only and compare them with the stored tables, and three more cover the shift-chart, Edge and MoneyPuck features. They run on every push in GitHub Actions against a generated league with the same files and columns as the real (licensed) data. Planted leaks, team form that includes the current game and goalie features that see the current game, were caught by them; one real leak was found the same way, a traded goalie whose game for his new team started earlier the same evening.</p>
     <p><b>Pregame information only.</b> The game models had been using the goalie who actually started. A probable-starter model, a conditional logit over each team's recent goalies, picks the starter 71% of the time out of sample against 59% for "most starts in the last 10". Swapping it in changed every log loss by at most 0.002, so the look-ahead was small, and the live puck-line rule now uses it.</p>
+    <p><b>Every input checked before use.</b> Each odds file offered for the project went through the same checks (official-game matching, score agreement, overlap with sources in use) and was recorded as used or rejected, with the reason.</p>
     <p><b>One command.</b> A fresh machine restores the data with checksums and reruns everything; every committed results file came out byte for byte the same.</p>
   </section>
 
   <section class="col">
     <h2>Stack</h2>
-    <p>Python, pandas, scikit-learn, statsmodels and SciPy; DuckDB on Parquet; GitHub Actions; Google Drive and Colab for storage and public-API pulls; NHL stats and web APIs, MoneyPuck, SportsGameOdds and PuckAPI as sources. Every number on this page traces to a script and a results file in the repository, with a decision log and model cards alongside.</p>
+    <p>Python, pandas, scikit-learn, statsmodels and SciPy; DuckDB on Parquet; GitHub Actions; Google Drive and Colab for storage and public-API pulls; NHL stats, web, shift-chart and Edge APIs, MoneyPuck, SportsGameOdds and PuckAPI as sources, plus checked third-party closing-odds files for earlier seasons. Every number on this page traces to a script and a results file in the repository, with a decision log and model cards alongside.</p>
   </section>
 
-  <footer>Data through November 6, 2026; older-season prop prices from 2023-24 to January 15, 2026. MoneyPuck data is used under its non-commercial terms. Odds and prop prices are kept out of the public repository.</footer>
+  <footer>Data through November 6, 2026; older-season prop prices from 2023-24 to January 15, 2026; regulation-result prices 2021-22 to October 19, 2026. MoneyPuck data is used under its non-commercial terms. Odds and prop prices are kept out of the public repository.</footer>
 </div>
 
 <script>
