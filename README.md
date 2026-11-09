@@ -412,3 +412,18 @@ never fitted to, and linemates are the most useful single addition for
 points. None of it produces a demonstrated betting edge: the shots variants
 still trail the market on the older lines, and no points variant is
 profitable. Details in the model cards and decisions 34-36.
+
+**6j. Market prices for earlier seasons (2026-11-09).** The owner supplied
+several odds files; each was checked before use (`docs/audit/external-odds.md`).
+Two were rejected (no odds; or placeholder odds in most games). Three were used:
+- A newer 2026-27 external closing file (47 more games). It revises past
+  closes when the provider adds a bookmaker (finding E-1), which is now
+  recorded. The puck-line model now matches or beats the external close in
+  all four comparisons; SportsGameOdds results and the live test are
+  unchanged (decision 37).
+- Average closing three-way prices for 2021-22 to 2026-27: the first market
+  prices for the game models before 2025-26. The model trails the market in
+  every season (1.0364 vs 1.0313 over 6,992 games, SE 0.0013). A suspected
+  tie problem was tested and ruled out: the gap is in rating the teams
+  (decisions 38-39).
+- Favorite-only moneylines for 2021-22 and 2022-23: same result.

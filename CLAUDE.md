@@ -90,7 +90,15 @@ A cloud session starts on a fresh machine with only this repository.
    `python3 src/ingest/fetch_moneypuck_skaters.py` (about 1.5 hours), then
    `src/features/build_linemates.py`, `build_edge_features.py`,
    `build_mp_features.py` and their tests in `tests/`.
-6. Rebuild everything: `python3 run.py update` (runs
+6. Optional: owner-supplied odds in `data/external/` (decisions 37-39; checks
+   in `docs/audit/external-odds.md`). Not in the core bundle: ask the owner
+   to stage the 2026-27 closing CSV and the two `sportsbook-nhl-*.csv` files
+   with `src/inventory/colab_stage_file.py` (`archive (8).zip` is already in
+   Drive under `01_raw/inspect/`), restore, then run
+   `src/ingest/build_external_crosswalk.py` and
+   `src/models/game_market_history.py`. Without them `game_market.py` falls
+   back to v2's crosswalk.
+7. Rebuild everything: `python3 run.py update` (runs
    `src/live/weekly_update.py`: fetches new odds, rebuilds features and
    models, runs the leakage tests, grades the live test, redraws the charts).
 
@@ -131,6 +139,12 @@ to the README. Treat the result as meaningful after about 500 bets.
   MoneyPuck: 0.6771 vs 0.6781 on 2026-27 lines, 0.6840 vs 0.6854 on older
   lines; points + all three: 0.6359 vs 0.6382, market 0.6333), but no
   variant beats the close on held-out lines or has a profitable rule.
+- Earlier-season market prices (decisions 37-39, README 6j): a newer
+  2026-27 external file (47 more games; the provider revises past closes,
+  finding E-1), average closing three-way prices 2021-22 to 2026-27 and
+  favorite-only moneylines 2021-23. The game model trails the market in
+  every season (three-way 1.0364 vs 1.0313 over 6,992 games); the gap is
+  team rating, not ties.
 - Closing-line value (shots): the market moves toward the model between open
   and close (slope 0.21, SE 0.007), but bets at the open lose to the fair
   close on price (CLV -2.1 points); opening-price profit comes mainly from
@@ -158,6 +172,10 @@ to the README. Treat the result as meaningful after about 500 bets.
 3. Optional, costs credits: more older-season shots lines
    (`fetch_puckapi_sog_history.py --batch 3 --block 25`) to compare
    `shots_mp` with the frozen model on more held-out lines.
-4. Totals: in-season scoring level or a bivariate score model.
-5. Optional: improve the probable-starter model (team rotation habits, a
+4. Game model: the gap to the market is team rating (decision 39). Ideas:
+   MoneyPuck team expected goals by situation, roster strength from the
+   skater models, goalie quality; test against the three-way prices
+   2021-22 to 2025-26.
+5. Totals: in-season scoring level or a bivariate score model.
+6. Optional: improve the probable-starter model (team rotation habits, a
    tree model) or add confirmed-starter data if a free source exists.
