@@ -100,3 +100,37 @@ The proxies capture role; the market also knows actual line combinations
 and same-day news. The next step would be linemates measured from shift
 data (who was on the ice together in recent games), which the NHL publishes
 per game and a Colab cell could collect.
+
+## Variants with new data (2026-11-09)
+
+Code: `src/models/prop_model.py points_lm`, `points_edge`,
+`points_lm_edge`, `points_mp`, `points_all`. Features:
+`src/features/build_linemates.py` (NHL shift charts,
+`src/ingest/fetch_shiftcharts.py`), `build_edge_features.py`,
+`build_mp_features.py`; each has a leakage test. Points v2 stays the
+reference.
+
+**Linemates from shift charts.** For each player-game, from his previous 5
+games: his teammates' recent points per game weighted by seconds shared at
+5-on-5 (`lm_ev_pts`) and on the power play (`lm_pp_pts`), the share of his
+usual 5-on-5 time with teammates dressed tonight (`lm_ev_present`), his
+share of the team's power-play time (`pp_unit_share`), and how many of the 5
+games have shift data. 9,314 of 9,421 games have shift charts; the NHL
+returns none for the last 57 games of the 2024-25 regular season and for
+2026-27 games 154-203. Shift ice time matches the box score within 30
+seconds for 99.9% of skater-games (power play 97.9%; even strength 75%,
+because empty-net time is not counted as even strength here).
+
+| GLM | v2 | + Edge | + linemates | + linemates + Edge | + MoneyPuck | + all three |
+|---|---:|---:|---:|---:|---:|---:|
+| Log-likelihood per game, 2025-26 | -0.83587 | -0.83556 | -0.83580 | -0.83547 | -0.83499 | **-0.83496** |
+| Log-likelihood per game, 2026-27 | -0.85301 | -0.85213 | -0.85174 | -0.85102 | -0.85134 | **-0.85029** |
+| Log loss, 2026-27 lines (market 0.6333) | 0.6382 | 0.6374 | 0.6372 | 0.6366 | 0.6368 | **0.6359** |
+| Blend on 2026-27 | 0.6332 | 0.6329 | 0.6330 | **0.6327** | 0.6334 | 0.6329 |
+| Blend at a 4-point edge | -4.1%, 1,042 (2.4) | -3.5%, 943 (2.5) | -0.9%, 1,142 (2.3) | -2.0%, 1,028 (2.5) | -3.5%, 1,687 (2.0) | -2.4%, 1,640 (1.9) |
+
+Every source improves the points model, and together they close about half
+of the gap to the closing price on 2026-27 (0.6382 to 0.6359, market
+0.6333). The blend still gains only 0.0004-0.0006 over the market, and no
+rule is profitable. Points remain a projection, not a betting model
+(decision 35).

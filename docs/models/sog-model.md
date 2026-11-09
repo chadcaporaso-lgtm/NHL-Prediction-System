@@ -294,3 +294,41 @@ model's information was specific to that market (a different consensus,
 SportsGameOdds, in a different period). Prior to the live test, the shots
 model should be described as having **no demonstrated edge over the
 market** (decision 33).
+
+## Variants with new data (2026-11-09)
+
+Code: `src/models/prop_model.py shots_edge` and `shots_mp`; features in
+`src/features/build_edge_features.py` and `src/features/build_mp_features.py`,
+each with a leakage test. The frozen model (`prop_model.py shots`) is
+unchanged. Older-season comparison: `python3 src/models/sog_older_seasons.py
+variants` -> `docs/models/sog_older_seasons_variants.json`.
+
+- **Edge** (11 features): the player's previous-season NHL Edge profile
+  (high-danger shot share and rate, offensive-zone time, hardest shot, top
+  speed, bursts, distance). Previous season only, because Edge is published
+  as season totals (decision 34).
+- **MoneyPuck** (9 features): exponentially weighted means of earlier games:
+  individual expected goals, shot attempts, expected shots on goal,
+  high-danger shots, power-play expected goals, on-ice expected goals for,
+  5-on-5 expected-goals share, zone-start share. MoneyPuck shots on goal
+  equal the NHL box score on 99.8% of skater-games.
+
+| | Frozen | + Edge | + MoneyPuck |
+|---|---:|---:|---:|
+| Log-likelihood per game, 2025-26 (gbm) | -1.53676 | -1.53685 | **-1.53484** |
+| Log-likelihood per game, 2026-27 (gbm) | -1.52596 | -1.52589 | **-1.52367** |
+| Log loss, 2026-27 lines (market 0.6796) | 0.6781 | 0.6782 | **0.6771** |
+| Blend on 2026-27 | 0.6764 | 0.6764 | **0.6759** |
+| Model weight in the blend (2025-26 fit) | 0.36 (0.09) | 0.37 (0.09) | 0.51 (0.09) |
+| Blend at a 4-point edge, 2026-27 | +8.3%, 907 bets (2.7) | +10.6%, 928 (2.5) | +5.8%, 1,391 (2.3) |
+| Older PuckAPI lines, model log loss (market 0.6809) | 0.6854 | 0.6857 | **0.6840** |
+| Older lines, model alone at 4 points | -2.3% (2.7) | -4.5% (3.0) | -3.7% (3.1) |
+| Older lines, frozen blend at 4 points | -7.7%, 349 (5.0) | -5.7%, 341 (5.3) | -4.9%, 229 (6.1) |
+| Older lines, model weight beside the market | 0.19 (0.20) | 0.15 (0.21) | 0.18 (0.22) |
+
+Edge adds nothing. MoneyPuck makes the model a better forecaster everywhere,
+including the older lines it never saw, and doubles its weight beside the
+2026 market, but on the older lines it still trails the closing price and
+its rules lose. The higher 2026-27 ROI of the Edge variant comes from 125
+bets it adds and 104 it drops (+23 units, SE 12.6) and does not repeat on
+the older lines. No variant replaces the frozen model (decisions 35-36).

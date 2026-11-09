@@ -84,7 +84,13 @@ A cloud session starts on a fresh machine with only this repository.
    tool results, smaller ones inline; the script searches both.
 4. Re-download SportsGameOdds history (uses the stored network secret):
    `python3 src/ingest/fetch_sgo_events.py 2026-01-16 <yesterday>`.
-5. Rebuild everything: `python3 run.py update` (runs
+5. Optional (variant models only; the environment allows api.nhle.com,
+   api-web.nhle.com and moneypuck.com): `python3 src/ingest/fetch_shiftcharts.py`
+   (about 1 hour), `python3 src/ingest/fetch_edge.py` (about 25 minutes),
+   `python3 src/ingest/fetch_moneypuck_skaters.py` (about 1.5 hours), then
+   `src/features/build_linemates.py`, `build_edge_features.py`,
+   `build_mp_features.py` and their tests in `tests/`.
+6. Rebuild everything: `python3 run.py update` (runs
    `src/live/weekly_update.py`: fetches new odds, rebuilds features and
    models, runs the leakage tests, grades the live test, redraws the charts).
 
@@ -106,7 +112,7 @@ the manifest, then `python3 run.py update <date>`. Commit
 `docs/live/tracking.json` and the redrawn `docs/figures/`, and add the week
 to the README. Treat the result as meaningful after about 500 bets.
 
-## Current state (2026-11-08, third session)
+## Current state (2026-11-09, fourth session)
 
 - Data audit done (findings D-1, D-2, O-1 to O-7, goalie and live-feed checks).
 - Models: shots on goal (no demonstrated edge: +8.3% on 907 held-out 2026-27
@@ -117,6 +123,14 @@ to the README. Treat the result as meaningful after about 500 bets.
   (no edge), totals (no skill), team Elo (power rating and optional feature),
   probable starting goalie (71.0% top-pick accuracy out of sample; the
   actual-starter look-ahead moves game-model log loss by at most 0.002).
+- New player data (decisions 34-36, README 6i): NHL shift charts
+  (linemates, power-play units), NHL Edge (previous-season profile only:
+  the NHL publishes season totals), MoneyPuck game-by-game skater data.
+  Tested as variants (`prop_model.py shots_edge|shots_mp|points_lm|
+  points_lm_edge|points_mp|points_all`). Better forecasts (shots +
+  MoneyPuck: 0.6771 vs 0.6781 on 2026-27 lines, 0.6840 vs 0.6854 on older
+  lines; points + all three: 0.6359 vs 0.6382, market 0.6333), but no
+  variant beats the close on held-out lines or has a profitable rule.
 - Closing-line value (shots): the market moves toward the model between open
   and close (slope 0.21, SE 0.007), but bets at the open lose to the fair
   close on price (CLV -2.1 points); opening-price profit comes mainly from
@@ -136,11 +150,14 @@ to the README. Treat the result as meaningful after about 500 bets.
 
 ## Next steps (agreed order)
 
-1. Linemates from NHL shift charts (free; Colab) for the points model.
-2. Optional, costs credits: more older-season shots lines would tighten the
-   decision-33 comparison (two batches, 2,260 lines; 10 credits per 25 games;
-   `fetch_puckapi_sog_history.py --batch 3 --block 25` draws new players). Also possible: a per-book
-   timestamped check of opening shots lines (`get_prop_movement`).
-3. Totals: in-season scoring level or a bivariate score model.
-4. Optional: improve the probable-starter model (team rotation habits, a
+1. Keep running the weekly live test; nothing in it changed.
+2. Candidate for a future frozen rule, only if it keeps improving on new
+   games: the shots model with MoneyPuck features (`shots_mp`). Track its
+   2026-27 predictions beside the frozen model before deciding (new
+   decision and a new frozen file with a new start date if adopted).
+3. Optional, costs credits: more older-season shots lines
+   (`fetch_puckapi_sog_history.py --batch 3 --block 25`) to compare
+   `shots_mp` with the frozen model on more held-out lines.
+4. Totals: in-season scoring level or a bivariate score model.
+5. Optional: improve the probable-starter model (team rotation habits, a
    tree model) or add confirmed-starter data if a free source exists.

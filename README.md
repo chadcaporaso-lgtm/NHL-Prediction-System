@@ -34,6 +34,14 @@ in this repository.
 
 ---
 
+## Data sources and credits
+
+Official NHL data (schedules, box scores, shift charts, NHL Edge) from the
+NHL's public APIs. Expected goals and game-by-game player and team data from
+[MoneyPuck.com](https://moneypuck.com). Closing odds from SportsGameOdds and
+PuckAPI. None of the data is in this repository; the code shows how to
+obtain it.
+
 ## Project goals
 
 1. Clean, audited data with documented provenance for every source.
@@ -372,3 +380,35 @@ the market's log loss (0.6812 against 0.6809). The shots model is now
 described as having no demonstrated edge over the market (decision 33); the
 2026-27 result (+8.3%) is about 2.8 standard errors away. The live test is
 unchanged and decides it.
+
+**6i. New player data: shift-chart linemates, NHL Edge, MoneyPuck
+(2026-11-09).** Three free sources, each added as a model variant with its
+own leakage test; the frozen live-test models are unchanged.
+- *Shift charts* (NHL, 9,314 of 9,421 games; the NHL never published 107):
+  who played with whom at 5-on-5 and on the power play. Ice time from the
+  shifts matches the box score within 30 seconds for 99.9% of skater-games.
+  Features from the player's previous 5 games: linemates' scoring weighted
+  by shared ice time, power-play unit share, how much of his usual line is
+  dressed.
+- *NHL Edge* (tracking, from 2021-22): season totals only, so each game uses
+  the player's previous-season profile (high-danger shots, zone time, shot
+  and skating speed, bursts, distance).
+- *MoneyPuck game-by-game* (every skater, 2019-20 on): rolling individual
+  and on-ice expected goals, shot attempts, high-danger shots, power-play
+  expected goals, 5-on-5 expected-goals share, zone-start share.
+
+| Variant | Log loss, 2026-27 lines (market) | Blend, 2026-27 | Blend at 4-point edge | Older PuckAPI lines: model (market 0.6809) |
+|---|---:|---:|---|---:|
+| shots (frozen) | 0.6781 (0.6796) | 0.6764 | +8.3%, 907 bets (SE 2.7) | 0.6854 |
+| shots + Edge | 0.6782 | 0.6764 | +10.6%, 928 (2.5) | 0.6857 |
+| shots + MoneyPuck | **0.6771** | **0.6759** | +5.8%, 1,391 (2.3) | **0.6840** |
+| points v2 | 0.6382 (0.6333) | 0.6332 | -4.1%, 1,042 (2.4) | |
+| points + linemates + Edge | 0.6366 | 0.6327 | -2.0%, 1,028 (2.5) | |
+| points + all three | **0.6359** | 0.6329 | -2.4%, 1,640 (1.9) | |
+
+The new data makes both models better forecasters: MoneyPuck improves the
+shots model in every comparison, including the 2,260 older lines it was
+never fitted to, and linemates are the most useful single addition for
+points. None of it produces a demonstrated betting edge: the shots variants
+still trail the market on the older lines, and no points variant is
+profitable. Details in the model cards and decisions 34-36.
