@@ -27,7 +27,7 @@ want = {p for m in manifest for p in m["parts"]}
 found: dict[str, bytes] = {}
 pat = re.compile(r'\{\\?"content\\?":\\?"([A-Za-z0-9+/=]+)\\?",\\?"id\\?":\\?"[^"\\]+\\?",\\?"mimeType\\?":\\?"[^"\\]+\\?",\\?"title\\?":\\?"([^"\\]+)')
 home = os.path.expanduser("~/.claude/projects")
-for path in glob.glob(f"{home}/*/tool-results/*.txt") + glob.glob(f"{home}/*.jsonl") + glob.glob(f"{home}/*/*.jsonl"):
+for path in glob.glob(f"{home}/**/tool-results/*.txt", recursive=True) + glob.glob(f"{home}/*.jsonl") + glob.glob(f"{home}/*/*.jsonl"):
     try:
         text = open(path, encoding="utf-8", errors="ignore").read()
     except OSError:
@@ -45,13 +45,21 @@ for path in glob.glob(f"{home}/*/tool-results/*.txt") + glob.glob(f"{home}/*.jso
         if m.group(2) in want:
             found[m.group(2)] = base64.b64decode(m.group(1))
 
+# Files with identical bytes (e.g. the MoneyPuck table, which is both a core
+# input and part of the weekly refresh) need downloading only once.
+by_sha: dict[str, bytes] = {}
+for m in manifest:
+    if all(p in found for p in m["parts"]):
+        by_sha[m["sha256"]] = b"".join(found[p] for p in m["parts"])
+
 ok = bad = missing = 0
 for m in manifest:
-    if not all(p in found for p in m["parts"]):
+    if m["sha256"] in by_sha:
+        data = by_sha[m["sha256"]]
+    else:
         print("MISSING parts for", m["source"], [p for p in m["parts"] if p not in found])
         missing += 1
         continue
-    data = b"".join(found[p] for p in m["parts"])
     if hashlib.sha256(data).hexdigest() != m["sha256"]:
         print("CHECKSUM MISMATCH", m["source"])
         bad += 1

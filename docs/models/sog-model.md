@@ -126,3 +126,171 @@ shots and points lines from 3.4% to 3.1%. The rest are players with no
 box-score row that night (scratched), whose bets are void. Current figures:
 15,806 graded shots lines; model 0.6821 vs market 0.6815; blend on 2026-27
 0.6764 vs 0.6796, model weight 0.36 (SE 0.09).
+
+## Closing-line value at the opening price (2026-11-07)
+
+Code: `src/models/sog_clv.py`. Results: `docs/models/sog_clv_results.json`.
+
+The question: are the model's picks, taken at the opening price, worth more
+than the closing price says? Data: SportsGameOdds consensus opening and
+closing prices on all 15,806 graded lines from 2026-01-16 to 2026-11-06
+(1,076 games). 91.4% of lines close at the line they opened on. Median margin
+is 7.1% at the open and 7.0% at the close. The model's opening probability
+uses the gradient-boosted negative binomial at the opening line. That model
+was trained on earlier seasons only, so every line is out of sample.
+
+**1. The market moves toward the model.** On same-line lines, the move from
+the opening to the closing fair probability (over side) is regressed on the
+model's opening edge. Standard errors are clustered by game.
+
+| Predictor | Slope | SE | R² |
+|-----------|------:|---:|---:|
+| Model | 0.207 | 0.007 | 0.181 |
+| Model-free recent average (EWMA of shots) | 0.151 | 0.005 | 0.148 |
+| Both: model / baseline | 0.148 / 0.069 | 0.007 / 0.005 | 0.198 |
+
+Part of what the market corrects between open and close is plain staleness
+on recent form, which even the model-free average catches. The model predicts
+the move better and keeps most of its slope next to the baseline. The effect
+is larger in 2026-27 (slope 0.27, SE 0.010) than in 2025-26 (0.14, SE 0.008).
+
+**2. But the classic closing-line-value test fails on price.** For a bet at
+the open, CLV is the closing fair probability of the side minus the opening
+price's break-even probability.
+
+| Rule (both seasons) | Bets | Mean CLV, same-line bets | Market move toward bet | Lines that moved: our way / against | ROI at open (SE) |
+|------|-----:|------:|------:|------:|------:|
+| Model, 2-point edge | 12,206 | -2.4 pts (0.05) | +1.1 pts | 1,137 / 94 | +3.2% (0.9) |
+| Model, 4-point edge | 9,008 | -2.1 pts (0.06) | +1.5 pts | 1,057 / 56 | +5.5% (1.0) |
+| Model, 6-point edge | 6,320 | -1.8 pts (0.07) | +1.8 pts | 987 / 32 | +9.0% (1.3) |
+| Baseline, 4-point edge | 9,467 | -2.2 pts (0.06) | +1.4 pts | 1,042 / 66 | +1.6% (1.0) |
+| Control: every line, both sides | 31,612 | -3.5 pts | 0 | | -6.0% |
+
+The market moves our way by 1.1-1.8 points on average, but each side of an
+opening price carries about 3.5 points of margin. So a bet at the open is,
+on average, *worse* than the fair close: it beats the close on price only
+29% of the time. Note that "same-line" and "line moved" are known only
+after the close. The ROI over all bets is the ex-ante result.
+
+**3. Where the opening-price profit comes from.** At a 4-point edge, model alone:
+
+| Bets | Count | Win rate at open line | Close fair prob. | Break-even at open | ROI at open (SE) | ROI at close |
+|------|------:|------:|------:|------:|------:|------:|
+| Same line | 7,895 | 55.0% | 52.0% | 54.1% | +2.0% (1.1) | -1.3% |
+| Line moved | 1,113 | 67.0% | 43.2% | 53.5% | +30.8% | -3.4% |
+| Control: every under, line moved | 1,354 | 58.2% | 48.3% | 52.0% | +16.3% (3.0) | -2.4% |
+
+Most of the profit at the open is the 7% of bets whose line later moved, 95%
+of them in the bet's favor. Even betting every under on lines that later
+moved earns +16%, so this is mostly the line move itself. It is real money
+only if those opening lines could be bet in size. The SportsGameOdds open is
+a consensus of each book's first posted line, with no timestamp or limits,
+and that cannot be checked here.
+
+**4. Walk-forward blend at the open.** Fitted on 2025-26 opening prices and
+bet on 2026-27 only. Weights: market 0.37 (SE 0.11), model 0.64 (SE 0.08).
+At the close, the weights were 0.58 and 0.42: the opening price is a weaker
+market. At a 4-point edge: 2,574 bets, ROI at the open +9.7% (SE 1.9);
+same-line bets +6.6% (SE 2.0, 2,253 bets) against +0.6% for the same picks
+at the close; mean CLV -1.05 points.
+
+**Verdict.** The model carries information that the opening market lacks
+and the closing market partly absorbs, beyond what recent form alone
+explains. That supports the earlier finding that the model adds information
+to the price. But on price, bets at the open do not beat the fair close on
+average, because the opening margin is larger than the move. The large
+opening-price ROI rests mainly on lines that moved, whose opening prices may
+not have been available to bet. Betting at the open is therefore not
+adopted (decision 30). The frozen live test stays at the closing price. A
+per-book, timestamped check of opening lines (PuckAPI `get_prop_movement`,
+10 credits per player-game) could settle whether the opening prices were
+bettable.
+
+## Older seasons against PuckAPI closing prices (2026-11-08)
+
+Code: `src/ingest/fetch_puckapi_sog_history.py` (purchase),
+`src/models/sog_older_seasons.py` (test). Results:
+`docs/models/sog_older_seasons_results.json`. The purchased rows stay in
+`data/` and are not committed.
+
+**Why.** All earlier market tests use SportsGameOdds prices from 2026-01-16
+on. PuckAPI's archive holds about 51,700 shots-on-goal lines from 2023-24 to
+2026-01-15. The model has never been tested against prices from that period,
+and none of these lines were used to build or tune anything.
+
+**What was bought (500 credits).** 10 credits per 25 games, so about 1,100
+lines. The sample is random 25-game blocks for regular players drawn at
+random (seeded; pool = 215 players with 150+ games in the window and 30+
+lines in 2026), plus Connor McDavid's full window, which was bought first to
+find the price. A restart bug gave 9 players a second block instead of
+adding 9 new players. Total: 1,134 rows, 1,116 graded lines, 30 players,
+graded with official box-score shots (3 disagreed with the provider's
+result). Market: PuckAPI's median closing line and median prices across
+books (median 6 books), de-vigged proportionally. That is a different
+consensus than SportsGameOdds', and the two medians need not come from the
+same book.
+
+**Results**
+
+| | Lines | Market log loss | Model | Frozen blend | Model weight in blend (SE) |
+|---|---:|---:|---:|---:|---:|
+| Older seasons, PuckAPI | 1,116 | 0.6747 | 0.6769 | 0.6739 | 0.28 (0.20 by player; 0.30 by game) |
+| 2026, SportsGameOdds (reference) | 15,806 | 0.6815 | 0.6821 | | 0.42 (0.07) |
+
+| 4-point rule, older seasons | Bets | Win rate | ROI | SE by player / by game |
+|---|---:|---:|---:|---:|
+| Model alone | 556 | 53.6% | 0.0% | 3.1 / 4.0 |
+| Frozen live rule (blend) | 179 | 47.5% | **-12.8%** | 4.3 / 6.9 |
+| Control: every under | 1,116 | 49.5% | -5.1% | |
+
+By season, the frozen rule loses 13.9% (61 bets) in 2023-24 and 12.2% (118
+bets) in 2024-25, and makes no bets in the 115 early 2025-26 lines.
+
+**Reading it.** The older seasons do not repeat the shots edge. The model
+alone breaks even, and the frozen rule loses: its under picks, priced at a
+49.9% chance by the market and 55% by the blend, came in 47.2% of the time.
+In 2026 the same rule's unders hit 58.3% against a market price of 52.3%.
+The information test points the same way as before (model weight 0.28) but
+is far from significant, and the blend improves on the market by only 0.0008
+in log loss.
+
+Caveats: 1,116 lines from 30 players is a small sample (the frozen rule's
+ROI has a standard error of 4-7 points), the market is a different consensus
+(PuckAPI medians, not SportsGameOdds), and the frozen blend was fitted on a
+later period. Still, the older seasons and the 2026-27 held-out result
+(+8.3%, SE 2.7) differ by about 21 points, roughly 2.5-4 standard errors
+depending on clustering. The honest summary is that **the shots edge is not
+established**: it holds in the 2026 data and fails in this older sample. The
+pre-registered live test (decision 20) decides it; nothing in it changes.
+
+### Second batch (2026-11-08, another 499 credits)
+
+A second key bought 49 calls of 25 games for **49 new players**, none of them
+in batch 1, drawn the same way. A connection reset after 30 calls; the
+restart drew its 19 players afresh, still all new. That gives 1,158 rows and
+1,144 graded lines from 48 players (one had no matched box scores). The
+batch-1 results above are kept as reported. The results file now holds batch
+1, batch 2 and both combined.
+
+| 4-point rules | Lines | Model alone: bets, ROI (SE) | Frozen rule: bets, ROI (SE) | Model weight in blend (SE) | Log loss: market / model / frozen blend |
+|---|---:|---|---|---|---|
+| Batch 1 | 1,116 | 556, 0.0% (3.1-4.0) | 179, -12.8% (4.3-6.9) | 0.28 (0.20-0.30) | 0.6747 / 0.6769 / 0.6739 |
+| Batch 2 | 1,144 | 589, -4.5% (4.0-4.3) | 170, -2.3% (7.4-9.0) | 0.08 (0.30-0.35) | 0.6869 / 0.6936 / 0.6882 |
+| **Combined** | **2,260** | **1,145, -2.3% (2.7-2.8)** | **349, -7.7% (5.0)** | **0.19 (0.20-0.21)** | 0.6809 / 0.6854 / 0.6812 |
+| 2026-27, SportsGameOdds | | | 907, +8.3% (2.7) | 0.42 (0.07) | |
+
+By season, combined: 2023-24 frozen rule -16.5% (138 bets), 2024-25 -5.0%
+(201 bets), early 2025-26 only 10 bets.
+
+**Reading it.** The independent second batch agrees with the first. Over
+2,260 lines from 78 players, the model alone loses 2.3%, a little better
+than the roughly -3.4% that random bets lose to the margin, but not
+profitable. The frozen rule loses 7.7%, and the blend adds nothing to the
+market (log loss 0.6812 against 0.6809). The model's weight beside the price
+(0.19, SE 0.20) is about half the 2026 estimate and not distinguishable
+from zero. The gap to 2026-27 (+8.3% against -7.7%) is about 16 points,
+roughly 2.8 standard errors. Either the 2026 result was partly luck, or the
+model's information was specific to that market (a different consensus,
+SportsGameOdds, in a different period). Prior to the live test, the shots
+model should be described as having **no demonstrated edge over the
+market** (decision 33).

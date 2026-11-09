@@ -1,5 +1,7 @@
 # NHL Prediction System
 
+[![CI](https://github.com/chadcaporaso-lgtm/NHL-Prediction-System/actions/workflows/ci.yml/badge.svg)](https://github.com/chadcaporaso-lgtm/NHL-Prediction-System/actions/workflows/ci.yml)
+
 Machine learning models for NHL betting markets: moneyline, puck line, total
 goals, and player props for shots on goal and points. Every model is trained
 and evaluated with walk-forward validation and backtested against sportsbook
@@ -9,8 +11,26 @@ This README is a living document. Each phase of the project adds a section
 recording what was done, what was found, and the numbers behind it. Decisions
 and their reasons are logged in [docs/decision-log.md](docs/decision-log.md).
 
-**Status:** Phase 1, inventory and audit of the two earlier versions of this
-project. No new models have been trained yet.
+**Status:** data audit, models and backtests done (phases 1-3, 6); live test
+of two pre-registered betting rules running since 2026-11-07 (phase 4). The
+shots-on-goal model adds information to the closing price; the other markets
+show no edge. See [Results at a glance](#results-at-a-glance).
+
+## How to run
+
+```bash
+pip install -r requirements.txt
+python3 run.py check     # pipeline + leakage tests on synthetic data (no real data needed)
+```
+
+`check` builds a small random league with the same files and columns as the
+real inputs (`tests/synthetic/make_data.py`) and runs every feature builder,
+leakage test, the probable-starter model and the game models on it, in a
+temporary folder. GitHub Actions runs the same command on every push. With
+the real data restored (see `CLAUDE.md`): `python3 run.py update` rebuilds
+everything and grades the live test, and `python3 run.py test` runs the
+leakage tests alone. The real data is licensed (odds, MoneyPuck) and is not
+in this repository.
 
 ---
 
@@ -102,7 +122,9 @@ every sportsbook closing line in 2025-26 (log loss about 0.690 vs 0.674-0.682).
 |------|----------|
 | `docs/` | Plan, decision log, data dictionary, model cards, audit reports |
 | `src/` | Cleaning, features, models, backtest |
-| `tests/` | Data checks and leakage checks |
+| `tests/` | Leakage tests; `tests/synthetic/` synthetic data for CI |
+| `run.py` | Entry point: `check`, `restore`, `update`, `test` |
+| `.github/workflows/ci.yml` | Runs `python run.py check` on every push |
 
 Data files are not committed. See `.gitignore`.
 
@@ -260,6 +282,14 @@ MoneyPuck from public sources; on all 470 team-games and 940 goalie lines it
 shares with the audited tables, it matched exactly. One command then
 rebuilds features, reruns the leakage tests and models, and grades the rules.
 
+**4b. Rules version 2 (2026-11-07).** The puck-line rule now uses the
+probable-starter game model (6d), so no bet depends on knowing the starter
+in advance. It is graded on games after 2026-11-07; the shots-on-goal rule is
+unchanged. Version 1 is kept (decision 29). The weekly run was also checked
+end to end on a fresh machine: every committed results file came out
+identical, and the charts are now written with fixed ids so reruns do not
+change them.
+
 ### Phase 5: Portfolio write-up
 
 **5a. Case study page (2026-11-07).** [docs/portfolio/index.html](docs/portfolio/index.html):
@@ -291,3 +321,54 @@ trails the closing moneyline by about 0.01 log loss. As a game-model feature
 it changes log loss by 0.0002 to 0.0024 either way, within noise, so the
 default model stays without it. Current ratings serve as a power ranking.
 
+**6d. Probable starting goalie (2026-11-07).** Model card:
+[docs/models/probable-starter-model.md](docs/models/probable-starter-model.md).
+A conditional logit over each team's recent goalies, from earlier games only,
+picks the actual starter 71.0% of the time out of sample (most starts in the
+last 10 games: 58.9%; previous game's starter: 46.3%), and 76-91% on the
+second night of a back-to-back. The leakage test found and fixed one case: a
+traded goalie whose game for his new team began earlier the same evening.
+Weighting the game model's goalie features by these probabilities changes
+every log loss by at most 0.002, so the actual-starter look-ahead was small.
+
+**6e. Closing-line value of the shots model (2026-11-07).** Details in the
+[shots-on-goal model card](docs/models/sog-model.md#closing-line-value-at-the-opening-price-2026-11-07).
+On 15,806 lines with opening and closing prices, the market moves from open
+to close toward the model's opening edge (slope 0.21, SE 0.007; R² 0.18,
+against 0.15 for a model-free recent average). The model holds information
+the opening market lacks. But bets at the open still lose to the fair close
+on price (mean CLV -2.1 points at a 4-point edge): the opening margin (7%)
+is larger than the move. ROI at the open is +5.5% (SE 1.0), mostly from the
+7% of lines that later moved, which cannot be confirmed as bettable. Betting
+at the open is not adopted (decision 30).
+
+**6f. Reproducibility (2026-11-07).** `python3 run.py` is now the single
+entry point (`check`, `restore`, `update`, `test`). Because the real inputs
+are licensed and cannot be in a public repository, a generator builds a
+synthetic league with the same files and columns: 8 teams, 2018-19 to
+2026-27, Arizona continuing into Utah, back-to-backs, overtime and shootouts,
+goalie rotations and call-ups, pulled goalies, playoffs. The full feature
+pipeline, all 13 leakage tests and both game models run on it in about 40
+seconds, in a temporary copy, on every push (GitHub Actions). A planted leak
+was caught in both checks tried: team form including the current game (1,218
+mismatches) and starter features seeing the current game.
+
+**6g. Older seasons for the shots model (2026-11-08).** Details in the
+[shots-on-goal model card](docs/models/sog-model.md#older-seasons-against-puckapi-closing-prices-2026-11-08).
+500 PuckAPI credits bought 1,116 graded lines from 2023-24 to 2026-01-15,
+from 30 randomly drawn regular players, a period the model had never been
+tested on. The edge does not repeat. The model alone breaks even (556 bets,
+0.0%, SE 3-4) and the frozen live rule loses 12.8% (179 bets, SE 4-7),
+against +8.3% on 2026-27. The model still leans the right way beside the
+market (weight 0.28, SE 0.20-0.30), but not significantly. The shots edge is
+now reported as not established (decision 32); the pre-registered live test
+decides it.
+
+**6h. Second older-season batch (2026-11-08).** Another 499 credits bought
+1,144 lines for 49 new players. The batch agrees with 6g: over 2,260 lines
+and 78 players, the frozen live rule loses 7.7% (349 bets, SE 5.0), the
+model alone loses 2.3% (1,145 bets, SE 2.8), and the blend adds nothing to
+the market's log loss (0.6812 against 0.6809). The shots model is now
+described as having no demonstrated edge over the market (decision 33); the
+2026-27 result (+8.3%) is about 2.8 standard errors away. The live test is
+unchanged and decides it.

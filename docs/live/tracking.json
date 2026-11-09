@@ -1,6 +1,9 @@
 {
-  "window_starts_after": "2026-11-06",
-  "rules": "docs/live/frozen_rules.json",
+  "rules": "docs/live/frozen_rules_v2.json",
+  "window_starts_after": {
+    "sog": "2026-11-06",
+    "puck_line": "2026-11-07"
+  },
   "sog": {
     "all_lines": {
       "lines": 0,

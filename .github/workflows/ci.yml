@@ -1,0 +1,28 @@
+name: CI
+
+# Runs the feature builders, every leakage test, the probable-starter model
+# and the game models on synthetic data (tests/synthetic/make_data.py). The
+# real data is licensed and never stored in this repository.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Pipeline and leakage tests on synthetic data
+        run: python run.py check

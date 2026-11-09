@@ -5,8 +5,9 @@ Steps, in order, each stopping the run on failure:
   2. extract prop and game closing lines
   3. check the NHL web API feed against the audited tables (overlap games)
   4. rebuild the skater game table and features, the game features
-  5. leakage tests
-  6. match prop lines, rerun the shots model, the game model and market grading
+  5. probable-starter model; leakage tests
+  6. match prop lines, rerun the shots model and its closing-line-value test, the game model (default and
+     probable-starter variant) and market grading
   7. rebuild team Elo ratings (power ranking) and run its leakage tests
   8. grade the frozen rules (fingerprints checked first)
   9. redraw the charts in docs/figures/
@@ -30,6 +31,10 @@ def run(*args):
     subprocess.run([sys.executable, *args], cwd=ROOT, check=True)
 
 
+# A fresh machine has none of the working folders.
+for d in ["data/features", "data/models", "data/sgo", "docs/figures"]:
+    os.makedirs(os.path.join(ROOT, d), exist_ok=True)
+
 newest = max(os.path.basename(p)[:10] for p in glob.glob(os.path.join(ROOT, "data/sgo/raw/*.json.gz")))
 first = (date.fromisoformat(newest) + timedelta(days=1)).isoformat()
 yesterday = (date.today() - timedelta(days=1)).isoformat()
@@ -43,11 +48,16 @@ run("src/features/build_skater_features.py")
 run("src/features/build_game_features.py")
 run("tests/test_skater_feature_leakage.py")
 run("tests/test_game_feature_leakage.py")
+run("src/features/build_probable_starter.py")
+run("tests/test_probable_starter_leakage.py")
 run("src/ingest/match_sgo_props.py")
 run("src/models/prop_model.py", "shots")
+run("src/models/sog_clv.py")
 run("src/audit/profile_sgo_game_odds.py")
 run("src/models/game_model.py")
 run("src/models/game_market.py")
+run("src/models/game_model.py", "probable")
+run("src/models/game_market.py", "probable")
 run("src/features/build_elo.py")
 run("tests/test_elo_leakage.py")
 run("src/live/track.py")
