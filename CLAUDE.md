@@ -123,9 +123,10 @@ to the README. Treat the result as meaningful after about 500 bets.
 
 - Data audit done (findings D-1, D-2, O-1 to O-7, goalie and live-feed checks).
 - Models: shots on goal (no demonstrated edge: +8.3% on 907 held-out 2026-27
-  bets, SE 2.7%, but 2,260 older-season PuckAPI lines in two independent
-  batches do not repeat it: frozen rule -7.7% on 349 bets, SE 5.0, model
-  blend weight 0.19, SE 0.20; decisions 32-33; live test decides), puck line (level
+  bets, SE 2.7%, but 3,399 older-season PuckAPI lines in three independent
+  batches do not repeat it: frozen rule -5.4% on 538 bets, SE 4.0; model
+  weight beside the price 0.36, SE 0.17, so a little information but no
+  edge at the threshold; decisions 32-33, 42; live test decides), puck line (level
   with the close, not significant), moneyline (close, behind), points v2
   (no edge), totals (no skill), team Elo (power rating and optional feature),
   probable starting goalie (71.0% top-pick accuracy out of sample; the
@@ -135,8 +136,8 @@ to the README. Treat the result as meaningful after about 500 bets.
   the NHL publishes season totals), MoneyPuck game-by-game skater data.
   Tested as variants (`prop_model.py shots_edge|shots_mp|points_lm|
   points_lm_edge|points_mp|points_all`). Better forecasts (shots +
-  MoneyPuck: 0.6771 vs 0.6781 on 2026-27 lines, 0.6840 vs 0.6854 on older
-  lines; points + all three: 0.6359 vs 0.6382, market 0.6333), but no
+  MoneyPuck: 0.6765 vs 0.6781 on 2026-27 lines, 0.6831 vs 0.6847 on all
+  3,399 older lines, better in each batch, SE 0.0010; points + all three: 0.6359 vs 0.6382, market 0.6333), but no
   variant beats the close on held-out lines or has a profitable rule.
 - Earlier-season market prices (decisions 37-40, README 6j): a newer
   2026-27 external file (282 games to 2026-11-08; copies of it disagree on
@@ -151,6 +152,11 @@ to the README. Treat the result as meaningful after about 500 bets.
   better: three-way log loss 1.0363 vs 1.0364 (market 1.0313). The gap is
   largest in a team's first 10 games (0.013 per game): offseason roster
   change, which past results cannot supply. Not adopted.
+- Third PuckAPI batch bought 2026-11-09 (49 players, 490 credits; README
+  6l). The raw PuckAPI files of all three batches are in the owner's
+  private copy (`puckapi_sog_history.zip`, with SHA256SUMS; unzip into
+  `data/puckapi/`); `sog_older_seasons.py` needs them. Batch 4 would use
+  `--batch 4` and excludes batches 1-3 automatically.
 - Fifth session restored without Colab from the existing Drive bundle
   (manifest_core_2026-11-07 plus archive (8).zip from
   manifest_inspect_2026-11-09 and the three CSVs in 01_raw/external/).
@@ -167,7 +173,8 @@ to the README. Treat the result as meaningful after about 500 bets.
   old branch `claude/peaceful-volta-mygk7c` is deleted (2026-11-09); only
   pull request #1's hidden ref (`refs/pull/1/head`) still holds it, and the
   owner has asked GitHub Support to purge it.
-- Case study page republished 2026-11-09 (artifact version 8, adds the team-rating
+- Case study page republished 2026-11-09 (artifact version 9: third older-season
+  batch; version 8 added the team-rating
   test of decision 41; version 6 added the new player
   data and the earlier-season market tests.
 - Owner-supplied files checked and recorded in `docs/audit/external-odds.md`;
@@ -185,9 +192,10 @@ to the README. Treat the result as meaningful after about 500 bets.
    games: the shots model with MoneyPuck features (`shots_mp`). Track its
    2026-27 predictions beside the frozen model before deciding (new
    decision and a new frozen file with a new start date if adopted).
-3. Optional, costs credits: more older-season shots lines
-   (`fetch_puckapi_sog_history.py --batch 3 --block 25`) to compare
-   `shots_mp` with the frozen model on more held-out lines.
+3. Done 2026-11-09 (batch 3, decision 42): `shots_mp` beats the frozen
+   model in all three batches (-0.0016, SE 0.0010), not yet significant.
+   Optional, costs credits: a batch 4 (`--batch 4 --block 25`) would
+   tighten that comparison.
 4. Game model: the gap to the market is team rating (decision 39), mostly
    in a team's first 10 games. Opponent-adjusted ratings from past results
    did not help (decision 41; MoneyPuck situation rates were already in).

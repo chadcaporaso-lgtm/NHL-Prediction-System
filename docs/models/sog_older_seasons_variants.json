@@ -1,217 +1,217 @@
 {
   "sog": {
-    "lines": 2260,
-    "players": 78,
-    "games": 1739,
-    "median_margin": 0.0671,
-    "over_rate": 0.5097,
-    "mean_p_market": 0.5158,
+    "lines": 3399,
+    "players": 126,
+    "games": 2218,
+    "median_margin": 0.0673,
+    "over_rate": 0.506,
+    "mean_p_market": 0.5146,
     "log_loss": {
-      "constant": 0.693,
-      "market": 0.6809,
-      "model": 0.6854,
-      "frozen_blend": 0.6812
+      "constant": 0.6931,
+      "market": 0.6821,
+      "model": 0.6847,
+      "frozen_blend": 0.6815
     },
     "roi_4pt_model_alone": {
-      "bets": 1145,
-      "players": 77,
-      "under_share": 0.873,
-      "win_rate": 0.5162,
-      "roi": -0.0231,
-      "roi_se_player_clustered": 0.0273,
-      "roi_se_game_clustered": 0.028
+      "bets": 1748,
+      "players": 125,
+      "under_share": 0.88,
+      "win_rate": 0.524,
+      "roi": -0.0071,
+      "roi_se_player_clustered": 0.0219,
+      "roi_se_game_clustered": 0.023
     },
     "roi_4pt_frozen_blend": {
-      "bets": 349,
-      "players": 56,
+      "bets": 538,
+      "players": 90,
       "under_share": 0.994,
-      "win_rate": 0.4986,
-      "roi": -0.0765,
-      "roi_se_player_clustered": 0.0504,
-      "roi_se_game_clustered": 0.0506
+      "win_rate": 0.513,
+      "roi": -0.054,
+      "roi_se_player_clustered": 0.0445,
+      "roi_se_game_clustered": 0.0403
     },
     "blend_fit": {
       "clustered_by_player_id": {
         "coef_const_market_model": [
-          -0.0075,
-          0.9457,
-          0.1863
+          0.0114,
+          0.7248,
+          0.3583
         ],
         "se": [
-          0.0478,
-          0.2605,
-          0.1982
+          0.042,
+          0.2189,
+          0.1683
         ]
       },
       "clustered_by_game_id": {
         "coef_const_market_model": [
-          -0.0075,
-          0.9457,
-          0.1863
+          0.0114,
+          0.7248,
+          0.3583
         ],
         "se": [
-          0.0522,
-          0.2679,
-          0.2082
+          0.043,
+          0.2224,
+          0.1709
         ]
       }
     },
     "by_season_log_loss": {
       "20232024": {
-        "market": 0.6845,
-        "model": 0.691
-      },
-      "20242025": {
-        "market": 0.6802,
+        "market": 0.6821,
         "model": 0.6837
       },
+      "20242025": {
+        "market": 0.6825,
+        "model": 0.6852
+      },
       "20252026": {
-        "market": 0.6709,
-        "model": 0.6725
+        "market": 0.6808,
+        "model": 0.6865
       }
     }
   },
   "sog_edge": {
-    "lines": 2260,
-    "players": 78,
-    "games": 1739,
-    "median_margin": 0.0671,
-    "over_rate": 0.5097,
-    "mean_p_market": 0.5158,
+    "lines": 3399,
+    "players": 126,
+    "games": 2218,
+    "median_margin": 0.0673,
+    "over_rate": 0.506,
+    "mean_p_market": 0.5146,
     "log_loss": {
-      "constant": 0.693,
-      "market": 0.6809,
-      "model": 0.6857,
-      "frozen_blend": 0.6813
+      "constant": 0.6931,
+      "market": 0.6821,
+      "model": 0.6851,
+      "frozen_blend": 0.6816
     },
     "roi_4pt_model_alone": {
-      "bets": 1122,
-      "players": 78,
-      "under_share": 0.867,
-      "win_rate": 0.5053,
-      "roi": -0.0448,
-      "roi_se_player_clustered": 0.03,
-      "roi_se_game_clustered": 0.0284
+      "bets": 1770,
+      "players": 125,
+      "under_share": 0.88,
+      "win_rate": 0.5198,
+      "roi": -0.012,
+      "roi_se_player_clustered": 0.0233,
+      "roi_se_game_clustered": 0.0227
     },
     "roi_4pt_frozen_blend": {
-      "bets": 341,
-      "players": 57,
+      "bets": 554,
+      "players": 90,
       "under_share": 0.991,
-      "win_rate": 0.5015,
-      "roi": -0.0569,
-      "roi_se_player_clustered": 0.0527,
-      "roi_se_game_clustered": 0.0517
+      "win_rate": 0.5054,
+      "roi": -0.0636,
+      "roi_se_player_clustered": 0.0444,
+      "roi_se_game_clustered": 0.0399
     },
     "blend_fit": {
       "clustered_by_player_id": {
         "coef_const_market_model": [
-          -0.0125,
-          0.981,
-          0.1537
+          0.0081,
+          0.7553,
+          0.3331
         ],
         "se": [
-          0.0465,
-          0.2761,
-          0.2072
+          0.0413,
+          0.2214,
+          0.1703
         ]
       },
       "clustered_by_game_id": {
         "coef_const_market_model": [
-          -0.0125,
-          0.981,
-          0.1537
+          0.0081,
+          0.7553,
+          0.3331
         ],
         "se": [
-          0.0518,
-          0.2659,
-          0.2071
+          0.0429,
+          0.219,
+          0.1687
         ]
       }
     },
     "by_season_log_loss": {
       "20232024": {
-        "market": 0.6845,
-        "model": 0.693
+        "market": 0.6821,
+        "model": 0.6854
       },
       "20242025": {
-        "market": 0.6802,
-        "model": 0.6828
+        "market": 0.6825,
+        "model": 0.6845
       },
       "20252026": {
-        "market": 0.6709,
-        "model": 0.6732
+        "market": 0.6808,
+        "model": 0.6864
       }
     }
   },
   "sog_mp": {
-    "lines": 2260,
-    "players": 78,
-    "games": 1739,
-    "median_margin": 0.0671,
-    "over_rate": 0.5097,
-    "mean_p_market": 0.5158,
+    "lines": 3399,
+    "players": 126,
+    "games": 2218,
+    "median_margin": 0.0673,
+    "over_rate": 0.506,
+    "mean_p_market": 0.5146,
     "log_loss": {
-      "constant": 0.693,
-      "market": 0.6809,
-      "model": 0.684,
-      "frozen_blend": 0.681
+      "constant": 0.6931,
+      "market": 0.6821,
+      "model": 0.6831,
+      "frozen_blend": 0.6812
     },
     "roi_4pt_model_alone": {
-      "bets": 943,
-      "players": 78,
-      "under_share": 0.823,
-      "win_rate": 0.5133,
-      "roi": -0.0371,
-      "roi_se_player_clustered": 0.0312,
-      "roi_se_game_clustered": 0.0312
+      "bets": 1507,
+      "players": 126,
+      "under_share": 0.828,
+      "win_rate": 0.5249,
+      "roi": -0.011,
+      "roi_se_player_clustered": 0.0264,
+      "roi_se_game_clustered": 0.0243
     },
     "roi_4pt_frozen_blend": {
-      "bets": 229,
-      "players": 46,
-      "under_share": 0.987,
-      "win_rate": 0.5066,
-      "roi": -0.0486,
-      "roi_se_player_clustered": 0.0613,
-      "roi_se_game_clustered": 0.0631
+      "bets": 362,
+      "players": 78,
+      "under_share": 0.994,
+      "win_rate": 0.5331,
+      "roi": -0.0142,
+      "roi_se_player_clustered": 0.0463,
+      "roi_se_game_clustered": 0.0492
     },
     "blend_fit": {
       "clustered_by_player_id": {
         "coef_const_market_model": [
-          -0.0157,
-          0.9511,
-          0.1819
+          0.0029,
+          0.661,
+          0.4204
         ],
         "se": [
-          0.0445,
-          0.2779,
-          0.2177
+          0.0374,
+          0.2291,
+          0.1801
         ]
       },
       "clustered_by_game_id": {
         "coef_const_market_model": [
-          -0.0157,
-          0.9511,
-          0.1819
+          0.0029,
+          0.661,
+          0.4204
         ],
         "se": [
-          0.049,
-          0.2835,
-          0.2276
+          0.0401,
+          0.2296,
+          0.1805
         ]
       }
     },
     "by_season_log_loss": {
       "20232024": {
-        "market": 0.6845,
-        "model": 0.6898
+        "market": 0.6821,
+        "model": 0.6822
       },
       "20242025": {
-        "market": 0.6802,
-        "model": 0.6821
+        "market": 0.6825,
+        "model": 0.6834
       },
       "20252026": {
-        "market": 0.6709,
-        "model": 0.6723
+        "market": 0.6808,
+        "model": 0.6857
       }
     }
   }

@@ -117,7 +117,7 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
       <div class="fact" role="listitem"><b>339,062</b><span>skater-games with pregame features, leakage-tested</span></div>
       <div class="fact" role="listitem"><b>34,708</b><span>graded player-prop closing lines (shots and points)</span></div>
       <div class="fact" role="listitem"><b>~1,560</b><span>games with clean moneyline, puck line and totals closes</span></div>
-      <div class="fact" role="listitem"><b>2,260</b><span>older-season prop lines bought to test the one apparent edge</span></div>
+      <div class="fact" role="listitem"><b>3,399</b><span>older-season prop lines bought, in three batches, to test the one apparent edge</span></div>
       <div class="fact" role="listitem"><b>6,992</b><span>games with regulation-result closes, 2021-22 to 2025-26</span></div>
     </div>
   </section>
@@ -125,7 +125,7 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
   <section class="col">
     <h2>The short version</h2>
     <p>Two earlier versions of this project reported a moneyline model that beat the closing line and returned +4.4%. The audit found that 74% of those bets had been graded at prices captured during or after the game. On clean pregame prices the edge disappears, and the +4.4% cannot be reproduced from the saved ledger.</p>
-    <p>The rebuild starts from audited data, validates every model walk-forward by season, and compares each one with the closing line. One model looked like it had an edge: shots on goal, combined with the market price, returned +8.3% on 907 held-out bets in 2026-27. So I bought 2,260 lines from earlier seasons the model had never been tested on, in two independent batches. The edge did not repeat there (-7.7% on 349 bets). The rule stays frozen and a live test on new games decides it.</p>
+    <p>The rebuild starts from audited data, validates every model walk-forward by season, and compares each one with the closing line. One model looked like it had an edge: shots on goal, combined with the market price, returned +8.3% on 907 held-out bets in 2026-27. So I bought 3,399 lines from earlier seasons the model had never been tested on, in three independent batches. The edge did not repeat there: the model holds a little information the price lacks, but the rule loses 5.4% on 538 bets. The rule stays frozen and a live test on new games decides it.</p>
     <p>The puck line is level with the market, and the other models are sound projections that the market already prices. Adding player tracking and shot-quality data (NHL shift charts and Edge, MoneyPuck game logs) made the player models better forecasters but did not produce a betting edge. Market prices for five earlier seasons showed the game model behind the market in every one, and pinned down why: team ratings, not tie handling. Re-rating teams for the strength of their opponents brought the model closer to the market's ordering but not to its accuracy; the remaining gap sits in the first weeks of each season, when the market knows about summer roster moves. Every result is reported, including the ones that went against the model.</p>
   </section>
 
@@ -136,7 +136,7 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
         <thead><tr><th>Model</th><th>Method</th><th class="num">Model log loss</th><th class="num">Closing line</th><th>Verdict</th></tr></thead>
         <tbody>
           <tr><td>Shots on goal</td><td>Gradient-boosted negative binomial, blended with the market price</td><td class="num">0.6764</td><td class="num">0.6796</td><td><span class="chip mid">Held in 2026-27 only</span></td></tr>
-          <tr><td>Shots on goal, older seasons</td><td>Same frozen blend, 2023-24 to Jan 2026, never seen in development</td><td class="num">0.6812</td><td class="num">0.6809</td><td><span class="chip bad">No edge</span></td></tr>
+          <tr><td>Shots on goal, older seasons</td><td>Same frozen blend, 2023-24 to Jan 2026, never seen in development</td><td class="num">0.6815</td><td class="num">0.6821</td><td><span class="chip bad">Rule loses</span></td></tr>
           <tr><td>Puck line</td><td>Poisson regulation-goal model, tie-adjusted, calibrated</td><td class="num">0.6246</td><td class="num">0.6272</td><td><span class="chip mid">Level, not significant</span></td></tr>
           <tr><td>Moneyline</td><td>Same goal model</td><td class="num">0.6830</td><td class="num">0.6808</td><td><span class="chip mid">Close, behind</span></td></tr>
           <tr><td>Points</td><td>Poisson GLM with goalie, team and lineup-role features</td><td class="num">0.6542</td><td class="num">0.6515</td><td><span class="chip bad">No edge</span></td></tr>
@@ -144,7 +144,7 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
         </tbody>
       </table>
     </div>
-    <p class="note">Lower log loss is better. Shots on goal: model + market blend on 5,814 held-out 2026-27 lines; older seasons: 2,260 lines at a different consensus price (PuckAPI medians across books). Points: 18,902 lines. Game markets: the full 2025-26 season (1,338 to 1,394 games), external consensus close.</p>
+    <p class="note">Lower log loss is better. Shots on goal: model + market blend on 5,814 held-out 2026-27 lines; older seasons: 3,399 lines at a different consensus price (PuckAPI medians across books). Points: 18,902 lines. Game markets: the full 2025-26 season (1,338 to 1,394 games), external consensus close.</p>
 
     <figure>
       <figcaption>
@@ -220,7 +220,7 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
 
   <section>
     <h2>Seasons the model had never seen</h2>
-    <p class="col">All of the shots results above use one odds source that starts in January 2026. I bought shots-on-goal closing prices for 2023-24 to January 2026 in two batches: random 25-game stretches for randomly drawn regular players, 78 players in all, none chosen by how they did against the market. Each line is graded with official box-score shots.</p>
+    <p class="col">All of the shots results above use one odds source that starts in January 2026. I bought shots-on-goal closing prices for 2023-24 to January 2026 in three batches: random 25-game stretches for randomly drawn regular players, 127 players in all, none chosen by how they did against the market. Each line is graded with official box-score shots.</p>
     <figure>
       <figcaption>
         <b>Return of the frozen 4-point rule, by sample</b>
@@ -236,14 +236,15 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
           <tr><td>2026-27 held out (SportsGameOdds)</td><td class="num">5,814</td><td class="num">907</td><td class="num">+8.3%</td><td class="num">2.7%</td><td class="num">0.42 (0.07)</td></tr>
           <tr><td>Older, batch 1 (30 players)</td><td class="num">1,116</td><td class="num">179</td><td class="num">−12.8%</td><td class="num">6.9%</td><td class="num">0.28 (0.30)</td></tr>
           <tr><td>Older, batch 2 (48 new players)</td><td class="num">1,144</td><td class="num">170</td><td class="num">−2.3%</td><td class="num">7.4%</td><td class="num">0.08 (0.30)</td></tr>
-          <tr><td>Older, combined</td><td class="num">2,260</td><td class="num">349</td><td class="num">−7.7%</td><td class="num">5.1%</td><td class="num">0.19 (0.21)</td></tr>
+          <tr><td>Older, batch 3 (49 new players)</td><td class="num">1,139</td><td class="num">189</td><td class="num">−1.2%</td><td class="num">6.8%</td><td class="num">0.69 (0.31)</td></tr>
+          <tr><td>Older, all three</td><td class="num">3,399</td><td class="num">538</td><td class="num">−5.4%</td><td class="num">4.0%</td><td class="num">0.36 (0.17)</td></tr>
         </tbody>
       </table>
     </div>
     <p class="note">Model weight beside price: the model's coefficient when the market price and the model are combined (standard error in brackets). For 2026 it is fitted on all 15,777 SportsGameOdds lines; for the older samples on their own lines. Older-season prices are PuckAPI medians across books.</p>
     <div class="col">
-      <p>Both batches disagree with 2026-27, and with each other only within their noise. Combined, the frozen rule loses 7.7%, the model alone loses 2.3% on 1,145 bets, and blending the model in adds nothing to the market's log loss (0.6812 against 0.6809). The gap to 2026-27 is about 16 points, roughly 2.8 standard errors. Either the 2026 result was partly luck, or the model's information was specific to that market and period.</p>
-      <p>So the shots model is described as having no demonstrated edge. The rule was not changed after seeing this, because changing it would repeat the after-the-fact tuning the frozen test exists to avoid. The live test decides.</p>
+      <p>The first two batches disagreed with 2026-27; the third, bought later, is the first older sample where the model alone beats the market (0.6834 against 0.6846). Over all 3,399 lines the frozen blend now edges the market's log loss (0.6815 against 0.6821) and the model's weight beside the price is 0.36, about two standard errors from zero: the model probably does hold a little information the price lacks. It is not enough to bet on. The frozen rule loses 5.4% on 538 bets, and the gap to 2026-27 is about 14 points, roughly 2.8 standard errors. Either the 2026 result was partly luck, or the model's information was specific to that market and period.</p>
+      <p>So the shots model is described as having no demonstrated edge. The version with MoneyPuck shot-quality data beats the frozen model in all three batches, though not yet significantly, and is tracked beside it. The rule was not changed after seeing this, because changing it would repeat the after-the-fact tuning the frozen test exists to avoid. The live test decides.</p>
     </div>
   </section>
 
@@ -259,19 +260,19 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
     <p class="col">Three free sources were added as separate model variants, each with its own leakage test, so the frozen live-test models stayed untouched. NHL shift charts for 9,314 games give who played with whom at 5-on-5 and on the power play (ice time from the shifts matches the box score within 30 seconds for 99.9% of skater-games). NHL Edge tracking data is published only as season totals, so each game uses the player's previous-season profile. MoneyPuck game logs add each skater's expected goals, shot attempts, high-danger shots and zone starts, as rolling averages of earlier games.</p>
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Model</th><th class="num">2026-27 lines (market)</th><th class="num">Older lines (market 0.6809)</th><th class="num">Best rule, 4-point edge</th></tr></thead>
+        <thead><tr><th>Model</th><th class="num">2026-27 lines (market)</th><th class="num">Older lines (market 0.6821)</th><th class="num">Best rule, 4-point edge</th></tr></thead>
         <tbody>
-          <tr><td>Shots on goal, frozen</td><td class="num">0.6781 (0.6796)</td><td class="num">0.6854</td><td class="num">+8.3%, 907 bets</td></tr>
-          <tr><td>+ NHL Edge</td><td class="num">0.6782</td><td class="num">0.6857</td><td class="num">+10.6%, 928 bets</td></tr>
-          <tr><td>+ MoneyPuck</td><td class="num"><b>0.6771</b></td><td class="num"><b>0.6840</b></td><td class="num">+5.8%, 1,391 bets</td></tr>
+          <tr><td>Shots on goal, frozen</td><td class="num">0.6781 (0.6796)</td><td class="num">0.6847</td><td class="num">+8.3%, 907 bets</td></tr>
+          <tr><td>+ NHL Edge</td><td class="num">0.6778</td><td class="num">0.6851</td><td class="num">+10.5%, 833 bets</td></tr>
+          <tr><td>+ MoneyPuck</td><td class="num"><b>0.6765</b></td><td class="num"><b>0.6831</b></td><td class="num">+6.2%, 1,426 bets</td></tr>
           <tr><td>Points, version 2</td><td class="num">0.6382 (0.6333)</td><td class="num">–</td><td class="num">−4.1%, 1,042 bets</td></tr>
           <tr><td>+ linemates, Edge, MoneyPuck</td><td class="num"><b>0.6359</b></td><td class="num">–</td><td class="num">−2.4%, 1,640 bets</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note">Model log loss alone, lower is better; rules use the model + market blend at the closing price. Older lines: the 2,260 PuckAPI lines from 2023-24 to January 2026.</p>
+    <p class="note">Model log loss alone, lower is better; rules use the model + market blend at the closing price. Older lines: the 3,399 PuckAPI lines from 2023-24 to January 2026. Shots variants as refitted on November 9 with refreshed MoneyPuck and Edge data.</p>
     <div class="col">
-      <p>MoneyPuck improves the shots model in every comparison, including the older seasons it never saw, and real linemates are the most useful single addition for points. Together they close about half of the points model's gap to the closing price. But no variant beats the market on the older lines, and the highest return (Edge, +10.6%) is the best of seven variants tried on the same lines and does not repeat on older ones: the kind of number that selection produces by chance. None of them replaces the frozen rule; the MoneyPuck shots model is tracked alongside it.</p>
+      <p>MoneyPuck improves the shots model in every comparison, including the older seasons it never saw, and real linemates are the most useful single addition for points. Together they close about half of the points model's gap to the closing price. But no variant beats the market on the older lines, and the highest return (Edge, +10.5%) is the best of seven variants tried on the same lines and does not repeat on older ones: the kind of number that selection produces by chance. None of them replaces the frozen rule; the MoneyPuck shots model is tracked alongside it.</p>
     </div>
   </section>
 
@@ -360,7 +361,7 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
   // Chart 1: model minus closing-line log loss, diverging around zero.
   const gapData = [
     { name: "Shots on goal (blend)", v: 0.6764 - 0.6796, m: 0.6764, c: 0.6796, n: "5,814 lines, 2026-27" },
-    { name: "Shots, older seasons", v: 0.6812 - 0.6809, m: 0.6812, c: 0.6809, n: "2,260 lines, 2023-24 to Jan 2026" },
+    { name: "Shots, older seasons", v: 0.6815 - 0.6821, m: 0.6815, c: 0.6821, n: "3,399 lines, 2023-24 to Jan 2026" },
     { name: "Puck line", v: 0.6246 - 0.6272, m: 0.6246, c: 0.6272, n: "1,385 games, 2025-26" },
     { name: "Shots on goal (alone)", v: 0.6821 - 0.6815, m: 0.6821, c: 0.6815, n: "15,806 lines" },
     { name: "Moneyline", v: 0.6830 - 0.6808, m: 0.6830, c: 0.6808, n: "1,394 games, 2025-26" },
@@ -469,7 +470,8 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
     { name: "2026-27 held out", r: 8.3, se: 2.7, n: 907, dev: true },
     { name: "Older, batch 1", r: -12.8, se: 6.9, n: 179 },
     { name: "Older, batch 2", r: -2.3, se: 7.4, n: 170 },
-    { name: "Older, combined", r: -7.7, se: 5.1, n: 349 },
+    { name: "Older, batch 3", r: -1.2, se: 6.8, n: 189 },
+    { name: "Older, all three", r: -5.4, se: 4.0, n: 538 },
   ];
   function drawRoi() {
     const host = document.getElementById("roi"); host.innerHTML = "";

@@ -479,3 +479,24 @@ non-core bundle (it only searched files mentioning `core__` or the first
 part's name); `build_external_crosswalk.py` dropped its recorded comparison
 with the previous owner file when that optional file is absent. Both fixed;
 the full weekly rebuild then reproduced every committed results file.
+
+**6l. Third older-season shots batch (2026-11-09).** 490 more PuckAPI
+credits bought 25-game blocks for 49 new players (1,139 graded lines; the
+earlier batches' files were restored from the owner's copy and reproduce
+exactly). Details in the shots model card; decision 42.
+
+| Older lines, 2023-24 to 2026-01-15 | Lines | Market | Frozen model | Frozen blend | Frozen 4-point rule | + MoneyPuck model |
+|---|---:|---:|---:|---:|---|---:|
+| Batches 1-2 (6g, 6h) | 2,260 | **0.6809** | 0.6854 | 0.6812 | -7.7%, 349 bets (SE 5.0) | 0.6840 |
+| Batch 3 | 1,139 | 0.6846 | 0.6834 | 0.6823 | -1.2%, 189 (6.8) | **0.6815** |
+| All three | 3,399 | 0.6821 | 0.6847 | **0.6815** | -5.4%, 538 (4.0) | 0.6831 |
+
+Batch 3 is the first older sample where the model beats the market, and
+over all three batches the model's weight beside the price is 0.36 (SE
+0.17), about two standard errors from zero. So the model likely carries a
+little information the older prices lack, but not enough for the frozen rule
+to profit; it stays unchanged and the live test decides. The MoneyPuck
+variant beats the frozen model in every batch (-0.0016 log loss, SE 0.0010)
+and stays the candidate to track on new games. MoneyPuck and Edge were
+refetched for this run and had revised past games, so the variant results
+moved slightly; the earlier files are kept with a `_2026-11-08` suffix.

@@ -295,6 +295,38 @@ SportsGameOdds, in a different period). Prior to the live test, the shots
 model should be described as having **no demonstrated edge over the
 market** (decision 33).
 
+### Third batch (2026-11-09, 490 credits)
+
+A third key bought 49 calls of 25 games for **49 new players** (none in
+batches 1-2 or McDavid; the earlier player lists were restored from the
+owner's copy, checksums verified). 1,162 rows; Andrew Copp's block returned
+one game with no line rows, so 1,139 graded lines from 48 players. Batches
+1-2 reproduce exactly on the restored files; their two-batch results are
+kept in `sog_older_seasons_results_batches1-2.json`.
+
+| 4-point rules | Lines | Model alone: bets, ROI (SE) | Frozen rule: bets, ROI (SE) | Model weight in blend (SE) | Log loss: market / model / frozen blend |
+|---|---:|---|---|---|---|
+| Batch 1 | 1,116 | 556, 0.0% (3.1-4.0) | 179, -12.8% (4.3-6.9) | 0.28 (0.20-0.30) | 0.6747 / 0.6769 / 0.6739 |
+| Batch 2 | 1,144 | 589, -4.5% (4.0-4.3) | 170, -2.3% (7.4-9.0) | 0.08 (0.30-0.35) | 0.6869 / 0.6936 / 0.6882 |
+| Batch 3 | 1,139 | 603, +2.3% (3.7-4.0) | 189, -1.2% (6.8-8.4) | 0.69 (0.30-0.31) | 0.6846 / **0.6834** / **0.6823** |
+| **All three** | **3,399** | **1,748, -0.7% (2.2-2.3)** | **538, -5.4% (4.0-4.5)** | **0.36 (0.17)** | 0.6821 / 0.6847 / **0.6815** |
+| 2026-27, SportsGameOdds | | | 907, +8.3% (2.7) | 0.42 (0.07) | |
+
+By season, all three: 2023-24 frozen rule -7.0% (248 bets), 2024-25 -2.9%
+(262), early 2025-26 -14.8% (28).
+
+**Reading it.** Batch 3 is the first older sample in which the model alone
+beats the market (0.6834 against 0.6846) and the blend is ahead of it.
+Over all 3,399 lines the frozen blend is now slightly better than the market
+(0.6815 against 0.6821), and the model's weight beside the price is 0.36
+(SE 0.17): equal to the 2025-26 fit (0.36), a little below the frozen
+blend's 0.42, and about two standard errors from zero. So the model probably does carry a little
+information the older prices lack. But the frozen rule still loses (-5.4%
+on 538 bets, SE 4.0): the information is too small to clear the margin at
+the 4-point threshold, and the gap to 2026-27 (+8.3%) is still about 2.8
+standard errors. The description stays **no demonstrated edge**; the live
+test decides (decision 42).
+
 ## Variants with new data (2026-11-09)
 
 Code: `src/models/prop_model.py shots_edge` and `shots_mp`; features in
@@ -332,3 +364,28 @@ including the older lines it never saw, and doubles its weight beside the
 its rules lose. The higher 2026-27 ROI of the Edge variant comes from 125
 bets it adds and 104 it drops (+23 units, SE 12.6) and does not repeat on
 the older lines. No variant replaces the frozen model (decisions 35-36).
+
+**Update with batch 3 (2026-11-09, decision 42).** The MoneyPuck and Edge
+data were fetched again for this run; both sources had revised earlier
+games, so the variant results moved slightly (the 2026-11-08 files are kept
+as `sog_mp_results_2026-11-08.json`, `sog_edge_results_2026-11-08.json`
+and the matching `*_blend_results_2026-11-08.json`). The frozen model is
+unchanged.
+
+| All 3,399 older lines (market 0.6821) | Frozen | + Edge | + MoneyPuck |
+|---|---:|---:|---:|
+| Model log loss | 0.6847 | 0.6851 | **0.6831** |
+| Paired difference from frozen (SE, game-clustered) | | +0.0004 (0.0006) | **-0.0016 (0.0010)** |
+| ... batch 1 / 2 / 3 | | -0.0002 / +0.0014 / -0.0002 | -0.0020 / -0.0008 / -0.0020 |
+| Frozen blend log loss | 0.6815 | 0.6816 | **0.6812** |
+| Model alone at 4 points | -0.7% (2.3) | -1.2% (2.3) | -1.1% (2.4) |
+| Frozen blend at 4 points | -5.4%, 538 (4.0) | -6.4%, 554 (4.0) | -1.4%, 362 (4.9) |
+| Model weight beside the market | 0.36 (0.17) | 0.33 (0.17) | 0.42 (0.18) |
+| 2026-27 lines: model log loss (market 0.6796) | 0.6781 | 0.6778 | **0.6765** |
+| 2026-27: blend at 4 points | +8.3%, 907 (2.7) | +10.5%, 833 (2.7) | +6.2%, 1,426 (2.2) |
+
+MoneyPuck is better than the frozen model in every batch, by 0.0016 overall
+(about 1.5 standard errors), and is the variant closest to the market on
+the older lines (0.6831 against 0.6821). Edge again adds nothing. None of
+the rules is profitable on the older lines. `shots_mp` stays the candidate
+for a future frozen rule, to be decided on new games (next steps).
