@@ -11,10 +11,11 @@
                                         defaults to the newest folder in data/live/
   python3 run.py test                   the leakage tests on the real data only
   python3 run.py extras                 optional player data and variants (decisions
-                                        34-39): fetches NHL shift charts, NHL Edge and
+                                        34-41): fetches NHL shift charts, NHL Edge and
                                         MoneyPuck game logs (about 3 hours), builds and
                                         leakage-tests the features, reruns the variant
-                                        models and the earlier-season market tests
+                                        models (incl. the team-rating game variant)
+                                        and the earlier-season market tests
 
 See CLAUDE.md ("Restoring the data in a new session") for getting the real data.
 """
@@ -30,7 +31,8 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 VARIANTS = ["shots_edge", "shots_mp", "points_lm", "points_edge", "points_lm_edge", "points_mp", "points_all"]
 BLEND_NAMES = ["sog_edge", "sog_mp", "points_lm", "points_edge", "points_lm_edge", "points_mp", "points_all"]
 LEAKAGE_TESTS = ["tests/test_skater_feature_leakage.py", "tests/test_game_feature_leakage.py",
-                 "tests/test_probable_starter_leakage.py", "tests/test_elo_leakage.py"]
+                 "tests/test_probable_starter_leakage.py", "tests/test_elo_leakage.py",
+                 "tests/test_team_rating_leakage.py"]
 
 
 def run(*args) -> int:
@@ -52,10 +54,13 @@ def main(argv: list[str]) -> int:
         steps += [["src/models/prop_model.py", v] for v in VARIANTS]
         steps += [["src/models/prop_market_blend.py", n] for n in BLEND_NAMES]
         steps += [["src/models/sog_older_seasons.py", "variants"]]
+        # Opponent-adjusted team ratings and the game-model variant using them (decision 41).
+        steps += [["src/features/build_team_rating.py"], ["tests/test_team_rating_leakage.py"],
+                  ["src/models/game_model.py", "rating"], ["src/models/game_market.py", "rating"]]
         if os.path.exists(os.path.join(ROOT, "data/external/closing_csv/nhl_2026_27_odds.csv")):
             steps += [["src/ingest/build_external_crosswalk.py"]]
         if os.path.exists(os.path.join(ROOT, "data/external/odds_scrape_2026-10/games_nhl.parquet")):
-            steps += [["src/models/game_market_history.py"]]
+            steps += [["src/models/game_market_history.py"], ["src/models/game_market_history.py", "rating"]]
         for st in steps:
             if run(*st):
                 return 1

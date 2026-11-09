@@ -33,6 +33,11 @@ expected values under the probable-starter model
 so every input is known before the starter is announced. Writes *_probable
 outputs.
 
+Variant: `python3 src/models/game_model.py rating` adds the team's
+opponent-adjusted offense ratings and the opponent's defense ratings for
+expected goals and goals (src/features/build_team_rating.py, decision 41).
+Writes *_rating outputs.
+
 Outputs
   data/models/game_predictions[_<variant>].parquet  one row per test game
   docs/models/game_results[_<variant>].json         metrics on all games
@@ -66,6 +71,9 @@ VARIANT = sys.argv[1] if len(sys.argv) > 1 else ""
 SUFFIX = f"_{VARIANT}" if VARIANT else ""
 if VARIANT == "elo":
     FEATURES = FEATURES + ["elo_diff"]
+RATING = ["rating_off_xg", "rating_off_g", "opp_rating_def_xg", "opp_rating_def_g"]
+if VARIANT == "rating":
+    FEATURES = FEATURES + RATING
 
 
 def load() -> pd.DataFrame:
@@ -82,6 +90,14 @@ def load() -> pd.DataFrame:
     f["rest"] = f.days_rest.fillna(7).clip(upper=7)
     f["is_playoff"] = (f.game_type == 3).astype(int)
     f["league_reg_gpg_l300"] = f.league_reg_gpg_l300.fillna(f.league_reg_gpg_l300.mean())
+    if VARIANT == "rating":
+        r = pd.read_parquet(os.path.join(ROOT, "data/features/team_rating.parquet"))
+        f = f.merge(r, on=["game_id", "team"], how="left", validate="one_to_one")
+        for c in ["rating_off_xg", "rating_def_xg", "rating_off_g", "rating_def_g"]:
+            f[c] = f[c].fillna(0.0)
+        f = f.merge(f[["game_id", "team", "rating_def_xg", "rating_def_g"]].rename(
+            columns={"team": "opponent", "rating_def_xg": "opp_rating_def_xg", "rating_def_g": "opp_rating_def_g"}),
+            on=["game_id", "opponent"], validate="one_to_one")
     opp = f[["game_id", "team"] + OPP + ["rest", "back_to_back"]].rename(
         columns={**{c: f"opp_{c}" for c in OPP}, "team": "opponent", "rest": "opp_rest", "back_to_back": "opp_back_to_back"})
     f = f.merge(opp, on=["game_id", "opponent"], validate="one_to_one")

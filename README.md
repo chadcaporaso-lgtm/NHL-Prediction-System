@@ -358,7 +358,7 @@ are licensed and cannot be in a public repository, a generator builds a
 synthetic league with the same files and columns: 8 teams, 2018-19 to
 2026-27, Arizona continuing into Utah, back-to-backs, overtime and shootouts,
 goalie rotations and call-ups, pulled goalies, playoffs. The full feature
-pipeline, all 13 leakage tests and both game models run on it in about 40
+pipeline, all 13 leakage tests (15 from 2026-11-09, with the team ratings) and the game models run on it in about 40
 seconds, in a temporary copy, on every push (GitHub Actions). A planted leak
 was caught in both checks tried: team form including the current game (1,218
 mismatches) and starter features seeing the current game.
@@ -430,3 +430,52 @@ Two were rejected (no odds; or placeholder odds in most games). Three were used:
   tie problem was tested and ruled out: the gap is in rating the teams
   (decisions 38-39).
 - Favorite-only moneylines for 2021-22 and 2022-23: same result.
+
+**6k. Opponent-adjusted team ratings (2026-11-09).** Restored on a fresh
+machine from the existing Drive bundle without Colab (every file verified by
+SHA-256; two restore fixes, below). Then the next agreed step: closing the
+game model's gap to the market, which decision 39 located in team rating.
+
+*Where the gap is.* Splitting the 0.0051 three-way log-loss gap by how many
+games the home team had played that season: 0.0126 per game in the first
+10 (SE 0.0040), 0.001-0.003 from game 11 to 60, 0.0068 after game 60. The
+model's home/away log odds are also narrower than the market's (SD 0.533
+against 0.571).
+
+*What was built.* `src/features/build_team_rating.py`: before every game
+date, a weighted ridge regression on all earlier team-games,
+`y = mu + home + off[team] + def[opponent]`, for flurry- and score-venue-
+adjusted expected goals and for goals (MoneyPuck). Weights halve every H
+days and by a factor C per season boundary; a ridge penalty shrinks thin
+data toward league average. H, C and the penalty are chosen for each test
+season from one-step-ahead errors in earlier seasons only (a 48-combination
+grid; the first grid was moved after goals selections hit its edges). Leakage
+test: `tests/test_team_rating_leakage.py` (rewriting later results leaves
+earlier ratings unchanged; rewriting a season leaves its selected parameters
+unchanged). Variant `python3 src/models/game_model.py rating`.
+
+| Three-way log loss, regulation result | Games | Market | Default | Rating variant |
+|---|---:|---:|---:|---:|
+| 2021-22 | 1,401 | **1.0156** | 1.0219 | 1.0226 |
+| 2022-23 | 1,399 | **1.0314** | 1.0371 | 1.0364 |
+| 2023-24 | 1,400 | **1.0200** | 1.0211 | 1.0215 |
+| 2024-25 | 1,398 | **1.0251** | 1.0319 | 1.0321 |
+| 2025-26 | 1,394 | **1.0648** | 1.0701 | 1.0692 |
+| **2021-22 to 2025-26** | **6,992** | **1.0313** | 1.0364 | 1.0363 |
+
+*Result: not adopted (decision 41).* The ratings fix the spread (SD 0.582)
+and agree with the market more (correlation of log odds 0.917 against
+0.907), but the forecasts are no better: -0.0001 log loss (SE 0.0005), the
+first-10-games gap is unchanged (0.0133), and puck-line ROI at the
+SportsGameOdds close moves from -0.1% to -2.8% (SE 4.4%), within noise.
+What the market knows in October is roster change over the summer, which no
+amount of re-weighting past results can supply; the next attempt should use
+player-level roster strength. The variant and its features stay as optional
+outputs (`run.py extras`); the default and frozen models are byte-for-byte
+unchanged.
+
+*Restore fixes.* `restore_core_inputs.py` missed the second part of a
+non-core bundle (it only searched files mentioning `core__` or the first
+part's name); `build_external_crosswalk.py` dropped its recorded comparison
+with the previous owner file when that optional file is absent. Both fixed;
+the full weekly rebuild then reproduced every committed results file.

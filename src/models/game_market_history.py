@@ -30,6 +30,10 @@ diagnostic (not a model, it uses the market) replaces the model's tie
 probability with the market's to measure how much of the gap is ties.
 
 Output: docs/models/game_market_history_results.json
+
+Variant: `python3 src/models/game_market_history.py rating` scores the
+game model's `rating` variant (decision 41) the same way and writes
+docs/models/game_market_history_results_rating.json.
 """
 
 from __future__ import annotations
@@ -49,6 +53,8 @@ from common import official  # noqa: E402
 from game_model import game_probs, joint_scores  # noqa: E402
 
 M = "glm"
+VARIANT = sys.argv[1] if len(sys.argv) > 1 else ""
+SUFFIX = f"_{VARIANT}" if VARIANT else ""
 XW = os.path.join(ROOT, "data/drive/NHL_Prediction_System_ChatGPT/data/evaluation/external_closing_comparison/20261026T210505Z_bed9e020/external_official_crosswalk.parquet")
 SBR_FIX = {"WAS": "WSH", "TB": "TBL", "LA": "LAK", "NJ": "NJD", "SJ": "SJS"}
 
@@ -89,7 +95,7 @@ def match_scrape(gp: pd.DataFrame) -> pd.DataFrame:
 
 
 def main():
-    gp = pd.read_parquet(os.path.join(ROOT, "data/models/game_predictions.parquet"))
+    gp = pd.read_parquet(os.path.join(ROOT, f"data/models/game_predictions{SUFFIX}.parquet"))
     gp.index.name = "game_id"
     gp = gp.reset_index()
     gp["d0"] = pd.to_datetime(gp.game_date.astype(str).str[:10])
@@ -175,7 +181,7 @@ def main():
         if f"ml_{M}" in k:
             out["log_loss"]["model_calibrated"] = round(ll2(k[f"ml_{M}"], y), 4)
         res["source_b_favorite_moneyline"][str(season)] = out
-    json.dump(res, open(os.path.join(ROOT, "docs/models/game_market_history_results.json"), "w"), indent=2)
+    json.dump(res, open(os.path.join(ROOT, f"docs/models/game_market_history_results{SUFFIX}.json"), "w"), indent=2)
     print(json.dumps(res, indent=1))
 
 

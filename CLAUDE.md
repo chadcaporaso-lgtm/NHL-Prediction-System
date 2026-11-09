@@ -119,7 +119,7 @@ the manifest, then `python3 run.py update <date>`. Commit
 `docs/live/tracking.json` and the redrawn `docs/figures/`, and add the week
 to the README. Treat the result as meaningful after about 500 bets.
 
-## Current state (2026-11-09, end of fourth session)
+## Current state (2026-11-09, end of fifth session)
 
 - Data audit done (findings D-1, D-2, O-1 to O-7, goalie and live-feed checks).
 - Models: shots on goal (no demonstrated edge: +8.3% on 907 held-out 2026-27
@@ -145,6 +145,16 @@ to the README. Treat the result as meaningful after about 500 bets.
   to 2026-27 and favorite-only moneylines 2021-23. The game model trails the market in
   every season (three-way 1.0364 vs 1.0313 over 6,992 games); the gap is
   team rating, not ties.
+- Opponent-adjusted team ratings (decision 41, README 6k): time-decayed
+  ridge ratings (`build_team_rating.py`, leakage-tested) as a game-model
+  variant (`game_model.py rating`). Closer to the market's ordering but no
+  better: three-way log loss 1.0363 vs 1.0364 (market 1.0313). The gap is
+  largest in a team's first 10 games (0.013 per game): offseason roster
+  change, which past results cannot supply. Not adopted.
+- Fifth session restored without Colab from the existing Drive bundle
+  (manifest_core_2026-11-07 plus archive (8).zip from
+  manifest_inspect_2026-11-09 and the three CSVs in 01_raw/external/).
+  `restore_core_inputs.py` now finds every part of non-core bundles.
 - Closing-line value (shots): the market moves toward the model between open
   and close (slope 0.21, SE 0.007), but bets at the open lose to the fair
   close on price (CLV -2.1 points); opening-price profit comes mainly from
@@ -157,14 +167,15 @@ to the README. Treat the result as meaningful after about 500 bets.
   old branch `claude/peaceful-volta-mygk7c` is deleted (2026-11-09); only
   pull request #1's hidden ref (`refs/pull/1/head`) still holds it, and the
   owner has asked GitHub Support to purge it.
-- Case study page republished 2026-11-09 (version 6) with the new player
+- Case study page republished 2026-11-09 (version 7, adds the team-rating
+  test of decision 41; version 6 added the new player
   data and the earlier-season market tests.
 - Owner-supplied files checked and recorded in `docs/audit/external-odds.md`;
   `src/inventory/colab_stage_file.py` stages any large file for checking.
 - Restore and full weekly rebuild checked on a fresh machine: every committed
   results file reproduced exactly; charts are now byte-stable.
 - Reproducibility: `run.py` entry point; GitHub Actions runs the pipeline and
-  all 13 leakage tests on synthetic data on every push (decision 31).
+  all 15 leakage tests on synthetic data on every push (decision 31).
 - Charts: `src/reporting/make_figures.py` -> `docs/figures/*.svg`.
 
 ## Next steps (agreed order)
@@ -177,10 +188,13 @@ to the README. Treat the result as meaningful after about 500 bets.
 3. Optional, costs credits: more older-season shots lines
    (`fetch_puckapi_sog_history.py --batch 3 --block 25`) to compare
    `shots_mp` with the frozen model on more held-out lines.
-4. Game model: the gap to the market is team rating (decision 39). Ideas:
-   MoneyPuck team expected goals by situation, roster strength from the
-   skater models, goalie quality; test against the three-way prices
-   2021-22 to 2025-26.
+4. Game model: the gap to the market is team rating (decision 39), mostly
+   in a team's first 10 games. Opponent-adjusted ratings from past results
+   did not help (decision 41; MoneyPuck situation rates were already in).
+   Next: roster strength from the skater models (sum of dressed players'
+   prior individual expected-goal and ice-time profiles, carried across
+   team changes), then goalie quality; test against the three-way prices
+   2021-22 to 2025-26 (`game_market_history.py <variant>`).
 5. Totals: in-season scoring level or a bivariate score model.
 6. Optional: improve the probable-starter model (team rotation habits, a
    tree model) or add confirmed-starter data if a free source exists.

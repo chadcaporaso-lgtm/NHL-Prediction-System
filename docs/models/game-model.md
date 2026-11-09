@@ -133,6 +133,28 @@ Same picture: the market is ahead in both seasons. With these, the
 moneyline result ("close, behind the market") now holds in every season
 from 2021-22 to 2026-27.
 
+### Opponent-adjusted team ratings (2026-11-09, decision 41)
+
+Variant `python3 src/models/game_model.py rating` adds four features from
+`src/features/build_team_rating.py`: the team's offense ratings and the
+opponent's defense ratings for adjusted expected goals and for goals. Each
+rating comes from a time-decayed ridge regression on all earlier team-games
+(`y = mu + home + off[team] + def[opponent]`), refitted before every game
+date, so it accounts for who each past game was against. Settings are chosen
+per test season from earlier seasons (`docs/models/team_rating_results.json`).
+
+| Three-way log loss | Market | Default | Rating |
+|---|---:|---:|---:|
+| 2021-22 to 2025-26 (6,992 games) | **1.0313** | 1.0364 | 1.0363 |
+| first 10 games of a team's season: gap to market | | 0.0126 | 0.0133 |
+| SD of home/away log odds (market 0.571) | | 0.533 | 0.582 |
+| moneyline, all games 2025-26 (two-way) | | 0.6855 | 0.6834 |
+| puck line at SGO close, ROI at 2-point edge | | -0.1% (557 bets) | -2.8% (536, SE 4.4) |
+
+Closer to the market's ordering, no better as a forecast. Not adopted.
+Outputs: `docs/models/game_results_rating.json`,
+`game_market_results_rating.json`, `game_market_history_results_rating.json`.
+
 ## Version history
 
 - **v1** (no league scoring feature) and **v2** (with it) differ by at most
@@ -160,4 +182,7 @@ from 2021-22 to 2026-27.
 ## Possible improvements
 
 A scoring-level adjustment estimated within the current season, skater-level
-lineup strength (injuries, scratches), and a bivariate model for totals.
+lineup strength (injuries, scratches, and above all offseason roster changes:
+the gap to the market is largest in a team's first 10 games, and
+opponent-adjusted ratings from past results did not close it, decision 41),
+and a bivariate model for totals.

@@ -33,6 +33,9 @@ STEPS = [
     ["tests/test_elo_leakage.py"],
     ["src/models/game_model.py"],
     ["src/models/game_model.py", "probable"],
+    ["src/features/build_team_rating.py"],
+    ["tests/test_team_rating_leakage.py"],
+    ["src/models/game_model.py", "rating"],
 ]
 
 

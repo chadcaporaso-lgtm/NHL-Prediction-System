@@ -126,7 +126,7 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
     <h2>The short version</h2>
     <p>Two earlier versions of this project reported a moneyline model that beat the closing line and returned +4.4%. The audit found that 74% of those bets had been graded at prices captured during or after the game. On clean pregame prices the edge disappears, and the +4.4% cannot be reproduced from the saved ledger.</p>
     <p>The rebuild starts from audited data, validates every model walk-forward by season, and compares each one with the closing line. One model looked like it had an edge: shots on goal, combined with the market price, returned +8.3% on 907 held-out bets in 2026-27. So I bought 2,260 lines from earlier seasons the model had never been tested on, in two independent batches. The edge did not repeat there (-7.7% on 349 bets). The rule stays frozen and a live test on new games decides it.</p>
-    <p>The puck line is level with the market, and the other models are sound projections that the market already prices. Adding player tracking and shot-quality data (NHL shift charts and Edge, MoneyPuck game logs) made the player models better forecasters but did not produce a betting edge. Market prices for five earlier seasons showed the game model behind the market in every one, and pinned down why: team ratings, not tie handling. Every result is reported, including the ones that went against the model.</p>
+    <p>The puck line is level with the market, and the other models are sound projections that the market already prices. Adding player tracking and shot-quality data (NHL shift charts and Edge, MoneyPuck game logs) made the player models better forecasters but did not produce a betting edge. Market prices for five earlier seasons showed the game model behind the market in every one, and pinned down why: team ratings, not tie handling. Re-rating teams for the strength of their opponents brought the model closer to the market's ordering but not to its accuracy; the remaining gap sits in the first weeks of each season, when the market knows about summer roster moves. Every result is reported, including the ones that went against the model.</p>
   </section>
 
   <section>
@@ -298,6 +298,27 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
   </section>
 
   <section>
+    <h2>Rating teams against their schedule</h2>
+    <p class="col">The game model rated teams with weighted averages of their own past results, which ignore who those games were against and carry last season's form straight into October. Splitting the gap to the market by games played showed where it lives: 0.0126 per game in a team's first 10 games, 0.001 to 0.003 in mid-season. The model's home/away odds were also less spread out than the market's.</p>
+    <p class="col">So I built opponent-adjusted ratings: before every game date, a ridge regression on all earlier games (offense, defense, home ice) for adjusted expected goals and for goals, with older games and earlier seasons down-weighted. Its three settings are chosen each season from earlier seasons only, and a leakage test checks both the ratings and the selection.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>2021-22 to 2025-26 (6,992 games)</th><th class="num">Market</th><th class="num">Model</th><th class="num">+ adjusted ratings</th></tr></thead>
+        <tbody>
+          <tr><td>Three-way log loss</td><td class="num"><b>1.0313</b></td><td class="num">1.0364</td><td class="num">1.0363</td></tr>
+          <tr><td>Gap to market, first 10 games of a season</td><td class="num">–</td><td class="num">0.0126</td><td class="num">0.0133</td></tr>
+          <tr><td>Spread of home/away log odds (SD)</td><td class="num">0.571</td><td class="num">0.533</td><td class="num">0.582</td></tr>
+          <tr><td>Agreement with the market (correlation)</td><td class="num">–</td><td class="num">0.907</td><td class="num">0.917</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Paired difference from the model: −0.0001 log loss per game, standard error 0.0005.</p>
+    <div class="col">
+      <p>The ratings now look like the market's, with the right spread and a closer ordering, but they forecast no better, and the October gap did not move. That is informative: what the market knows early in a season is who changed teams over the summer, and no re-weighting of past results can recover it. The variant is kept as an optional output, not adopted. The next attempt rates rosters from player-level data instead.</p>
+    </div>
+  </section>
+
+  <section>
     <h2>Team power rating</h2>
     <p class="col">An Elo rating built from scratch: margin-of-victory updates, a home-ice term and an off-season pull toward average, with its settings chosen each season from earlier seasons only. It beats a constant every season and a flat Elo in five of six, but trails the game model from 2023-24 on, and adding it to the game model changes log loss by less than the noise. It stays as a power ranking and an optional feature.</p>
     <figure>
@@ -312,10 +333,10 @@ footer { border-top: 1px solid var(--rule); padding-top: 18px; font-size: 13px; 
 
   <section class="col">
     <h2>Built to be checked</h2>
-    <p><b>Leakage tests that can fail.</b> Thirteen tests rebuild features from earlier data only and compare them with the stored tables, and three more cover the shift-chart, Edge and MoneyPuck features. They run on every push in GitHub Actions against a generated league with the same files and columns as the real (licensed) data. Planted leaks, team form that includes the current game and goalie features that see the current game, were caught by them; one real leak was found the same way, a traded goalie whose game for his new team started earlier the same evening.</p>
+    <p><b>Leakage tests that can fail.</b> Fifteen tests rebuild features from earlier data only and compare them with the stored tables, and three more cover the shift-chart, Edge and MoneyPuck features. They run on every push in GitHub Actions against a generated league with the same files and columns as the real (licensed) data. Planted leaks, team form that includes the current game and goalie features that see the current game, were caught by them; one real leak was found the same way, a traded goalie whose game for his new team started earlier the same evening.</p>
     <p><b>Pregame information only.</b> The game models had been using the goalie who actually started. A probable-starter model, a conditional logit over each team's recent goalies, picks the starter 71% of the time out of sample against 59% for "most starts in the last 10". Swapping it in changed every log loss by at most 0.002, so the look-ahead was small, and the live puck-line rule now uses it.</p>
     <p><b>Every input checked before use.</b> Each odds file offered for the project went through the same checks (official-game matching, score agreement, overlap with sources in use) and was recorded as used or rejected, with the reason.</p>
-    <p><b>One command.</b> A fresh machine restores the data with checksums and reruns everything; every committed results file came out byte for byte the same.</p>
+    <p><b>One command.</b> A fresh machine restores the data with checksums and reruns everything; every committed results file came out byte for byte the same, most recently on November 9 without the usual Colab step.</p>
   </section>
 
   <section class="col">

@@ -195,6 +195,7 @@ def main(root: str):
                         "team": team, "season": year, "gameId": g["game_id"], "opposingTeam": opp, "home_or_away": ha,
                         "gameDate": int(g["date"].strftime("%Y%m%d")), "situation": sit, "iceTime": float(ice),
                         "xGoalsFor": float(xgf), "xGoalsAgainst": float(xga),
+                        "flurryScoreVenueAdjustedxGoalsFor": float(xgf * rng.uniform(0.9, 1.1)),
                         "goalsFor": float(gf if sit == "all" else rng.binomial(gf, share)),
                         "goalsAgainst": float(ga_ if sit == "all" else rng.binomial(ga_, share)),
                         "shotsOnGoalFor": float(sog[team] * share), "shotsOnGoalAgainst": float(sog[opp] * share),
