@@ -32,7 +32,8 @@ for path in glob.glob(f"{home}/**/tool-results/*.txt", recursive=True) + glob.gl
         text = open(path, encoding="utf-8", errors="ignore").read()
     except OSError:
         continue
-    if not any(w in text for w in list(want)[:1]) and "core__" not in text:
+    # Look for any wanted part name (non-core bundles such as inspect__ need this).
+    if not any(w in text for w in want):
         continue
     try:
         d = json.loads(text)

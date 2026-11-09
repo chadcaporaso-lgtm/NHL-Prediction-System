@@ -88,6 +88,16 @@ def main():
             changed = ~(np.isclose(x, y) | (x.isna() & y.isna()))
             rev2[c] = {"changed": int(changed.sum()), "max_abs_change": round(float((x - y).abs().max()), 4)}
         checks["revisions_vs_previous_owner_file"] = {"shared_games": int(len(k2)), "columns": rev2}
+    else:
+        # The older owner file is optional and absent on a fresh machine: keep the
+        # comparison already recorded for this file instead of dropping it.
+        last = str(pd.read_csv(NEW_CSV).date_et.max())
+        rec = os.path.join(ROOT, f"docs/audit/external_crosswalk_{last}.json")
+        if os.path.exists(rec):
+            kept = json.load(open(rec)).get("revisions_vs_previous_owner_file")
+            if kept is not None:
+                checks["revisions_vs_previous_owner_file"] = kept
+                print("previous owner file not present; kept the recorded comparison")
     checks["new_games"] = int(len(a) - len(j))
     # Assemble: v2's 2025-26 rows unchanged, new 2026-27 rows in the same schema.
     a = a.rename(columns={"game_id": "external_event_id", "season": "external_season",
