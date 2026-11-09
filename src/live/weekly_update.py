@@ -55,6 +55,8 @@ run("src/models/prop_model.py", "shots")
 run("src/models/sog_clv.py")
 run("src/audit/profile_sgo_game_odds.py")
 run("src/models/game_model.py")
+if os.path.exists(os.path.join(ROOT, "data/external/closing_csv/nhl_2026_27_odds.csv")):
+    run("src/ingest/build_external_crosswalk.py")  # games past the last refresh join the external benchmark
 run("src/models/game_market.py")
 run("src/models/game_model.py", "probable")
 run("src/models/game_market.py", "probable")

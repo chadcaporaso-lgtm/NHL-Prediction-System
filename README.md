@@ -418,9 +418,10 @@ profitable. Details in the model cards and decisions 34-36.
 **6j. Market prices for earlier seasons (2026-11-09).** The owner supplied
 several odds files; each was checked before use (`docs/audit/external-odds.md`).
 Two were rejected (no odds; or placeholder odds in most games). Three were used:
-- A newer 2026-27 external closing file (47 more games). It revises past
-  closes when the provider adds a bookmaker (finding E-1), which is now
-  recorded. The puck-line model now matches or beats the external close in
+- A newer 2026-27 external closing file (282 games to 2026-11-08; 261
+  matched so far). Copies of this file disagree on past closes depending on
+  which bookmakers an export includes (finding E-1), which is now recorded
+  (decision 40). The puck-line model now matches or beats the external close in
   all four comparisons; SportsGameOdds results and the live test are
   unchanged (decision 37).
 - Average closing three-way prices for 2021-22 to 2026-27: the first market

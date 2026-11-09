@@ -52,7 +52,7 @@ def main(argv: list[str]) -> int:
         steps += [["src/models/prop_model.py", v] for v in VARIANTS]
         steps += [["src/models/prop_market_blend.py", n] for n in BLEND_NAMES]
         steps += [["src/models/sog_older_seasons.py", "variants"]]
-        if os.path.exists(os.path.join(ROOT, "data/external/closing_csv/nhl_2026_27_odds_2026-11-09.csv")):
+        if os.path.exists(os.path.join(ROOT, "data/external/closing_csv/nhl_2026_27_odds.csv")):
             steps += [["src/ingest/build_external_crosswalk.py"]]
         if os.path.exists(os.path.join(ROOT, "data/external/odds_scrape_2026-10/games_nhl.parquet")):
             steps += [["src/models/game_market_history.py"]]
