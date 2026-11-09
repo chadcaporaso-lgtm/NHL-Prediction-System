@@ -1,7 +1,7 @@
 """Player prop models (shots on goal, points): walk-forward by season, graded
 on all games and on SportsGameOdds closing prop prices.
 
-Usage: python3 src/models/prop_model.py shots    (or points)
+Usage: python3 src/models/prop_model.py shots    (or points, points_lm)
 
 Models (all predict the mean shot count mu for a player-game)
   baseline  mu = player's exponentially weighted target per game (no fitting)
@@ -58,8 +58,15 @@ CONFIGS = {
         # v2 (2026-11-07): lineup role from dressed teammates' pregame form
         "toi_rank_pos", "pp_rank", "linemates_pts", "team_dressed_pts", "team_dressed_gap"]},
 }
-TARGET = sys.argv[1] if len(sys.argv) > 1 else "shots"
-CFG = CONFIGS[TARGET]
+# Variant (2026-11-09): points v2 plus linemates measured from NHL shift charts
+# (src/features/build_linemates.py). Separate outputs; points v2 stays the reference.
+CONFIGS["points_lm"] = {"name": "points_lm", "target": "points", "stat": "goals+assists",
+                        "extra": "data/features/linemate_features.parquet",
+                        "features": CONFIGS["points"]["features"] + [
+                            "lm_ev_pts", "lm_pp_pts", "lm_ev_present", "pp_unit_share", "shift_games"]}
+KEY = sys.argv[1] if len(sys.argv) > 1 else "shots"
+CFG = CONFIGS[KEY]
+TARGET = CFG.get("target", KEY)
 FEATURES, NAME = CFG["features"], CFG["name"]
 
 
@@ -81,6 +88,12 @@ def prepare(f: pd.DataFrame) -> pd.DataFrame:
         f[c] = f[c].fillna(0.0)
     for c in ["toi_rank_pos", "pp_rank", "linemates_pts"]:
         f[c] = f[c].fillna(f[c].median())
+    if "extra" in CFG:  # shift-chart linemates: no earlier shift data -> his own form / no power play
+        f["lm_ev_pts"] = f.lm_ev_pts.fillna(f.linemates_pts)
+        f["lm_pp_pts"] = f.lm_pp_pts.fillna(f.linemates_pts)
+        f["lm_ev_present"] = f.lm_ev_present.fillna(1.0)
+        f["pp_unit_share"] = f.pp_unit_share.fillna(0.0)
+        f["shift_games"] = f.shift_games.fillna(0)
     return f
 
 
@@ -205,7 +218,10 @@ def score_market(p, alphas, edge=0.03):
 
 
 if __name__ == "__main__":
-    f = prepare(pd.read_parquet(os.path.join(ROOT, "data/features/skater_features.parquet")))
+    f = pd.read_parquet(os.path.join(ROOT, "data/features/skater_features.parquet"))
+    if "extra" in CFG:
+        f = f.merge(pd.read_parquet(os.path.join(ROOT, CFG["extra"])), on=["game_id", "player_id"], how="left", validate="one_to_one")
+    f = prepare(f)
     p, alphas = walk_forward(f)
     p.to_parquet(os.path.join(ROOT, f"data/models/{NAME}_predictions.parquet"), index=False)
     results = {"target": TARGET, "features": FEATURES, "min_prior_games": MIN_PRIOR,

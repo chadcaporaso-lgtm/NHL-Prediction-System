@@ -3,7 +3,8 @@
 The points model lacks real linemates (docs/models/points-model.md, v2). The
 NHL publishes every player's shifts per game (free, no key):
   https://api.nhle.com/stats/rest/en/shiftcharts?cayenneExp=gameId=<id>
-The Claude session cannot reach api.nhle.com, so this cell runs in Colab.
+Since 2026-11-09 the Claude environment allows api.nhle.com, so the session
+runs src/ingest/fetch_shiftcharts.py directly; this cell is the fallback.
 
 For every game in the skater files already in Drive (2019-20 to the newest
 weekly refresh) it fetches the shift chart, keeps the raw shifts in Drive,
@@ -109,47 +110,23 @@ def game_aggregates(sh: pd.DataFrame, skaters: set) -> tuple[pd.DataFrame, pd.Da
     return pd.concat(tot, ignore_index=True), pd.concat(pairs, ignore_index=True)
 
 
-def _in_colab() -> bool:
-    try:
-        import google.colab  # noqa: F401
-        return True
-    except ImportError:
-        return False
+URL = "https://api.nhle.com/stats/rest/en/shiftcharts?cayenneExp=gameId={}"
 
 
-if __name__ == "__main__" and _in_colab():
-    import glob
-    import hashlib
-    import json
+def fetch_all(skater_files: list[str], cache: str, workers: int = 4):
+    """Fetch every game in the skater files (skipping games cached in `cache`), return (toi, pairs, fetch log)."""
     import os
     import time
     from concurrent.futures import ThreadPoolExecutor
-    from datetime import date
 
     import requests
-    from google.colab import drive
 
-    drive.mount("/content/drive")
-    MY = "/content/drive/MyDrive"
-    RAW = f"{MY}/NHL_Prediction_System_Claude/01_raw"
-    CACHE = f"{RAW}/shiftcharts"
-    TODAY = date.today().isoformat()
-    STAGE = f"{RAW}/_transfer_3mb/shifts_{TODAY}"
-    os.makedirs(CACHE, exist_ok=True)
-    os.makedirs(STAGE, exist_ok=True)
-
-    # Skater-game lists already in Drive: game ids and which players are skaters.
-    src = [f"{RAW}/nhl_api_refetch/skater_summary_{s}.parquet" for s in ("20192020", "20202021", "20212022", "20222023", "20232024")]
-    src += [f"{MY}/NHL_Prediction_System/data/raw/nhl_api/skater_summary_{s}.parquet" for s in ("20242025", "20252026")]
-    live = sorted(glob.glob(f"{RAW}/live/*/skater_summary_20262027.parquet"))
-    src += live[-1:]
-    sk = pd.concat([pd.read_parquet(p, columns=["gameId", "playerId"]) for p in src], ignore_index=True)
+    os.makedirs(cache, exist_ok=True)
+    sk = pd.concat([pd.read_parquet(p, columns=["gameId", "playerId"]) for p in skater_files], ignore_index=True)
     sk.columns = ["game_id", "player_id"]
     skaters = sk.groupby("game_id").player_id.apply(set).to_dict()
-    print(f"{len(skaters)} games in the skater files ({len(src)} files)")
-
+    print(f"{len(skaters)} games in the skater files ({len(skater_files)} files)", flush=True)
     session = requests.Session()
-    URL = "https://api.nhle.com/stats/rest/en/shiftcharts?cayenneExp=gameId={}"
 
     def fetch(gid):
         for attempt in range(5):
@@ -164,25 +141,24 @@ if __name__ == "__main__" and _in_colab():
             time.sleep(2 ** attempt)
         return gid, [], "failed"
 
-    seasons = sorted({g // 1_000_000 for g in skaters})
     all_toi, all_pairs, all_log = [], [], []
-    for season in seasons:
+    for season in sorted({g // 1_000_000 for g in skaters}):
         sid = f"{season}{season + 1}"
-        f_raw, f_log = f"{CACHE}/shifts_{sid}.parquet", f"{CACHE}/fetch_log_{sid}.parquet"
+        f_raw, f_log = f"{cache}/shifts_{sid}.parquet", f"{cache}/fetch_log_{sid}.parquet"
         raw = pd.read_parquet(f_raw) if os.path.exists(f_raw) else pd.DataFrame()
         log = pd.read_parquet(f_log) if os.path.exists(f_log) else pd.DataFrame(columns=["game_id", "rows", "status"])
         done = set(log.loc[(log.status == "ok") & (log.rows > 0), "game_id"])
         todo = sorted(g for g in skaters if g // 1_000_000 == season and g not in done)
         new_raw, new_log = [], []
-        with ThreadPoolExecutor(4) as ex:
+        with ThreadPoolExecutor(workers) as ex:
             for k, (gid, rows, status) in enumerate(ex.map(fetch, todo), 1):
-                d = parse_shifts(rows, gid)
-                new_raw.append(d)
-                new_log.append((gid, len(d), status))
+                new_raw.append(parse_shifts(rows, gid))
+                new_log.append((gid, len(new_raw[-1]), status))
                 if k % 500 == 0:
                     print(f"  {sid}: {k}/{len(todo)}", flush=True)
         if todo:
-            log = pd.concat([log[~log.game_id.isin(todo)], pd.DataFrame(new_log, columns=log.columns)], ignore_index=True)
+            log = pd.concat([log[~log.game_id.isin(todo)], pd.DataFrame(new_log, columns=["game_id", "rows", "status"])],
+                            ignore_index=True)
             raw = pd.concat([raw[~raw.game_id.isin(todo)] if len(raw) else raw, *new_raw], ignore_index=True)
             raw.to_parquet(f_raw, index=False)
             log.to_parquet(f_log, index=False)
@@ -194,7 +170,6 @@ if __name__ == "__main__" and _in_colab():
             t, p = game_aggregates(g, skaters.get(gid, set()))
             all_toi.append(t)
             all_pairs.append(p)
-
     toi = pd.concat(all_toi, ignore_index=True)
     pairs = pd.concat(all_pairs, ignore_index=True)
     for c in ["n_shifts", "s_all", "s_ev", "s_5v5", "s_pp", "s_sh"]:
@@ -207,6 +182,38 @@ if __name__ == "__main__" and _in_colab():
             if c in d:
                 d[c] = d[c].astype("int32")
     games = pd.concat(all_log, ignore_index=True)
+    print(f"skater-games {len(toi):,}, pairs {len(pairs):,}, games with shifts {int((games.rows > 0).sum()):,} of {len(games):,}")
+    return toi, pairs, games
+
+
+def _in_colab() -> bool:
+    try:
+        import google.colab  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
+if __name__ == "__main__" and _in_colab():
+    import glob
+    import hashlib
+    import json
+    import os
+    from datetime import date
+
+    from google.colab import drive
+
+    drive.mount("/content/drive")
+    MY = "/content/drive/MyDrive"
+    RAW = f"{MY}/NHL_Prediction_System_Claude/01_raw"
+    CACHE = f"{RAW}/shiftcharts"
+    TODAY = date.today().isoformat()
+    STAGE = f"{RAW}/_transfer_3mb/shifts_{TODAY}"
+    os.makedirs(STAGE, exist_ok=True)
+    src = [f"{RAW}/nhl_api_refetch/skater_summary_{s}.parquet" for s in ("20192020", "20202021", "20212022", "20222023", "20232024")]
+    src += [f"{MY}/NHL_Prediction_System/data/raw/nhl_api/skater_summary_{s}.parquet" for s in ("20242025", "20252026")]
+    src += sorted(glob.glob(f"{RAW}/live/*/skater_summary_20262027.parquet"))[-1:]
+    toi, pairs, games = fetch_all(src, CACHE)
     out = {"shift_toi.parquet": toi, "shift_pairs.parquet": pairs, "shift_fetch_log.parquet": games}
     manifest = []
     for name, d in out.items():
@@ -220,7 +227,5 @@ if __name__ == "__main__" and _in_colab():
         manifest.append({"source": f"NHL_Prediction_System_Claude/01_raw/shiftcharts/{name}", "size_bytes": len(data),
                          "sha256": hashlib.sha256(data).hexdigest(), "parts": parts})
     json.dump(manifest, open(f"{STAGE}/manifest_shifts_{TODAY}.json", "w"), indent=2)
-    print(f"skater-games {len(toi):,}, pairs {len(pairs):,}, games with shifts "
-          f"{int((games.rows > 0).sum()):,} of {len(games):,}")
     print(f"{len(manifest)} files, {sum(len(m['parts']) for m in manifest)} parts, "
           f"{sum(m['size_bytes'] for m in manifest) / 1e6:.1f} MB -> {STAGE}")
